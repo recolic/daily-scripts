@@ -1,0 +1,7 @@
+*.out
+verify/
+models/
+*.pyc
+**/__pycache__/**
+res/
+this_res/

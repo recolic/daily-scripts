@@ -1,0 +1,70 @@
+#!/bin/bash
+# Claims this machine for a time interval, and prevent others from using it
+
+function naive_kill () {
+    what="$1"
+    while true; do
+        ps aux > /tmp/.occupy.log.tmp
+        pid=$(cat /tmp/.occupy.log.tmp | grep "$what" | grep '[0-9]*' -o | head -n1)
+        [[ "$pid" = '' ]] && return
+        echo "kill -9 $pid"
+        kill -9 "$pid"
+        sleep 1
+    done
+}
+
+function cleanup () {
+    echo "killing existing smagent and backplane..."
+    naive_kill smagent
+    naive_kill backplane
+}
+
+uname="$1"
+interval="$2"
+
+[[ "$uname" = "" ]] && echo -n "Your Alias ? " && read -r uname
+[[ "$uname" = "" ]] && echo -e "Usage: $0 <Alias> [Time]\nExample: $0 bensl 2.5h\n         $0 bensl 30m" && exit 1
+[[ "$interval" = "" ]] && interval="1h"
+
+function parse_interval () {
+    local itvl="$1"
+    local unit="${itvl: -1}"
+    local base="${itvl:0:-1}"
+
+    echo 'dhms' | grep -F "$unit" > /dev/null || ! echo "Unknown unit '$unit'. Supported units: s,m,h,d" >&2 || return 1
+    [[ "$unit" = d ]] && local unit=86400
+    [[ "$unit" = h ]] && local unit=3600
+    [[ "$unit" = m ]] && local unit=60
+    [[ "$unit" = s ]] && local unit=1
+
+    if which bc > /dev/null 2>&1; then
+        # bc available, float point arithmetic available
+        secs=$(echo "$base * $unit" | bc | cut -d . -f 1)
+    elif which python > /dev/null 2>&1; then
+        # python available, float point arithmetic available
+        secs=$(python -c "print($base * $unit)" | cut -d . -f 1)
+    else
+        # integer only
+        secs=$((base*unit))
+    fi
+
+    echo "$secs"
+}
+
+curr_time="$(date +%s)"
+interval_secs=$(parse_interval "$interval") || exit $?
+new_exptime=$((curr_time+interval_secs))
+
+if [[ -f /tmp/.occupy.log ]]; then
+    prev_alias=$(cat /tmp/.occupy.log | cut -d , -f 1)
+    prev_exptime=$(cat /tmp/.occupy.log | cut -d , -f 2)
+    [[ "$prev_alias" != "$uname" ]] && [[ $curr_time -lt $prev_exptime ]] && echo "Error: $prev_alias is still using this machine. Please come back in $((prev_exptime-curr_time)) seconds." && exit 2
+    [[ "$prev_alias" != "$uname" ]] && cleanup
+    [[ $new_exptime -lt $prev_exptime ]] && echo "Warning! You already claimed this machine until $prev_exptime, which is longer than your current claim." && echo "The previous claim will be overwritten, and your new expiration time is $new_exptime"
+else
+    cleanup
+fi
+
+echo "$uname,$new_exptime" > /tmp/.occupy.log
+echo "$uname: Successfully claimed this machine for $interval"
+

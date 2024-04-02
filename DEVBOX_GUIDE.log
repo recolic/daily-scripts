@@ -1,0 +1,20 @@
+0. Download http://jp2.comm100.pw:30628/win10pro-22h2-virtio-uefi.qcow2
+
+1. run as root
+
+mkdir -p /srv/swtpm/mytpm
+nohup bash -c 'cd /srv/swtpm ; while true; do swtpm socket --tpmstate dir=./mytpm --ctrl type=unixio,path=./mytpm.sock; done' & disown
+
+2. also run as root
+
+qemu-img create -b win10pro-22h2-virtio-uefi.qcow2 -F qcow2 -f qcow2 tmp.qcow2
+qemu-system-x86_64 --uuid 35b696a9-0bbc-5a00-b8ef-f1185eff2ae8 -drive file=tmp.qcow2,if=virtio -cpu host --enable-kvm -net nic,model=rtl8139 -m 8G -smp 8 -vnc :13 -bios /usr/share/edk2-ovmf/x64/OVMF.fd -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time -chardev socket,id=chrtpm,path=/srv/swtpm/mytpm.sock -tpmdev emulator,id=tpm0,chardev=chrtpm -device tpm-tis,tpmdev=tpm0
+
+3. Log into VM, check `tpm.msc` and `msinfo32.exe`. you can see TPM is enabled, UEFI boot enabled, but secure boot is "Unsupported".
+
+Note: VM password is "PLACEHOLDER_SECRET"
+
+-------------------------
+
+I need to enable secure boot for this VM. Please tell me how to do that.
+

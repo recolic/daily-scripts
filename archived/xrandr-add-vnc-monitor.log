@@ -1,0 +1,7 @@
+x11vnc -clip 1920x1080+0+0
+xrandr --output VIRTUAL1 --mode 1280x1024_60.00 --left-of HDMI-A-0
+xrandr --addmode VIRTUAL1 1280x1024_60.00
+xrandr
+xrandr --newmode "1280x1024_60.00"  108.88  1280 1360 1496 1712  1024 1025 1028 1060  -HSync +Vsync
+gtf 1280 1024 60
+
