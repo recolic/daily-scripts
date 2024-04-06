@@ -57,10 +57,8 @@ class my_handler(http.server.BaseHTTPRequestHandler):
             stat = [403, 'invalid auth token']
         else:
             if self.path.startswith('/mute'):
-                stat = [200, 'ok']
                 mute_alarm_once()
-                self.wfile.write('ok'.encode('utf-8'))
-                return
+                stat = [200, 'ok']
             elif self.path.startswith('/unlock'):
                 set_locked(get_api().get_locks()[0], False)
                 stat = [200, 'ok']
