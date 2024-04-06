@@ -20,24 +20,27 @@ def set_locked(lock_obj, true_or_false):
 alarm_muted_until = datetime.now(pytz.utc)
 
 def mute_alarm_once():
+    global alarm_muted_until
+    now = datetime.now(pytz.utc)
     alarm_muted_until = now + timedelta(minutes=30)
-    mute_log_message = f"{pst_now.strftime('%Y-%m-%d %H:%M:%S')} PST - Alarm muted for 30 minutes"
+    mute_log_message = f"{now.strftime('%Y-%m-%d %H:%M:%S')} UTC - Alarm muted for 30 minutes"
     print(mute_log_message)
 
 def beep_until_muted():
-    while now > alarm_muted_until:
+    global alarm_muted_until
+    while datetime.now(pytz.utc) > alarm_muted_until:
         os.system("echo -e '\a' > /dev/tty0")
-        time.sleep(0.15)
+        time.sleep(0.2)
 
 def check_lock_status_and_beep():
-    global lock, alarm_muted_until
+    global alarm_muted_until
 
     now = datetime.now(pytz.utc)
     pst_now = now.astimezone(pytz.timezone("US/Pacific"))
 
     if pst_now.hour >= 0 and pst_now.hour < 8:
         locked = get_api().get_locks()[0].get_locked()
-        print(f"{pst_now.strftime('%Y-%m-%d %H:%M:%S')} PST - Door lock status: {'locked' if locked else 'unlocked'}")
+        print(f"{now.strftime('%Y-%m-%d %H:%M:%S')} UTC - Door lock status: {'locked' if locked else 'unlocked'}")
         if not locked:
             beep_until_muted()
 
