@@ -1,4 +1,5 @@
-# docker image for sms-remote-access + door-watchdog combined
+### docker image for sms-remote-access + door-watchdog combined
+### note that both program requires specific serial device to function well.
 #
 # docker build -t 600163736385.dkr.ecr.us-west-2.amazonaws.com/hms-sms-and-door-api --build-arg "R_SEC_HMSAPI_KEY=$R_SEC_HMSAPI_KEY" --build-arg "R_SEC_SMARTRENT_KEY=$R_SEC_SMARTRENT_KEY" .
 #

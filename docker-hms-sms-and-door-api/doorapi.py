@@ -12,6 +12,11 @@ def get_api():
         return await async_login('bensong.liu@microsoft.com', 'R_SEC_SMARTRENT_KEY')
     return asyncio.run(_wrapped())
 
+def set_locked(lock_obj, true_or_false):
+    async def _wrapped2(l, tf):
+        return await l.async_set_locked(tf)
+    return asyncio.run(_wrapped2(lock_obj, true_or_false))
+
 alarm_muted_until = datetime.now(pytz.utc)
 
 def mute_alarm_once():
@@ -57,10 +62,10 @@ class my_handler(http.server.BaseHTTPRequestHandler):
                 self.wfile.write('ok'.encode('utf-8'))
                 return
             elif self.path.startswith('/unlock'):
-                # TODO unlock
+                set_locked(get_api().get_locks()[0], False)
                 stat = [200, 'ok']
             elif self.path.startswith('/lock'):
-                # TODO lock
+                set_locked(get_api().get_locks()[0], True)
                 stat = [200, 'ok']
 
         self.send_response(stat[0])
