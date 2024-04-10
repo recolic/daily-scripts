@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd /home/recolic/sh/azure-build-policy-apply
+"./smpolicy" "$@"

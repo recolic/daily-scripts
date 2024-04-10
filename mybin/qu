@@ -1,0 +1,6 @@
+#!/bin/bash
+
+[[ "$1" == "" ]] && echo "Quickly upload a file, Usage: $0 <path/to/file>" && exit 1
+curl https://recolic.net/setup/qu | f="$1" bash
+exit $?
+

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+[[ $R_SEC_FREEMYIP_TOKEN = "" ]] && exit 1
+
+ip="$1"
+if [[ $ip = "" ]]; then
+    curl "https://freemyip.com/update?token=$R_SEC_FREEMYIP_TOKEN&domain=recolic-tmp.freemyip.com"
+    echo "Set recolic-tmp.freemyip.com => Current_Machine_IP"
+else
+    curl "https://freemyip.com/update?token=$R_SEC_FREEMYIP_TOKEN&domain=recolic-tmp.freemyip.com&myip=$ip"
+    echo "Set recolic-tmp.freemyip.com => $ip"
+fi

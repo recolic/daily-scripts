@@ -1,0 +1,76 @@
+#!/bin/fish
+# version 1.03: allows setting env target_line
+
+function die
+    echo $argv 1>&2
+    exit 1
+end
+
+set target $argv[1]
+if test -z $target
+    set target help
+end
+
+set targets "
+NAME|USERNAME|PASSWORD|HOSTNAME
+msdev|recolic|$R_SEC_WEAK08$R_SEC_WEAK08|proxy-cdn.recolic.net:30623
+msdev-backup|recolic|$R_SEC_WEAK08$R_SEC_WEAK08|proxy-cdn.recolic.net:30627
+labjump|fareast\bensl|$R_SEC_WEAK12|10.209.180.22
+lanbox|recolic|$R_SEC_WEAK10|10.100.100.101:30473
+cnbox|recolic|$R_SEC_WEAK10|proxy-cdn.recolic.net:30625
+host16|local\Administrator|$R_SEC_OVL_HOST_RDP|10.10.18.31
+host18|local\Administrator|$R_SEC_OVL_HOST_RDP|10.10.18.29
+host1030|local\Administrator|$R_SEC_OVL_HOST_RDP|10.10.10.37
+host2021|local\Administrator|$R_SEC_OVL_HOST_RDP|10.10.15.30
+kedardbg|local\Administrator|$R_SEC_OVL_HOST_RDP|10.10.12.79
+kedardbg2|local\Administrator|$R_SEC_OVL_HOST_RDP|10.10.12.80
+cnvps|local\Administrator|egdu.3599|61.164.242.184:27942
+12306|recolic_setup|$R_SEC_WEAK12|20.2.223.167
+tmpvsbox|recolic|$R_SEC_WEAK10|localhost:30477
+"
+
+if test $target = help
+    echo "Usage: rrdp <target_name>"
+    echo "Target list:"
+    echo $targets | grep -v '^NAME' | cut -d '|' -f 1 | grep . | string join ', '
+    echo "or Usage: env 'target_line=|Administrator|password|my-vm.example.com:3389' rrdp ."
+    exit 0
+end
+
+test -n "$target_line"
+or set target_line (echo $targets | grep "^$target|")
+or die "Target $target not found."
+set user (echo $target_line | cut -d '|' -f 2)
+set pass (echo $target_line | cut -d '|' -f 3)
+set host (echo $target_line | cut -d '|' -f 4)
+
+if test $XDG_SESSION_TYPE = x11
+    set resolution (xrandr | grep -o 'current [0-9]* x [0-9]*')
+    set w (echo $resolution | cut -d x -f 1 | grep -o '[0-9]*')
+    set h (math (echo $resolution | cut -d x -f 2 | grep -o '[0-9]*')-100)
+    # current 1920 x 1080
+    set rdp xfreerdp
+else if test $XDG_SESSION_TYPE = wayland
+    # Xwayland is also working
+    set resolution (xrandr | grep -o 'current [0-9]* x [0-9]*')
+    set w (echo $resolution | cut -d x -f 1 | grep -o '[0-9]*')
+    set h (math (echo $resolution | cut -d x -f 2 | grep -o '[0-9]*')-50)
+    # For wayland, fullscreen is acceptable because shortcuts are not captured on deny
+    set rdp wlfreerdp
+else
+    die "Unknown XDG_SESSION_TYPE $XDG_SESSION_TYPE"
+end
+
+if string match '*win7*' $target
+    set rdp rdesktop
+end
+
+if test $rdp = rdesktop
+    echo "EXEC: $rdp -g $w'x'$h -r disk:abc=/home/recolic/Downloads -u $user -p $pass -v $host"
+    $rdp -K -g $w'x'$h -r disk:abc=/home/recolic/Downloads -u $user -p $pass -v $host
+else
+    echo "EXEC: $rdp -disable-grab-keyboard -w $w -h $h -drive mapped_tmp,$HOME/tmp -u $user -p $pass -v $host"
+    $rdp -disable-grab-keyboard -w $w -h $h -drive mapped_tmp,$HOME/tmp -u $user -p $pass -v $host
+end
+exit $status
+
