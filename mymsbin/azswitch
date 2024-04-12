@@ -1,4 +1,5 @@
 #!/usr/bin/fish
+#switch between azure work profile & personal profile
 
 set target $argv[1]
 

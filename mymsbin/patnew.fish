@@ -1,4 +1,7 @@
 #!/bin/fish
+# starting 04/15, stupid az devops only allows 7-day PAT, not 90 days.
+# It's stupid to keep clicking clicking clicking every day. This script request PAT automatically.
+
 function make_web_req
   hack-browser-data-linux-amd64 --dir /tmp/edgecookie -b edge 1>&2
   and set cookie_str (cat /tmp/edgecookie/microsoft_edge_default_cookie.csv | grep msazure.visualstudio.com | cut -d , -f 3,4 | tr , = | string join '; ')
