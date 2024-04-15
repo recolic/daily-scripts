@@ -34,9 +34,14 @@ function make_web_req
   return $status
 end
 
+# poly000: please use this sample function for testing. 
 function make_web_req_sample
     echo "VAL: g5xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx3a|"
 end
+
+set NEXTCLOUD_PREFIX $HOME/(ls $HOME | grep -i '^nextcloud$' | head -n1)
+# poly000: if you want to store some data file, put it here. It will be synced across all my devices.
+set persistent_data_file $NEXTCLOUD_PREFIX/workspace/impl/pat-token.txt
 
 make_web_req_sample | cut -d ' ' -f 2 | tr -d '|'
 return $status
