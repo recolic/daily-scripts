@@ -40,11 +40,45 @@ function make_web_req_sample
 end
 
 set NEXTCLOUD_PREFIX $HOME/(ls $HOME | grep -i '^nextcloud$' | head -n1)
-# To store some data file, put it here. It will be synced across all my devices.
 set persistent_data_file $NEXTCLOUD_PREFIX/workspace/impl/pat-token.txt
 
-# TODO: check if valid token is in data file.
-# If it's valid, return it. If not valid / expired, get a new one and store it.
-make_web_req_sample | cut -d ' ' -f 2 | tr -d '|'
-return $status
+function GenNewToken
+    echo "Generating new token..." 1>&2
+    set -l token (make_web_req | cut -d ' ' -f 2 | tr -d '|')
+    or return 1
+################################### Starting ChatGPT generated code ##############################
+    set -l creation_time (date +%s)
+    echo "$token $creation_time" > $persistent_data_file
+end
+
+# Function to check if token is still valid and print it if valid
+function is_cache_valid
+    if test -f $persistent_data_file
+        set -l token_creation_time (cut -d ' ' -f 2 $persistent_data_file)
+        set -l current_time (date +%s)
+        set -l time_difference (math "$current_time - $token_creation_time")
+
+        # Token expires after 6.5 days (6 * 24 * 60 * 60 + 12 * 60 * 60)
+        if test $time_difference -lt 561600
+            return 0  # Token is valid
+        else
+            return 1  # Token expired
+        end
+    else
+        return 1  # Token file doesn't exist, treat as expired
+    end
+end
+
+function print_token_cache
+    set -l token (cut -d ' ' -f 1 $persistent_data_file)
+    echo $token
+end
+
+# Main script logic
+if not is_cache_valid
+    GenNewToken
+    or return $status
+end
+
+print_token_cache
 
