@@ -1,6 +1,11 @@
 #!/bin/fish
+## This script prints cached PAT token if expired, create a new one otherwise.
 # starting 04/15, stupid az devops only allows 7-day PAT, not 90 days.
 # It's stupid to keep clicking clicking clicking every day. This script request PAT automatically.
+
+
+set NEXTCLOUD_PREFIX $HOME/(ls $HOME | grep -i '^nextcloud$' | head -n1)
+set token_cache_file $NEXTCLOUD_PREFIX/workspace/impl/pat-token.txt
 
 function make_web_req
   hack-browser-data-linux-amd64 --dir /tmp/edgecookie -b edge 1>&2
@@ -39,22 +44,19 @@ function make_web_req_sample
     echo "VAL: g5xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx3a|"
 end
 
-set NEXTCLOUD_PREFIX $HOME/(ls $HOME | grep -i '^nextcloud$' | head -n1)
-set persistent_data_file $NEXTCLOUD_PREFIX/workspace/impl/pat-token.txt
-
 function GenNewToken
     echo "Generating new token..." 1>&2
     set -l token (make_web_req | cut -d ' ' -f 2 | tr -d '|')
     or return 1
 ################################### Starting ChatGPT generated code ##############################
     set -l creation_time (date +%s)
-    echo "$token $creation_time" > $persistent_data_file
+    echo "$token $creation_time" > $token_cache_file
 end
 
 # Function to check if token is still valid and print it if valid
 function is_cache_valid
-    if test -f $persistent_data_file
-        set -l token_creation_time (cut -d ' ' -f 2 $persistent_data_file)
+    if test -f $token_cache_file
+        set -l token_creation_time (cut -d ' ' -f 2 $token_cache_file)
         set -l current_time (date +%s)
         set -l time_difference (math "$current_time - $token_creation_time")
 
@@ -70,7 +72,7 @@ function is_cache_valid
 end
 
 function print_token_cache
-    set -l token (cut -d ' ' -f 1 $persistent_data_file)
+    set -l token (cut -d ' ' -f 1 $token_cache_file)
     echo $token
 end
 
