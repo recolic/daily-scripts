@@ -49,7 +49,11 @@ if test $XDG_SESSION_TYPE = x11
     set w (echo $resolution | cut -d x -f 1 | grep -o '[0-9]*')
     set h (math (echo $resolution | cut -d x -f 2 | grep -o '[0-9]*')-100)
     # current 1920 x 1080
-    set rdp xfreerdp
+    if which xfreerdp3
+        set rdp xfreerdp3
+    else
+        set rdp xfreerdp
+    end
 else if test $XDG_SESSION_TYPE = wayland
     # Xwayland is also working
     set resolution (xrandr | grep -o 'current [0-9]* x [0-9]*')
@@ -70,7 +74,7 @@ if test $rdp = rdesktop
     $rdp -K -g $w'x'$h -r disk:abc=/home/recolic/Downloads -u $user -p $pass -v $host
 else
     echo "EXEC: $rdp -disable-grab-keyboard -w $w -h $h -drive mapped_tmp,$HOME/tmp -u $user -p $pass -v $host"
-    $rdp -disable-grab-keyboard -w $w -h $h -drive mapped_tmp,$HOME/tmp -u $user -p $pass -v $host
+    $rdp -disable-grab-keyboard -disable-toggle-fullscreen -w $w -h $h -drive mapped_tmp,$HOME/tmp -u $user -p $pass -v $host
 end
 exit $status
 
