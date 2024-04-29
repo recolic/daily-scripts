@@ -18,8 +18,8 @@ rawurlencode() {
 enq=`rawurlencode "$q"`
 enq="${enq^^}"
 echo "`date`| DEBUG ENQ=$enq" >> log
+# This is a naive free-trial api key. To use it reliably, please register your own account.
 apikey=fe73710d92604ff71a4aa1f9dde041a3eef8f404e8199b06a1d35ebdb30b07ae
-#apikey=0809cb6196a5b46f765b04a498c7c3d30f13814aad3622b302f05d3986addfc2
 
 ############################# check cache (database)
 cacheres=`grep -F "RESULT|$(echo "$q"|base64 -w0)|" ./database | head -n 1 | sed 's/^.*|//g' | base64 -d`
