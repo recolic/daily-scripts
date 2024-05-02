@@ -13,8 +13,8 @@ end
 
 set targets "
 NAME|USERNAME|PASSWORD|HOSTNAME
-msdev|recolic|$R_SEC_WEAK08$R_SEC_WEAK08|proxy-cdn.recolic.net:30623
-msdev-backup|recolic|$R_SEC_WEAK08$R_SEC_WEAK08|proxy-cdn.recolic.net:30627
+msdev|recolic|$R_SEC_DEVBOX|proxy-cdn.recolic.net:30623
+msdev-backup|recolic|$R_SEC_DEVBOX|proxy-cdn.recolic.net:30627
 labjump|fareast\bensl|$R_SEC_WEAK12|10.209.180.22
 lanbox|recolic|$R_SEC_WEAK10|10.100.100.101:30473
 cnbox|recolic|$R_SEC_WEAK10|proxy-cdn.recolic.net:30625
@@ -24,8 +24,6 @@ host1030|local\Administrator|$R_SEC_OVL_HOST_RDP|10.10.10.37
 host2021|local\Administrator|$R_SEC_OVL_HOST_RDP|10.10.15.30
 kedardbg|local\Administrator|$R_SEC_OVL_HOST_RDP|10.10.12.79
 kedardbg2|local\Administrator|$R_SEC_OVL_HOST_RDP|10.10.12.80
-cnvps|local\Administrator|egdu.3599|61.164.242.184:27942
-12306|recolic_setup|$R_SEC_WEAK12|20.2.223.167
 tmpvsbox|recolic|$R_SEC_WEAK10|localhost:30477
 "
 
