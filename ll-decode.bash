@@ -2,7 +2,7 @@
 
 logf="$1"
 odir="$2"
-[[ $logf = "" ]] && echo "Usage: $0 ldc1.txt [out_dir/]" && exit 1
+[[ $logf = "" ]] && echo "Usage: [f=1] [dedup=1] $0 ldc1.txt [out_dir]" && exit 1
 [[ $odir = "" ]] && odir="$logf.decoded"
 
 # env: f=1 ; dedup=1
