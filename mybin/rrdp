@@ -71,7 +71,7 @@ if test $rdp = rdesktop
     echo "EXEC: $rdp -g $w'x'$h -r disk:abc=/home/recolic/Downloads -u $user -p $pass -v $host"
     $rdp -K -g $w'x'$h -r disk:abc=/home/recolic/Downloads -u $user -p $pass -v $host
 else
-    echo "EXEC: $rdp -disable-grab-keyboard -w $w -h $h -drive mapped_tmp,$HOME/tmp -u $user -p $pass -v $host"
+    echo "EXEC: $rdp -disable-grab-keyboard -disable-toggle-fullscreen -w $w -h $h -drive mapped_tmp,$HOME/tmp -u $user -p $pass -v $host"
     $rdp -disable-grab-keyboard -disable-toggle-fullscreen -w $w -h $h -drive mapped_tmp,$HOME/tmp -u $user -p $pass -v $host
 end
 exit $status

@@ -86,6 +86,10 @@ print("started http thread")
 # ====================== end http server =====================
 
 while True:
-    check_lock_status_and_beep()
+    try:
+        check_lock_status_and_beep()
+    except Exception as e:
+        print("EXCEPTION in main: ", e)
+        pass
     time.sleep(4)
 
