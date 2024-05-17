@@ -88,13 +88,6 @@ function target_mail_www_recolic_net_data
     and pack_backup_dir /storage/cache/target_mail_www_recolic_net_data
 end
 
-function target_ch_mainsite
-    run_until_success rsync -avz --partial --delete \
-        root@us1.rdev.sbs:/var/www/html /storage/cache/target_ch_mainsite
-
-    and pack_backup_dir /storage/cache/target_ch_mainsite
-end
-
 function target_extern_lwl
     # Temporary: Remove this fallback after upgrading client side do.bash.
     if test -d /storage/cache/target_extern_lwl

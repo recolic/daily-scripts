@@ -33,8 +33,6 @@ else
             reach_target target_mail_www_recolic_net_data
         case 09 19 28
             reach_target target_git_drive_recolic_net_data
-        case 10 25
-            reach_target target_ch_mainsite
         case '*'
             echo "Nothing to do today ($today)."
     end
