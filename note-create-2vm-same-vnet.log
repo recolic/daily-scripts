@@ -1,4 +1,4 @@
-az vm create -n vmntest -g recolic-test-bensl --image Ubuntu2204 --admin-password $R_SEC_WEAK12 --admin-username r --location eastus2euap --size Standard_D8s_v3 --vnet-name recotest-vnet --subnet default
-az vm create -n vmntest2 -g recolic-test-bensl --image Ubuntu2204 --admin-password $R_SEC_WEAK12 --admin-username r --location eastus2euap --size Standard_D8s_v3 --vnet-name recotest-vnet --subnet default
+az vm create -n vmntest -g recotest-bensl --image Ubuntu2204 --admin-password $R_SEC_WEAK12 --admin-username r --location eastus2euap --size Standard_D8s_v3 --vnet-name recotest-vnet --subnet default
+az vm create -n vmntest2 -g recotest-bensl --image Ubuntu2204 --admin-password $R_SEC_WEAK12 --admin-username r --location eastus2euap --size Standard_D8s_v3 --vnet-name recotest-vnet --subnet default
 
 sudo rm -rf /usr/share/apport /opt/microsoft ; reboot

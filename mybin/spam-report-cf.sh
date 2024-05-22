@@ -9,7 +9,7 @@ mv "$1" "/tmp/$fname"
 netpush "/tmp/$fname"
 
 echo "
-1 - Report CF >>    https://abuse.cloudflare.com/phishing
+1 - Report Hosting Provider >>    https://abuse.cloudflare.com/phishing
 >>>>>>>>>>>>>>>>>>
 Recolic K
 
@@ -22,6 +22,16 @@ Software Engineer
 Spammer is sending phishing email with cloudflare hosted url (see evidence URL). It contains fake website (which is phishing), and also violates Marketing laws in both federal marketing law and california law.
 
 Evidence of email (original eml file) is also attached here: (sorry you dont allow uploading file, I have to use a link): https://recolic.net/tmp/$fname
+>>>>>>>>>>>>>>>>>>
+[ABUSE] Phishing website hosted with your IP address []
+
+Spammer is sending phishing email with your VPS (see evidence URL). It contains fake website (which is phishing), and also violates Marketing laws in both federal marketing law and california law.
+
+Evidence of email (original eml file) is also attached here: https://recolic.net/tmp/phish-evidence-1211918241.eml
+
+Evidence URL: []
+
+Evidence URL is hosting phishing website with your IP address: []
 >>>>>>>>>>>>>>>>>>
 "
 
