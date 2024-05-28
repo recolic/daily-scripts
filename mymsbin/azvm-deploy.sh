@@ -7,12 +7,16 @@ tipid="$3"
 cluster="$4"
 
 vmsize="${vmsize:=Standard_D2_v5}"
-vnet_enc="${vnet_enc:1}"
-vnet_dual_stack="${vnet_dual_stack:1}"
+vnet_enc=0 # not working yet
+vnet_dual_stack=0 # not working yet
 accelnet=1
+# At 202405, the following image are allowed for internal use: ["2022-datacenter-azure-edition","2022-datacenter","2022-datacenter-core","2022-datacenter-azure-edition-core","2022-datacenter-core-g2","2022-datacenter-g2","pro-22_04","pro-22_04-gen2","24_04","24_04-gen2","22_04-lts-arm64","azure-linux-3","azure-linux-arm64","azure-linux-gen2","1-gen2","cbl-mariner-1","cbl-mariner-2","cbl-mariner-2-arm64","cbl-mariner-2-fips","cbl-mariner-2-gen2","cbl-mariner-2-gen2-fips","cbl-mariner-2-kata","79-gen2"]
+# https://learn.microsoft.com/en-us/azure/virtual-machines/linux/cli-ps-findimage
+# az vm image list --publisher  Canonical --output table --all | grep 0001-com-ubuntu-pro-microsoft | grep 22_04-gen2
+vmimg=Canonical:0001-com-ubuntu-pro-microsoft:pro-22_04-gen2:22.04.202405240
 
-prefix="${prefix:=$(head -c8 /dev/urandom | base64 -w0 | tr -d =/)}"
-resgrp="${resgrp:=rsh-$prefix-resgrp}"
+prefix="${prefix:=$(head -c8 /dev/urandom | base64 -w0 | tr -d =/+)}"
+resgrp="${resgrp:=rshgrp-$prefix}"
 avname="${avname:=$prefix-av}"
 vnetname="${vnetname:=$prefix-vnet}"
 vmname="${vmname:=$prefix-vm}"
@@ -29,7 +33,7 @@ vm_create_xtra_arg=()
 vnet_create_xtra_arg=()
 
 [ "$vnet_enc"        = 1 ] && vnet_create_xtra_arg+=(--enable-encryption true --encryption-enforcement-policy allowUnencrypted)
-[ "$vnet_dual_stack" = 1 ] && addr_prefixes=('10.0.0.0/16' 'fd00:db8:deca::/48') || addr_prefixes=('10.0.0.0/16')
+[ "$vnet_dual_stack" = 1 ] && vnet_create_xtra_arg+=(--address-prefixes '10.0.0.0/16' 'fd00:db8:deca::/48')
 [ "$accelnet"        = 1 ] && vm_create_xtra_arg+=(--accelerated-networking true)
 [ "$R_SEC_WEAK12"    = "" ] && R_SEC_WEAK12=dummypassW12
 
@@ -50,18 +54,16 @@ if [ "$tipid" != "" ]; then
     vm_create_xtra_arg+=(--availability-set "$avname")
 fi
 
-# Create vnet with optional dual_stack and encryption support
-echo "Deploying vnet ${vnetname} at location $location, using res_grp $resgrp, vnet_enc $vnet_enc, vnet_dual_stack $vnet_dual_stack ..."
-az network vnet create \
-    --resource-group "${resgrp}" \
-    --location "${location}" \
-    --name "${vnetname}" \
-    --subnet-name default \
-    --address-prefixes "${addr_prefixes[@]}" \
-    ${vnet_create_xtra_arg[@]}
+# Manually create vnet if we need dual_stack or vnet_enc
+if [ "$vnet_enc" = 1 ] || [ "$vnet_dual_stack" = 1 ]; then
+    echo "Deploying vnet ${vnetname} at location $location, using res_grp $resgrp, vnet_enc $vnet_enc, vnet_dual_stack $vnet_dual_stack ..."
+    echo "EXEC #" az network vnet create --resource-group "${resgrp}" --location "${location}" --name "${vnetname}" --subnet-name default "${vnet_create_xtra_arg[@]}"
+    az network vnet create --resource-group "${resgrp}" --location "${location}" --name "${vnetname}" --subnet-name default "${vnet_create_xtra_arg[@]}" || exit $?
+fi
 
 for cter in $(seq $vmcount); do
-    echo "EXEC #" az vm create --name "$vmname-$cter" -g "$resgrp" --image Ubuntu2204 --admin-password $R_SEC_WEAK12 --admin-username r --location "$location" --size "$vmsize" --vnet-name "$vnetname" --subnet default "${vm_create_xtra_arg[@]}"
-    az vm create --name "$vmname-$cter" -g "$resgrp" --image Ubuntu2204 --admin-password $R_SEC_WEAK12 --admin-username r --location "$location" --size "$vmsize" --vnet-name "$vnetname" --subnet default "${vm_create_xtra_arg[@]}" || exit $?
+    echo "EXEC #" az vm create --name "$vmname-$cter" -g "$resgrp" --image "$vmimg" --admin-password $R_SEC_WEAK12 --admin-username r --location "$location" --size "$vmsize" --vnet-name "$vnetname" --subnet default "${vm_create_xtra_arg[@]}"
+#Ubuntu2204 
+    az vm create --name "$vmname-$cter" -g "$resgrp" --image "$vmimg" --admin-password $R_SEC_WEAK12 --admin-username r --location "$location" --size "$vmsize" --vnet-name "$vnetname" --subnet default "${vm_create_xtra_arg[@]}" || exit $?
 done
 
