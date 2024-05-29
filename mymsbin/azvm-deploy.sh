@@ -26,7 +26,8 @@ vmname="${vmname:=$prefix-vm}"
 Usage: $0 <location> <vmcount> [tipid] [cluster]
 Example: $0 eastus2euap 2
          $0 eastus2euap 2 69b25fda-d568-4460-b515-0c77ef6719ce CBN09PrdApp09
-Optionally, you can override other variables by setting corresponding env.
+Optionally, you can override other variables by setting corresponding env. For example:
+         resgrp=mygrp vmsize=Standard_D2_v3 $0 eastus2euap 2 ...
 " && exit 1
 
 vm_create_xtra_arg=()
