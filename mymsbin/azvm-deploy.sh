@@ -7,13 +7,9 @@ tipid="$3"
 cluster="$4"
 
 vmsize="${vmsize:=Standard_D2_v5}"
-vnet_enc=0 # not working yet
 vnet_ipv6=1
+vnet_enc=0
 accelnet=1
-# At 202405, the following image are allowed for internal use: ["2022-datacenter-azure-edition","2022-datacenter","2022-datacenter-core","2022-datacenter-azure-edition-core","2022-datacenter-core-g2","2022-datacenter-g2","pro-22_04","pro-22_04-gen2","24_04","24_04-gen2","22_04-lts-arm64","azure-linux-3","azure-linux-arm64","azure-linux-gen2","1-gen2","cbl-mariner-1","cbl-mariner-2","cbl-mariner-2-arm64","cbl-mariner-2-fips","cbl-mariner-2-gen2","cbl-mariner-2-gen2-fips","cbl-mariner-2-kata","79-gen2"]
-# https://learn.microsoft.com/en-us/azure/virtual-machines/linux/cli-ps-findimage
-# az vm image list --publisher  Canonical --output table --all | grep 0001-com-ubuntu-pro-microsoft | grep 22_04-gen2
-vmimg=Canonical:0001-com-ubuntu-pro-microsoft:pro-22_04-gen2:22.04.202405240
 
 prefix="${prefix:=$(head -c8 /dev/urandom | base64 -w0 | tr -d =/+)}"
 resgrp="${resgrp:=rshgrp-$prefix}"
@@ -21,7 +17,12 @@ vmname="${vmname:=$prefix-vm}"
 avname="$vmname-av"
 vnetname="$vmname-vnet"
 
-## Check usage... Script user: Do not modify below this line.
+# At 202405, the following image are allowed for internal use: ["2022-datacenter-azure-edition","2022-datacenter","2022-datacenter-core","2022-datacenter-azure-edition-core","2022-datacenter-core-g2","2022-datacenter-g2","pro-22_04","pro-22_04-gen2","24_04","24_04-gen2","22_04-lts-arm64","azure-linux-3","azure-linux-arm64","azure-linux-gen2","1-gen2","cbl-mariner-1","cbl-mariner-2","cbl-mariner-2-arm64","cbl-mariner-2-fips","cbl-mariner-2-gen2","cbl-mariner-2-gen2-fips","cbl-mariner-2-kata","79-gen2"]
+# https://learn.microsoft.com/en-us/azure/virtual-machines/linux/cli-ps-findimage
+# az vm image list --publisher Canonical --output table --all | grep 0001-com-ubuntu-pro-microsoft | grep 22_04-gen2
+vmimg=Canonical:0001-com-ubuntu-pro-microsoft:pro-22_04-gen2:22.04.202405240
+
+######## Check usage... Script user: Do not modify below this line. #########################################
 [ "$vmcount" = "" ] && echo "This script deploys n VMs into the same vnet, and optionally, you can make it deploy into TiP session.
 Usage: $0 <location> <vmcount> [tipid] [cluster]
 Example: $0 eastus2euap 2
