@@ -7,7 +7,7 @@ tipid="$3"
 cluster="$4"
 
 vmsize="${vmsize:=Standard_D2_v5}"
-vnet_ipv6=1
+vnet_ipv6=0
 vnet_enc=0
 accelnet=1
 
@@ -15,7 +15,7 @@ prefix="${prefix:=$(head -c8 /dev/urandom | base64 -w0 | tr -d =/+)}"
 resgrp="${resgrp:=rshgrp-$prefix}"
 vmname="${vmname:=$prefix-vm}"
 avname="$vmname-av"
-vnetname="$vmname-vnet"
+vnetname="${vnetname:=$vmname-vnet}"
 
 # At 202405, the following image are allowed for internal use: ["2022-datacenter-azure-edition","2022-datacenter","2022-datacenter-core","2022-datacenter-azure-edition-core","2022-datacenter-core-g2","2022-datacenter-g2","pro-22_04","pro-22_04-gen2","24_04","24_04-gen2","22_04-lts-arm64","azure-linux-3","azure-linux-arm64","azure-linux-gen2","1-gen2","cbl-mariner-1","cbl-mariner-2","cbl-mariner-2-arm64","cbl-mariner-2-fips","cbl-mariner-2-gen2","cbl-mariner-2-gen2-fips","cbl-mariner-2-kata","79-gen2"]
 # https://learn.microsoft.com/en-us/azure/virtual-machines/linux/cli-ps-findimage
@@ -62,7 +62,9 @@ fi
 
 if [ "$vnet_enc" = 1 ] || [ "$vnet_ipv6" = 1 ]; then
     # These advanced vnet options are not available from az-vm-create
-    debugexec az network vnet create -g "${resgrp}" --location "${location}" --name "${vnetname}" --subnet-name default "${vnet_create_xtra_arg[@]}" || exit $?
+    if ! az network vnet show -g "$resgrp" --name "$vnetname" > /dev/null 2>&1; then
+        debugexec az network vnet create -g "${resgrp}" --location "${location}" --name "${vnetname}" --subnet-name default "${vnet_create_xtra_arg[@]}" || exit $?
+    fi
 fi
 
 for cter in $(seq $vmcount); do
