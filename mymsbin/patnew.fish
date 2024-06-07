@@ -48,6 +48,8 @@ function GenNewToken
     echo "Generating new token..." 1>&2
     set -l token (make_web_req | cut -d ' ' -f 2 | tr -d '|')
     or return 1
+    test "$token" != ""
+    or return 1
 ################################### Starting ChatGPT generated code ##############################
     set -l creation_time (date +%s)
     echo "$token $creation_time" > $token_cache_file

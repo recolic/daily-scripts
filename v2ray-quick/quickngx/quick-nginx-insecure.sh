@@ -7,6 +7,7 @@
 # tmp_http_fakecrt_k=https://recolic.net/tmp/cert.key
 # use_fakecrt=1 # insecure but easier
 
+export DEBIAN_FRONTEND="noninteractive"
 apt update
 apt install nginx-light -y
 systemctl disable nginx --now

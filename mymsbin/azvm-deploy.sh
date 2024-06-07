@@ -30,6 +30,8 @@ Example: $0 eastus2euap 2
 
 Optionally, you can override other variables by setting corresponding env. For example:
          resgrp=mygrp vmsize=Standard_D2_v3 $0 eastus2euap 2 ...
+
+Known bug: if deploying too many VMs, this script might fail to deploy all of them. Try traditional deploy.ps1
 " && exit 1
 
 vm_create_xtra_arg=()
