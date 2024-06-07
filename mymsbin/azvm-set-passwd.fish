@@ -23,8 +23,9 @@ for vm in $vmids
 end
 
 for vm in $vmids
-    az vm user update --ids $vm --username r --password "$R_SEC_WEAK12"
+    az vm user update --ids $vm --username r --password "$R_SEC_WEAK12" &
 end
+wait
 
 echo "Your VM INFO ===================="
 echo "sshpass -p $R_SEC_WEAK12 ssh r@"
