@@ -47,10 +47,10 @@ if test $XDG_SESSION_TYPE = x11
     set w (echo $resolution | cut -d x -f 1 | grep -o '[0-9]*')
     set h (math (echo $resolution | cut -d x -f 2 | grep -o '[0-9]*')-100)
     # current 1920 x 1080
-    if which xfreerdp3
-        set rdp xfreerdp3
-    else
+    if which xfreerdp
         set rdp xfreerdp
+    else
+        set rdp xfreerdp3
     end
 else if test $XDG_SESSION_TYPE = wayland
     # Xwayland is also working

@@ -9,6 +9,13 @@
 
 Should work on all POSIX-compatible systems (`#!/usr/bin/env`)
 
+## before use
+
+```
+1. set $pat variable
+2. echo $pat | az devops login
+```
+
 ## use sample
 
 recolic.net test
