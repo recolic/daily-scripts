@@ -1,12 +1,17 @@
 #!/bin/bash
 
-[[ $R_SEC_FREEMYIP_TOKEN = "" ]] && exit 1
+# [[ $R_SEC_FREEMYIP_TOKEN = "" ]] && exit 1
+[[ $R_SEC_DDNS_XYZ_TOKEN = "" ]] && exit 1
 
 ip="$1"
 if [[ $ip = "" ]]; then
-    curl "https://freemyip.com/update?token=$R_SEC_FREEMYIP_TOKEN&domain=recolic-tmp.freemyip.com"
-    echo "Set recolic-tmp.freemyip.com => Current_Machine_IP"
+    curl "https://dynamicdns.park-your-domain.com/update?host=rtmp&domain=7508964.xyz&password=$R_SEC_DDNS_XYZ_TOKEN"
+    echo "Set rtmp.7508964.xyz => Current_Machine_IPv4"
+    #curl "https://freemyip.com/update?token=$R_SEC_FREEMYIP_TOKEN&domain=recolic-tmp.freemyip.com"
+    #echo "Set recolic-tmp.freemyip.com => Current_Machine_IP"
 else
-    curl "https://freemyip.com/update?token=$R_SEC_FREEMYIP_TOKEN&domain=recolic-tmp.freemyip.com&myip=$ip"
-    echo "Set recolic-tmp.freemyip.com => $ip"
+    curl "https://dynamicdns.park-your-domain.com/update?host=rtmp&domain=7508964.xyz&password=$R_SEC_DDNS_XYZ_TOKEN&ip=$ip"
+    echo "Set rtmp.7508964.xyz => $ip"
+    #curl "https://freemyip.com/update?token=$R_SEC_FREEMYIP_TOKEN&domain=recolic-tmp.freemyip.com&myip=$ip"
+    #echo "Set recolic-tmp.freemyip.com => $ip"
 fi
