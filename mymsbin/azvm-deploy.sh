@@ -7,8 +7,8 @@ tipid="$3"
 cluster="$4"
 
 vmsize="${vmsize:=Standard_D2_v5}"
-vnet_ipv6=1
-vnet_enc=1
+vnet_ipv6=0
+vnet_enc=0
 accelnet=1
 
 prefix="${prefix:=$(head -c8 /dev/urandom | base64 -w0 | tr -d =/+)}"
