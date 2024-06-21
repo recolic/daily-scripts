@@ -19,6 +19,14 @@ Software Engineer
 
 [url]
 
+EVERY SPAMMER & PHISHER ARE USING CLOUDFLARE!!!
+
+EVERY SPAMMER & PHISHER ARE PROTECTED BY CLOUDFLARE!!!
+
+EVERY SPAMMER & PHISHER ARE USING CLOUDFLARE!!!
+
+EVERY SPAMMER & PHISHER ARE PROTECTED BY CLOUDFLARE!!!
+
 Spammer is sending phishing email with cloudflare hosted url (see evidence URL). It contains fake website (which is phishing), and also violates Marketing laws in both federal marketing law and california law.
 
 Evidence of email (original eml file) is also attached here: (sorry you dont allow uploading file, I have to use a link): https://recolic.net/tmp/$fname
