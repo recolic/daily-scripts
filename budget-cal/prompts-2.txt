@@ -1,0 +1,21 @@
+Write a javascript function. It should send http GET request to "api.php", which returns the following text:
+
+Budget used on: 2024-06-01
+Budget used on: 2024-06-02
+Budget used on: 2024-06-03
+Budget used on: 2024-06-04
+Budget used on: 2024-06-05
+
+There could be many dates.
+The javascript function should convert all these dates to a dictionary, like:
+
+var data = {2024: {06: {01: "xxx", 02: "xxx", ...} , 07: {01: "xxx", 02: "xxx", ...}}}
+
+--
+
+Current php page already have the following functions: newCost($date, $cost), newBudgetInfo($startDate, $budgetPerDay), and renderPage(). 
+
+Please forget the content of these PHP functions. Add more PHP code to call newCost() for incoming POST request like "cost=${cost}&date=${date}", call newBudgetInfo($startDate, $budgetPerDay) for POST request like "daily_budget=${cost}&starting_date=${date}", call renderPage() and print result for HTTP GET request.
+
+Please forget the content of these PHP functions. Write a javascript function into this HTML page, to call php function newCost
+

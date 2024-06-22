@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Viewport meta tag to ensure proper scaling on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--<meta name="viewport" content="width=640, initial-scale=1, user-scalable=no" />-->
+
+    <!-- Link to your stylesheet -->
+    <link href="calendarorganizer.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="calendarContainer"></div>
+    <div id="organizerContainer" style="display: none;"></div>
+
+    <!-- Stick script at the end of the body -->
+<script src="calendarorganizer.js"></script>
+    <script>
+        /* Fill with whatever your dreams desire */
+        // Basic config
+var calendar = new Calendar("calendarContainer", "small",
+                            [ "Sunday", 3 ],
+                            [ "#ffc107", "#ffa000", "#ffffff", "#ffecb3" ],
+                            {
+                                days: [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",  "Saturday" ],
+                                months: [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ],
+                                indicator:true,
+                                indicator_type: 9// recolic customized indicator_type, indicates this day's budget used.
+                                //placeholder: "<span>Custom Placeholder</span>"
+                            });
+
+var data = {
+            2024: {
+                06: {
+                    25: [
+                        {
+                            startTime: "00:00",
+                            endTime: "24:00",
+                            text: "Christmas Day"
+                        }
+                    ]
+                }
+            }
+        };
+
+var organizer = new Organizer("organizerContainer", calendar, data);
+    </script>
+</body>
+
+</html>

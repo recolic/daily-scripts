@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget.Cal</title>
+    <link rel="stylesheet" href="bulma.min.css">
+    <link rel="stylesheet" href="calendarorganizer.css" />
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <label class="label">Note: Special budget is not tracked here.</label>
+            <div class="field has-addons">
+                <div class="control">
+                    <input class="input" type="text" id="cost-input" placeholder="Enter cost">
+                </div>
+                <div class="control">
+                    <button class="button is-primary" id="submit-btn">Submit</button>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="container">
+            <div id="calendarContainer"></div>
+            <div id="organizerContainer" style="display: none;"></div>
+        </div>
+        <br />
+        <div class="container">
+            <a id='new-budget'>Start a new budget plan</a>
+        </div>
+    </section>
+
+    <script src="calendarorganizer.js"></script>
+    <script>
+        document.getElementById('submit-btn').addEventListener('click', function () {
+            const cost = document.getElementById('cost-input').value;
+            const date = new Date().toISOString().split('T')[0]; // Format date as "YYYY-MM-DD"
+            document.getElementById('submit-btn').classList.add('loading');
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', "api.php", true);
+            // xhr.open('POST', window.location.href, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log('POST request successful');
+                    document.getElementById('cost-input').value = "";
+                    location.reload(); // refresh current page
+                }
+                else if (xhr.status != 200) {
+                    alert("HTTP POST request failed.");
+                }
+            };
+            xhr.send(`cost=${cost}&date=${date}`);
+        });
+        document.getElementById('new-budget').addEventListener('click', function () {
+            // Prompt the user for daily budget and starting date
+            const dailyBudget = prompt('Enter Daily Budget:', '');
+            if (dailyBudget == "" || !dailyBudget) return;
+            const startingDate = prompt('Enter Starting Date:', new Date().toISOString().slice(0, 10));
+            if (!startingDate) return;
+            if (! /^\d{4}-\d{2}-\d{2}$/.test(startingDate)) {
+                alert("invalid starting date format.");
+                return;
+            }
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', "api.php", true);
+            // xhr.open('POST', window.location.href, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log('POST request successful');
+                    location.reload(); // refresh current page
+                }
+                else if (xhr.status != 200) {
+                    alert("HTTP POST request failed.");
+                }
+            };
+            xhr.send(`daily_budget=${dailyBudget}&starting_date=${startingDate}`);
+        });
+
+        function drawCalendar(budgetDic) {
+            var calendar = new Calendar("calendarContainer", "small",
+                                        [ "Sunday", 3 ],
+                                        [ "#ffc107", "#ffa000", "#ffffff", "#ffecb3" ],
+                                        {
+                                            days: [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",  "Saturday" ],
+                                            months: [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ],
+                                            indicator:true,
+                                            indicator_type: 9// recolic customized indicator_type, indicates this day's budget used.
+                                            //placeholder: "<span>Custom Placeholder</span>"
+                                        });
+            var organizer = new Organizer("organizerContainer", calendar, budgetDic);
+        }
+
+        function downloadBudgetData() {
+          fetch('api.php')
+            .then(response => response.text())
+            .then(data => {
+              // Split the data into lines
+              const lines = data.trim().split('\n');
+
+              // Initialize the dictionary
+              const dictionary = {};
+
+              // Process each line
+              lines.forEach(line => {
+                  try{
+                // console.log("DEBUG: line=" + line);
+                // Extract the date and text
+                const [_, _year, _month, _day] = /(\d{4})-(\d{2})-(\d{2})/.exec(line);
+                const year = Number(_year);
+                const month = Number(_month);
+                const day = Number(_day);
+
+                // Create the nested structure in the dictionary if needed
+                if (!dictionary[year]) {
+                  dictionary[year] = {};
+                }
+                if (!dictionary[year][month]) {
+                  dictionary[year][month] = {};
+                }
+
+                // Assign xxx to the corresponding date
+                dictionary[year][month][day] = [{startTime:"00:00",endTime:"24:00",text:"B"}];
+                } catch (error) {
+                    console.error('Error processing line:', error);
+                }
+              });
+              drawCalendar(dictionary);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+        }
+
+        // Draw the calendar on page load
+        // drawCalendar();
+        downloadBudgetData();
+    </script>
+</body>
+
+</html>

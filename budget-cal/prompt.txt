@@ -1,0 +1,54 @@
+write an HTML page for mobile device with the following javascript functionality:
+
+On top, it should have a textbox (for "cost" input) with a submit button. when clicking submit, it send an HTTP POST request to current webpage with argument "cost" and "date". Date format looks like "2024-01-20". Cost is the number in the textbox.
+When clicking submit, current page SHOULD NOT be refreshed (I know http form submit will do it automatically).
+
+After that, there is a calendar widget. Please just call javascript function `drawCalendar(containerId)` to draw it.
+
+--
+
+please modify the text box type to text, and use bulma css library to make page looks better.
+
+--
+
+also make the submit button appears at right of textbox
+
+====
+
+write three php function without explain, newCost(), newBudgetInfo(), and renderPage().
+
+newCost() should accept a date (in YYYY-mm-dd format) and a cost value. It store this information into a simple text file (as naive database).
+
+newBudgetInfo() should accept a "starting date" (in YYYY-mm-dd format) and a "budget per day" value. It store this information into another simple text file (as naive database).
+
+renderPage() should read all previous simple text files (as naive database). For every "newBudgetInfo", it calculates which Cost falls into this BudgetInfo range (which means, from this starting date to next budgetInfo starting date).
+It summarize all costs in this BudgetInfo range, and divide by "budget per day" value, to know how many days of budget has been used in current range. It should output all dates that "today's budget has been used or partially used". (as return value)
+
+If the cost overflows from current BudgetInfo range (which means, current BudgetInfo range dont have enough budget to cover all costs), just discard the overflowed cost value and print an debug message.
+
+--
+
+Thanks. Could you write a test function to print the result of `renderPage()` ?
+
+--
+
+if I have two budgetInfo: startingDate=2024-06-01,budget=30 ; startingDate=2024-06-05,budget=50
+
+It means: all costs from 2024-06-01 to 2024-06-05 are using the first budgetInfo, which is 30$ per day. Even if I spent all the range at 2024-06-01, you should still say "the budget of 2024-06-01 2024-06-02 2024-06-03 2024-06-04" got used.
+
+Is you renderPage() function correct?
+
+--
+
+Your renderPage() function looks better now but still not correct. Let me tell you the implementation step by step:
+
+1. read all BudgetInfo and Cost from file, and sort all of them
+2. keep track of current BudgetInfo, current usedBudget (in current range), and start iterating Costs:
+
+for every Cost, if it's not in any BudgetInfo, print an out-of-budget debug message and skip.
+check starting date to see this Cost is in next BudgetInfo range. if so, print all n dates after current budgetInfo starting date (n is usedBudget/dailyBudget), clear current usedBudget and move "current BudgetInfo" iterator. If n dates after current budgetInfo starting date already goes into next budgetInfo, it means we are out of budget, also print an debug message.
+otherwise, add cost into "current usedBudget".
+
+3. after processing all Costs, finally print all n dates after current budgetInfo starting date (n is usedBudget/dailyBudget)
+
+There might be some corner case please keep in mind.

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Page with Calendar</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <style>
+        body {
+            padding: 10px;
+        }
+        #calendar-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <div class="field has-addons">
+                <div class="control">
+                    <input class="input" type="text" id="cost-input" placeholder="Enter cost">
+                </div>
+                <div class="control">
+                    <button class="button is-primary" id="submit-btn">Submit</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            <div id="calendar-container"></div>
+        </div>
+    </section>
+
+    <script>
+        document.getElementById('submit-btn').addEventListener('click', function () {
+            const cost = document.getElementById('cost-input').value;
+            const date = new Date().toISOString().split('T')[0]; // Format date as "YYYY-MM-DD"
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', window.location.href, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log('POST request successful');
+                }
+            };
+            xhr.send(`cost=${cost}&date=${date}`);
+        });
+
+        function drawCalendar(containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '<p>Calendar Widget Placeholder</p>';
+            // Here you would replace the above line with actual calendar rendering logic
+        }
+
+        // Draw the calendar on page load
+        drawCalendar('calendar-container');
+    </script>
+</body>
+</html>
