@@ -9,13 +9,14 @@ set token_cache_file $NEXTCLOUD_PREFIX/workspace/impl/pat-token.txt
 
 function make_web_req
   hack-browser-data-linux-amd64 --dir /tmp/edgecookie -b edge 1>&2
-  and set cookie_str (cat /tmp/edgecookie/microsoft_edge_default_cookie.csv | grep msazure.visualstudio.com | cut -d , -f 3,4 | tr , = | string join '; ')
+  and set cookie_str (cat /tmp/edgecookie/microsoft_edge_*_cookie.csv | grep msazure.visualstudio.com | cut -d , -f 3,4 | tr , = | string join '; ')
   and set tokenname rauto(random)(random)
   and set validto (date --iso-8601=seconds --utc --date '6 day 12 hour' | sed 's/+00:00/Z/')
   or return 1
 
   set scope "vso.work_full vso.code_full vso.code_status vso.build_execute vso.release_manage vso.test_write vso.packaging_manage vso.buildcache_write vso.machinegroup_manage vso.drop_manage vso.entitlements vso.environment_manage vso.extension.data_write vso.extension_manage vso.graph_manage vso.project_manage vso.pipelineresources_manage vso.identity_manage vso.gallery_acquire vso.memberentitlementmanagement_write vso.notification_manage vso.threads_full vso.securefiles_manage vso.security_manage vso.serviceendpoint_manage vso.symbols_manage vso.taskgroups_manage vso.dashboards_manage"
 
+  echo "Note: if you are getting json2table json parse error, please access https://msazure.visualstudio.com/ again."
   curl 'https://msazure.visualstudio.com/_apis/Contribution/HierarchyQuery' -s \
     -H 'authority: msazure.visualstudio.com' \
     -H 'accept: application/json;api-version=5.0-preview.1;excludeUrls=true;enumsAsNumbers=true;msDateFormat=true;noArrayWrap=true' \

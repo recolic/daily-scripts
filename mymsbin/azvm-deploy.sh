@@ -11,6 +11,9 @@ vnet_ipv6=0
 vnet_enc=0
 accelnet=1
 
+# Use alternative IP range. Turn this on if you need vnet peering.
+vnet_altaddr=1
+
 prefix="${prefix:=$(head -c8 /dev/urandom | base64 -w0 | tr -d =/+)}"
 resgrp="${resgrp:=rshgrp-$prefix}"
 vmname="${vmname:=$prefix-vm}"
@@ -62,7 +65,12 @@ if [ "$tipid" != "" ]; then
     vm_create_xtra_arg+=(--availability-set "$avname")
 fi
 
+if [ "$vnet_altaddr" = 1 ]; then
+    vm_create_xtra_arg+=(--vnet-address-prefix 10.1.0.0/16 --subnet-address-prefix 10.1.0.0/24)
+fi
+
 if [ "$vnet_enc" = 1 ] || [ "$vnet_ipv6" = 1 ]; then
+    [ "$vnet_altaddr" = 1 ] && "!! WARNING! vnet_enc/vnet_ipv6 option cannot work together with vnet_altaddr. vnet_altaddr=1 ignored. If you do need this feature, plz modify the script. It's easy."
     # These advanced vnet options are not available from az-vm-create
     if ! az network vnet show -g "$resgrp" --name "$vnetname" > /dev/null 2>&1; then
         debugexec az network vnet create -g "${resgrp}" --location "${location}" --name "${vnetname}" --subnet-name default "${vnet_create_xtra_arg[@]}" || exit $?
