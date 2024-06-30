@@ -23,15 +23,17 @@
 <body>
     <section class="section">
         <div class="container">
-            <label class="label">Note: Special budget is not tracked here.</label>
-            <div class="field has-addons">
-                <div class="control">
-                    <input class="input" type="number" id="cost-input" placeholder="Enter cost">
+            <form id="submit-form" onSubmit="submitNewCostForm(); return false;">
+                <label class="label" id="notice-label">Daily Budget Tracking</label>
+                <div class="field has-addons">
+                    <div class="control">
+                        <input class="input is-large" type="number" id="cost-input" placeholder="Enter cost">
+                    </div>
+                    <div class="control">
+                        <button class="button is-primary is-large" id="submit-btn">Submit</button>
+                    </div>
                 </div>
-                <div class="control">
-                    <button class="button is-primary" id="submit-btn">Submit</button>
-                </div>
-            </div>
+            </form>
         </div>
         <br />
         <div class="container">
@@ -46,32 +48,34 @@
 
     <script src="calendarorganizer.js"></script>
     <script>
-        document.getElementById('submit-btn').addEventListener('click', function () {
+        const date_today = new Date().toISOString().split('T')[0]; // YYYY-mm-dd
+
+        // document.getElementById('submit-form').addEventListener('submit', 
+        function submitNewCostForm() {
             const cost = document.getElementById('cost-input').value;
-            const date = new Date().toISOString().split('T')[0]; // Format date as "YYYY-MM-DD"
             document.getElementById('submit-btn').classList.add('loading');
 
             const xhr = new XMLHttpRequest();
             xhr.open('POST', "api.php", true);
-            // xhr.open('POST', window.location.href, true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    console.log('POST request successful');
-                    document.getElementById('cost-input').value = "";
-                    location.reload(); // refresh current page
-                }
-                else if (xhr.status != 200) {
-                    alert("HTTP POST request failed.");
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        console.log('POST request successful');
+                        document.getElementById('cost-input').value = "";
+                        location.reload(); // refresh current page
+                    } else {
+                        alert("HTTP POST request failed.");
+                    }
                 }
             };
-            xhr.send(`cost=${cost}&date=${date}`);
-        });
+            xhr.send(`cost=${cost}&date=${date_today}`);
+        }
         document.getElementById('new-budget').addEventListener('click', function () {
             // Prompt the user for daily budget and starting date
             const dailyBudget = prompt('Enter Daily Budget:', '');
             if (dailyBudget == "" || !dailyBudget) return;
-            const startingDate = prompt('Enter Starting Date:', new Date().toISOString().slice(0, 10));
+            const startingDate = prompt('Enter Starting Date:', date_today);
             if (!startingDate) return;
             if (! /^\d{4}-\d{2}-\d{2}$/.test(startingDate)) {
                 alert("invalid starting date format.");
@@ -80,19 +84,38 @@
 
             const xhr = new XMLHttpRequest();
             xhr.open('POST', "api.php", true);
-            // xhr.open('POST', window.location.href, true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    console.log('POST request successful');
-                    location.reload(); // refresh current page
-                }
-                else if (xhr.status != 200) {
-                    alert("HTTP POST request failed.");
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        console.log('POST request successful');
+                        location.reload(); // refresh current page
+                    } else {
+                        alert("HTTP POST request failed.");
+                    }
                 }
             };
             xhr.send(`daily_budget=${dailyBudget}&starting_date=${startingDate}`);
+
         });
+        function refreshBudgetLabel() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', "api.php", true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        console.log('POST request successful');
+                       if (xhr.responseText.length < 32) {
+                           document.getElementById('notice-label').innerText = "Current Budget: $" + xhr.responseText + " /d";
+                       }
+                    } else {
+                        console.log('POST query_budget_for_date API failed. common for local test');
+                    }
+                }
+            };
+            xhr.send(`query_budget_for_date=${date_today}`);
+        }
 
         function drawCalendar(budgetDic) {
             var calendar = new Calendar("calendarContainer", "small",
@@ -120,26 +143,26 @@
 
               // Process each line
               lines.forEach(line => {
-                  try{
-                // console.log("DEBUG: line=" + line);
-                // Extract the date and text
-                const [_, _year, _month, _day] = /(\d{4})-(\d{2})-(\d{2})/.exec(line);
-                const year = Number(_year);
-                const month = Number(_month);
-                const day = Number(_day);
+                try{
+                  // console.log("DEBUG: line=" + line);
+                  // Extract the date and text
+                  const [_, _year, _month, _day] = /(\d{4})-(\d{2})-(\d{2})/.exec(line);
+                  const year = Number(_year);
+                  const month = Number(_month);
+                  const day = Number(_day);
 
-                // Create the nested structure in the dictionary if needed
-                if (!dictionary[year]) {
-                  dictionary[year] = {};
-                }
-                if (!dictionary[year][month]) {
-                  dictionary[year][month] = {};
-                }
+                  // Create the nested structure in the dictionary if needed
+                  if (!dictionary[year]) {
+                    dictionary[year] = {};
+                  }
+                  if (!dictionary[year][month]) {
+                    dictionary[year][month] = {};
+                  }
 
-                // Assign xxx to the corresponding date
-                dictionary[year][month][day] = [{startTime:"00:00",endTime:"24:00",text:"B"}];
+                  // Assign xxx to the corresponding date
+                  dictionary[year][month][day] = [{startTime:"00:00",endTime:"24:00",text:"B"}];
                 } catch (error) {
-                    console.error('Error processing line:', error);
+                    // silent discard non-date line. console.error('Error processing line:', error);
                 }
               });
               drawCalendar(dictionary);
@@ -150,6 +173,7 @@
         // Draw the calendar on page load
         // drawCalendar();
         downloadBudgetData();
+        refreshBudgetLabel();
     </script>
 </body>
 

@@ -12,6 +12,28 @@ function newBudgetInfo($startDate, $budgetPerDay) {
     file_put_contents($file, $data, FILE_APPEND);
 }
 
+function queryCurrentBudget($todayDate) {
+    // Read and parse the file
+    $filename = 'budget_info.txt';
+    $lines = file($filename, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $budgets = array_map('str_getcsv', $lines);
+
+    // Sort the array by the date (first element of each sub-array)
+    usort($budgets, function($a, $b) {  return strcmp($a[0], $b[0]);  });
+
+    // Determine the active budget
+    $activeBudget = "[N/A]";
+    foreach ($budgets as $budget) {
+        if ($todayDate >= $budget[0]) {
+            $activeBudget = $budget[1];
+        } else {
+            break;
+        }
+    }
+
+    return $activeBudget;
+}
+
 function renderPage() {
     $costsFile = 'costs.txt';
     $budgetFile = 'budget_info.txt';
@@ -138,6 +160,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $startingDate = $_POST['starting_date'];
         newBudgetInfo($startingDate, $dailyBudget);
         echo "New budget info added: $dailyBudget per day starting from $startingDate\n";
+    } elseif (isset($_POST['query_budget_for_date'])) {
+        $date = $_POST['query_budget_for_date'];
+        $res = queryCurrentBudget($date);
+        echo "$res";
     } else {
         echo "Invalid POST request\n";
     }
