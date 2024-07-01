@@ -6,13 +6,13 @@ vmcount="$2"
 tipid="$3"
 cluster="$4"
 
-vmsize="${vmsize:=Standard_D2_v5}"
+vmsize="${vmsize:=Standard_E2_v5}"
 vnet_ipv6=0
 vnet_enc=0
 accelnet=1
 
 # Use alternative IP range. Turn this on if you need vnet peering.
-vnet_altaddr=1
+vnet_altaddr=0
 
 prefix="${prefix:=$(head -c8 /dev/urandom | base64 -w0 | tr -d =/+)}"
 resgrp="${resgrp:=rshgrp-$prefix}"
@@ -52,7 +52,7 @@ function debugexec () {
     "$@" ; return $?
 }
 
-echo "Deploying $vmcount $vmsize VMs at location $location, using res_grp $resgrp, vmname $vmname, with accelnet=$accelnet, vnet_enc=$vnet_enc, vnet_ipv6=$vnet_ipv6 ..."
+echo "Deploying $vmcount $vmsize VMs at location $location, using res_grp $resgrp, vmname $vmname, with accelnet=$accelnet, vnet_enc=$vnet_enc, vnet_ipv6=$vnet_ipv6, vnet_altaddr=$vnet_altaddr ..."
 az group create -n "$resgrp" --location "$location" > /dev/null 2>&1
 
 # Create an availability set if we want deploy into TiP.
@@ -60,7 +60,7 @@ if [ "$tipid" != "" ]; then
     echo "++ Using TiP session $tipid at cluster $cluster"
 
     # `az vm availability-set create` doesn't allow setting internalData.pinnedFabricCluster, we must use the ugly ARM deployment.
-    echo "H4sIAAAAAAAAA31TTY/aMBC98ysst9K2EoTAtofurWK1Ug/bC7u9rFA1JAOZ1rEtewKiiP9eOwmw4SuJFGvem5k3H972RHjkR58VWIJ8ELJgtv5hOGwsSQkallii5gT+VQ6TzJQt5ofjdPRtkH4ZpKNhjlaZTeS9YGkVMCZ/vNEfZL/JkBnNAfyFzpPRMdEoSeO7J1hwUCIHPIDb2lbbYaWDPdiE2Ere2HiUU3akl3LXP/KUyYCb0Dd5TJbyOtxtXqYqH9RE5jmvprVsuQJHMFd4Ivx36FTsR/SLDVkYV77aPHTm0ZRAemIqzQJ0LvboE1SKO6BDkeMimgUbMRKkxZp0btZe+MyR5URow8KHwYh1AewFFyhKBB1kJuLVh5+o57aPIzvSHXpTuayW/naQfiyi6Vhb/DNlzniz4GRiSlsxDmEFpGBOingzRfay3/UES+8GPk7H94M0fKNTXjth+XZcgk93zeDvPs9O2e8m3fXYAxd8GJbd8RyQF7I/TY7JFH0U+iM/C1tvTIzZcd6dZPB/q8sJ9sV9V7TUmN+OYp2x6JjwitqrixToX/vX+aerFejjC3QKl9RpUI/AcFFAE5R0KOQJ5o6yyeGadJvWXp+ztl0ouo65IscVqGfICtLNPs66nep1T7Pervcf6ISSqr4EAAA=" | base64 -d | gzip -d > /tmp/template-avset.json
+    echo "H4sIAAAAAAAAA31TTY/aMBC98yssb6VtJUgC7WX3VrFaqYfthd1eVqgakgGmdWzLnoAo4r/XTgJs+EoixZr3Zvzma9sT4ZGffL7EEuSjkEtm6x/TtLEkJWhYYImaE/hXOUxyU7aYT0fZ8GGQfRtkw7RAq8wm8l6xtAoYkz/e6DvZb27IjeYA/kLnyeh40TDJ4rsnWHBQIgc8gNvaVtthpYM92ITYSt7YeJQTdqQXctc/8pTJgZvQN3lMloo63G1eriof1ETmOa+mtWy5AkcwU3gi/HeoVKxH9IsFmRtXvtkiVObJlEB6bCrNAnQh9ugzVIo7oENR4DyaBRsxFKTFmnRh1l743JHlRGjDwofGiPUS2AteoigRdJCZiDcffqLu2z6O7Eh36E3l8lr6+0H6MYmmYm3yL5Q7482ck7EpbcWYwgpIwYwU8WaC7GW/6wmWPjR8lI2+DrLwDU95bYfl+3EIPt83jb//Mj1lf+h012MPXPBhWHTbc0Beyf40BSYT9FHoj+IsbD0xMWbHeXdyg/9bXb5gn9x3RQuNxe0o1hmLjgmvqL02KvVCnSTdcTibvKseFBbVaVBPwHBRRBOXdEjmGWaO8vFhVbqFa1forHQXEq9jrshxBeoF8iXpZian3Wr1uqdpb9f7D7e+f03CBAAA" | base64 -d | gzip -d > /tmp/template-avset.json
     debugexec az deployment group create -g "$resgrp" --template-file /tmp/template-avset.json --parameters "avname=$avname" "location=$location" "tipid=$tipid" "cluster=$cluster" || exit $?
     vm_create_xtra_arg+=(--availability-set "$avname")
 fi
