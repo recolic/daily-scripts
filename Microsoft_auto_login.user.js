@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Microsoft auto login
 // @namespace    https://recolic.net/
-// @version      0.10.1
+// @version      0.10.2
 // @description  Login MS account by simulating user interaction. Works for microsoft CORP account, works perfectly with automatic 2-step phone auth.
 // @author       Recolic Keghart <root@recolic.net>
 // @license      MIT
@@ -84,6 +84,13 @@ function is_signin_email_page () {
     }
 }
 function do_signin_email_page () {
+    if (document.getElementById('loginHeader') != null && document.getElementById('loginHeader').innerHTML.includes('Enter password')) {
+        // 202406 update: password input moved here
+        document.getElementById('i0118').value = MY_PASSWORD;
+        document.getElementById('i0118').dispatchEvent(new Event("change"))
+        document.getElementById('idSIButton9').click();
+        return;
+    }
     document.getElementsByName('loginfmt')[0].value = MY_EMAIL;
     document.getElementsByName('loginfmt')[0].dispatchEvent(new Event("change"));
     document.getElementById('idSIButton9').click();
