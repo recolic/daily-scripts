@@ -20,6 +20,7 @@ lanbox|recolic|$R_SEC_WEAK10|10.100.100.101:30473
 cnbox|recolic|$R_SEC_WEAK10|proxy-cdn.recolic.net:30625
 host16|local\Administrator|$R_SEC_OVL_HOST_RDP|10.10.18.31
 host18|local\Administrator|$R_SEC_OVL_HOST_RDP|10.10.18.29
+host32|local\Administrator|$R_SEC_OVL_HOST_RDP|10.10.10.94
 host1030|local\Administrator|$R_SEC_OVL_HOST_RDP|10.10.10.37
 host2021|local\Administrator|$R_SEC_OVL_HOST_RDP|10.10.15.30
 kedardbg|local\Administrator|$R_SEC_OVL_HOST_RDP|10.10.12.79
