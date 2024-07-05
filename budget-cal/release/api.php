@@ -164,6 +164,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $date = $_POST['query_budget_for_date'];
         $res = queryCurrentBudget($date);
         echo "$res";
+    } elseif (isset($_POST['query_spec_url'])) {
+        $res = file_get_contents("spec_url.txt");
+        if ($res === false) {die("read spec_url.txt failed");}
+        else {echo "$res";}
     } else {
         echo "Invalid POST request\n";
     }

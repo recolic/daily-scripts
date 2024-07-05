@@ -42,6 +42,7 @@
         </div>
         <br />
         <div class="container">
+            <a href="" id="url-spec-budget"></a>
             <a id='new-budget'>Start a new budget plan</a>
         </div>
     </section>
@@ -116,6 +117,24 @@
             };
             xhr.send(`query_budget_for_date=${date_today}`);
         }
+        function refreshSpecUrl() {
+            const idd = "url-spec-budget";
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', "api.php", true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        console.log('POST request successful');
+                        document.getElementById('url-spec-budget').innerHTML = "Spec Budget Tracking<br />";
+                        document.getElementById('url-spec-budget').href = xhr.responseText;
+                    } else {
+                        console.log('POST query_budget_for_date API failed. common for local test');
+                    }
+                }
+            };
+            xhr.send(`query_spec_url=1`);
+        }
 
         function drawCalendar(budgetDic) {
             var calendar = new Calendar("calendarContainer", "small",
@@ -174,6 +193,7 @@
         // drawCalendar();
         downloadBudgetData();
         refreshBudgetLabel();
+        refreshSpecUrl();
     </script>
 </body>
 
