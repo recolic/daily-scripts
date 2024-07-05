@@ -16,7 +16,7 @@ function make_web_req
 
   set scope "vso.work_full vso.code_full vso.code_status vso.build_execute vso.release_manage vso.test_write vso.packaging_manage vso.buildcache_write vso.machinegroup_manage vso.drop_manage vso.entitlements vso.environment_manage vso.extension.data_write vso.extension_manage vso.graph_manage vso.project_manage vso.pipelineresources_manage vso.identity_manage vso.gallery_acquire vso.memberentitlementmanagement_write vso.notification_manage vso.threads_full vso.securefiles_manage vso.security_manage vso.serviceendpoint_manage vso.symbols_manage vso.taskgroups_manage vso.dashboards_manage"
 
-  echo "Note: if you are getting json2table json parse error, please access https://msazure.visualstudio.com/ again."
+  echo "Note: if you are getting json2table json parse error, please access https://msazure.visualstudio.com/ again." 1>&2
   curl 'https://msazure.visualstudio.com/_apis/Contribution/HierarchyQuery' -s \
     -H 'authority: msazure.visualstudio.com' \
     -H 'accept: application/json;api-version=5.0-preview.1;excludeUrls=true;enumsAsNumbers=true;msDateFormat=true;noArrayWrap=true' \
