@@ -126,7 +126,7 @@
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
                         console.log('POST request successful');
-                        document.getElementById('url-spec-budget').innerHTML = "Spec Budget Tracking<br />";
+                        document.getElementById('url-spec-budget').innerHTML = "SPEC Budget Tracking<br />";
                         document.getElementById('url-spec-budget').href = xhr.responseText;
                     } else {
                         console.log('POST query_budget_for_date API failed. common for local test');
