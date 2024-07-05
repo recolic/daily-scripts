@@ -166,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "$res";
     } elseif (isset($_POST['query_spec_url'])) {
         $res = file_get_contents("spec_url.txt");
-        if ($res === false) {die("read spec_url.txt failed");}
+        if ($res === false) {echo "read spec_url.txt failed";http_response_code(500);}
         else {echo "$res";}
     } else {
         echo "Invalid POST request\n";
