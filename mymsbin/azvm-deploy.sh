@@ -8,7 +8,7 @@ cluster="$4"
 
 vmsize="${vmsize:=Standard_E2_v5}"
 vnet_ipv6=0
-vnet_enc=0
+vnet_enc=1
 accelnet=1
 
 # Use alternative IP range. Turn this on if you need vnet peering.
@@ -53,7 +53,11 @@ function debugexec () {
 }
 
 echo "Deploying $vmcount $vmsize VMs at location $location, using res_grp $resgrp, vmname $vmname, with accelnet=$accelnet, vnet_enc=$vnet_enc, vnet_ipv6=$vnet_ipv6, vnet_altaddr=$vnet_altaddr ..."
-az group create -n "$resgrp" --location "$location" > /dev/null 2>&1
+
+# Create RG if not exists.
+if ! az group show -g "$resgrp"; then
+    az group create -n "$resgrp" --location "$location" > /dev/null 2>&1
+fi
 
 # Create an availability set if we want deploy into TiP.
 if [ "$tipid" != "" ]; then
@@ -67,10 +71,10 @@ fi
 
 if [ "$vnet_altaddr" = 1 ]; then
     vm_create_xtra_arg+=(--vnet-address-prefix 10.1.0.0/16 --subnet-address-prefix 10.1.0.0/24)
+    vnet_create_xtra_arg+=(--address-prefixes 10.1.0.0/16 --subnet-prefixes 10.1.0.0/24)
 fi
 
 if [ "$vnet_enc" = 1 ] || [ "$vnet_ipv6" = 1 ]; then
-    [ "$vnet_altaddr" = 1 ] && "!! WARNING! vnet_enc/vnet_ipv6 option cannot work together with vnet_altaddr. vnet_altaddr=1 ignored. If you do need this feature, plz modify the script. It's easy."
     # These advanced vnet options are not available from az-vm-create
     if ! az network vnet show -g "$resgrp" --name "$vnetname" > /dev/null 2>&1; then
         debugexec az network vnet create -g "${resgrp}" --location "${location}" --name "${vnetname}" --subnet-name default "${vnet_create_xtra_arg[@]}" || exit $?
