@@ -11,7 +11,7 @@ vnet_ipv6=0
 vnet_enc=1
 accelnet=1
 
-# Use alternative IP range. Turn this on if you need vnet peering.
+# Use alternative IP range. Set a non-zero number (1-253) if you need vnet peering. Will be part of LAN addr.
 vnet_altaddr=0
 
 prefix="${prefix:=$(head -c8 /dev/urandom | base64 -w0 | tr -d =/+)}"
@@ -48,11 +48,11 @@ vnet_create_xtra_arg=()
 ## all args ready to go!
 
 function debugexec () {
-    echo "EXEC #" "$@" 1>&2
+    echo ".. EXEC #" "$@" 1>&2
     "$@" ; return $?
 }
 
-echo "Deploying $vmcount $vmsize VMs at location $location, using res_grp $resgrp, vmname $vmname, with accelnet=$accelnet, vnet_enc=$vnet_enc, vnet_ipv6=$vnet_ipv6, vnet_altaddr=$vnet_altaddr ..."
+echo "II Deploying $vmcount $vmsize VMs at location $location, using res_grp $resgrp, vmname $vmname, with accelnet=$accelnet, vnet_enc=$vnet_enc, vnet_ipv6=$vnet_ipv6, vnet_altaddr=$vnet_altaddr ..."
 
 # Create RG if not exists.
 if ! az group show -g "$resgrp" > /dev/null 2>&1; then
@@ -69,9 +69,11 @@ if [ "$tipid" != "" ]; then
     vm_create_xtra_arg+=(--availability-set "$avname")
 fi
 
-if [ "$vnet_altaddr" = 1 ]; then
-    vm_create_xtra_arg+=(--vnet-address-prefix 10.1.0.0/16 --subnet-address-prefix 10.1.0.0/24)
-    vnet_create_xtra_arg+=(--address-prefixes 10.1.0.0/16 --subnet-prefixes 10.1.0.0/24)
+if [ "$vnet_altaddr" != 0 ]; then
+    vnet_iprange=10.$vnet_altaddr.0.0
+    echo "++ alt_addr: vnet IP range $vnet_iprange"
+    vm_create_xtra_arg+=(--vnet-address-prefix $vnet_iprange/16 --subnet-address-prefix $vnet_iprange/24)
+    vnet_create_xtra_arg+=(--address-prefixes $vnet_iprange/16 --subnet-prefixes $vnet_iprange/24)
 fi
 
 if [ "$vnet_enc" = 1 ] || [ "$vnet_ipv6" = 1 ]; then
