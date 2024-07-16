@@ -55,8 +55,8 @@ function debugexec () {
 echo "Deploying $vmcount $vmsize VMs at location $location, using res_grp $resgrp, vmname $vmname, with accelnet=$accelnet, vnet_enc=$vnet_enc, vnet_ipv6=$vnet_ipv6, vnet_altaddr=$vnet_altaddr ..."
 
 # Create RG if not exists.
-if ! az group show -g "$resgrp"; then
-    az group create -n "$resgrp" --location "$location" > /dev/null 2>&1
+if ! az group show -g "$resgrp" > /dev/null 2>&1; then
+    debugexec az group create -n "$resgrp" --location "$location" > /dev/null 2>&1
 fi
 
 # Create an availability set if we want deploy into TiP.
