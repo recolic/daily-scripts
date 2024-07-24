@@ -36,7 +36,7 @@ function make_web_req
     -H 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0' \
     -H 'x-tfs-session: 1df1a27d-1cc2-4735-b8a6-e345c8e0cbe7' \
     -H 'x-vss-reauthenticationaction: Suppress' \
-    --data-raw '{"contributionIds":["ms.vss-token-web.personal-access-token-issue-session-token-provider"],"dataProviderContext":{"properties":{"displayName":"'$tokenname'","validTo":"'$validto'","scope":"'$scope'","targetAccounts":["41bf5486-7392-4b7a-a7e3-a735c767e3b3"],"sourcePage":{"url":"https://msazure.visualstudio.com/_usersSettings/tokens","routeId":"ms.vss-admin-web.user-admin-hub-route","routeValues":{"adminPivot":"tokens","controller":"ContributedPage","action":"Execute","serviceHost":"41bf5486-7392-4b7a-a7e3-a735c767e3b3 (msazure)"}}}}}' | json2table /dataProviders/ms.vss-token-web.personal-access-token-issue-session-token-provider/token -p
+    --data-raw '{"contributionIds":["ms.vss-token-web.personal-access-token-issue-session-token-provider"],"dataProviderContext":{"properties":{"displayName":"'$tokenname'","validTo":"'$validto'","scope":"'$scope'","targetAccounts":["41bf5486-7392-4b7a-a7e3-a735c767e3b3"],"sourcePage":{"url":"https://msazure.visualstudio.com/_usersSettings/tokens","routeId":"ms.vss-admin-web.user-admin-hub-route","routeValues":{"adminPivot":"tokens","controller":"ContributedPage","action":"Execute","serviceHost":"41bf5486-7392-4b7a-a7e3-a735c767e3b3 (msazure)"}}}}}' | tee /dev/stderr | json2table /dataProviders/ms.vss-token-web.personal-access-token-issue-session-token-provider/token -p
   return $status
 end
 
