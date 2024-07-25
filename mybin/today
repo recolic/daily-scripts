@@ -1,0 +1,24 @@
+#!/bin/python -u
+from datetime import datetime
+
+def day_to_code(day):
+    """Convert the day of the month to the appropriate code."""
+    if 1 <= day <= 9:
+        return str(day)
+    else:
+        return chr(ord('a') + (day - 10))
+
+def code_of_today():
+    """Prints the code of today in the format MDD -> M<day_code>."""
+    today = datetime.now()
+    day = today.day
+    month = today.month
+
+    day_code = day_to_code(day)
+    today_str = f"{month}{day:02d}"
+    today_code = f"{month:01d}{day_code}"
+
+    print(f"{today_str} -> {today_code}")
+
+# Run the function
+code_of_today()
