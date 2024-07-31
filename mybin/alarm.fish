@@ -39,7 +39,7 @@ set prefix (dirname (status --current-filename))
 
 while true
     if should_trigger
-        pactl set-sink-volume 0 110%
+        env XDG_RUNTIME_DIR=/run/user/(id -u) pactl set-sink-volume 0 110%
         env XDG_RUNTIME_DIR=/run/user/(id -u) mpg123 $prefix/alarm.mp3 > /dev/null 2>&1
     end
     sleep 2
