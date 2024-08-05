@@ -24,7 +24,7 @@ if test (count $argv) != 0
     bash $real_script_path $argv
     exit $status
 else
-    # Init operation has side effects. Carefully evaluate it. 
+    # Init operation has side effects. Carefully eval & launch a new shell.
 
     # We must do the init within a specific CWD. Warning: The path MUST NOT contain single-quote character. 
     set simulated_workdir "$script_dir/.."

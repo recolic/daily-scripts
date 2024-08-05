@@ -1,0 +1,38 @@
+#!/bin/bash
+
+_self_bin_name="$0"
+function where_is_him () {
+    SOURCE="$1"
+    while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+        DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+        SOURCE="$(readlink "$SOURCE")"
+        [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+    done
+    DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+    echo -n "$DIR"
+}
+function where_am_i () {
+    _my_path=`type -p ${_self_bin_name}`
+    [[ "$_my_path" = "" ]] && where_is_him "$_self_bin_name" || where_is_him "$_my_path"
+}
+
+[[ $2 = '' ]] && echo "Usage: $0 <sm/vfp> <branch_name>" && exit 1
+cd `where_am_i`
+
+if [[ $1 = sm ]]; then
+    _repo_nm=Networking-Datapath-HostSdnStack-SMAgent
+    # repo id: 12e0c399-4e80-42b6-aff2-dc693505d5f7
+elif [[ $1 = vfp ]]; then
+    _repo_nm=Networking-Datapath-HostSdnStack-VFP
+else
+    echo "ERROR: unknown repo $1"
+    exit 1
+fi
+
+./apply.sh --org-url https://msazure.visualstudio.com --proj-name One --repo-name "$_repo_nm" --branch "$2" --pipeline-name Overlake-Build-PullRequest # okay if this pipeline-name is outdated
+
+echo "If it's not working, make sure your PAT has FULL permission to EVERYTHING!!!"
+echo "Build at"
+echo "    https://dev.azure.com/msazure/One/_build?definitionId=352739&_a=summary"
+microsoft-edge-stable --disable-features=msUndersideButton "https://dev.azure.com/msazure/One/_build?definitionId=352739&_a=summary"
+

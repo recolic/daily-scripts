@@ -1,5 +1,4 @@
 #!/bin/bash
 # Set annoying review pocily for SMA branch in one click
 
-cd /home/recolic/sh/azure-build-policy-apply
-"./smpolicy" "$@"
+"/home/recolic/sh/azure-build-policy-apply/oespolicy" "$@"
