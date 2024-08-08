@@ -8,6 +8,9 @@
 from usim800 import sim800
 import sys
 
+import codecs
+codecs.register_error("strict", codecs.ignore_errors)
+
 def sms_get_or_del(get_or_del):
     # Param: True for get, False for del
     # Return: message
