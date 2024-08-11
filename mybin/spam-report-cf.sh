@@ -3,10 +3,13 @@
 eml="$1"
 [ "$eml" = "" ] && echo "Usage: $0 path/to/export.eml" && exit 1
 
-fname="phish-evidence-$RANDOM$RANDOM.eml"
-mv "$1" "/tmp/$fname"
+[ -d "$HOME/tmp" ] && tmpdir="$HOME/tmp" || tmpdir=/tmp
 
-netpush "/tmp/$fname"
+fname_b="phish-evidence-$RANDOM$RANDOM.eml"
+fname="$tmpdir/$fname_b"
+mv "$1" "$fname"
+
+netpush "$fname"
 
 echo "
 1 - Report Hosting Provider >>    https://abuse.cloudflare.com/phishing
@@ -29,7 +32,7 @@ EVERY SPAMMER & PHISHER ARE PROTECTED BY CLOUDFLARE!!!
 
 Spammer is sending phishing email with cloudflare hosted url (see evidence URL). It contains fake website (which is phishing), and also violates Marketing laws in both federal marketing law and california law.
 
-Evidence of email (original eml file) is also attached here: (sorry you dont allow uploading file, I have to use a link): https://recolic.net/tmp/$fname
+Evidence of email (original eml file) is also attached here: (sorry you dont allow uploading file, I have to use a link): https://recolic.net/tmp/$fname_b
 >>>>>>>>>>>>>>>>>>
 [ABUSE] Phishing website hosted with your IP address []
 
@@ -43,9 +46,10 @@ Evidence URL is hosting phishing website with your IP address: []
 >>>>>>>>>>>>>>>>>>
 "
 
-echo "2 - Report sender IP >>    https://ipinfo.io"
-grep 'Received: from' /tmp/$fname | grep -v 127.0.0.1
-senderip=`grep 'Received: from' /tmp/$fname | grep -v 127.0.0.1 | grep -Eo '[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+'`
+grep 'Received: from' $fname | grep -v 127.0.0.1
+senderip=`grep 'Received: from' $fname | grep -v 127.0.0.1 | grep -Eo '[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+'`
+
+echo "2 - Report sender IP >>    https://ipinfo.io/$senderip"
 
 echo "
 >>>>>>>>>>>>>>>>>>
@@ -53,10 +57,10 @@ echo "
 >>>>>>>>>>>>>>>>>>
 Phishing email sent from your IP address $senderip. It contains fake website (which is phishing), and also violates Marketing laws in both federal marketing law and california law.
 
-Evidence of phishing email attached at https://recolic.net/tmp/$fname.
+Evidence of phishing email attached at https://recolic.net/tmp/$fname_b
 
 PLEASE ban the fukking phisher.
 >>>>>>>>>>>>>>>>>>
-(attach file /tmp/$fname)
+(attach file $fname)
 "
 
