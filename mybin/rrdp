@@ -60,7 +60,11 @@ else if test $XDG_SESSION_TYPE = wayland
     set w (echo $resolution | cut -d x -f 1 | grep -o '[0-9]*')
     set h (math (echo $resolution | cut -d x -f 2 | grep -o '[0-9]*')-50)
     # For wayland, fullscreen is acceptable because shortcuts are not captured on deny
-    set rdp wlfreerdp
+    if which wlfreerdp
+        set rdp wlfreerdp
+    else
+        set rdp wlfreerdp3
+    end
 else
     die "Unknown XDG_SESSION_TYPE $XDG_SESSION_TYPE"
 end
