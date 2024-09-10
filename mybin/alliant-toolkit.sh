@@ -31,18 +31,35 @@ function csv2html () {
     echo "</table>"
 }
 
+function prev_month () {
+    local database_="
+feb:jan
+mar:feb
+apr:mar
+may:apr
+jun:may
+jul:jun
+aug:jul
+sep:aug
+oct:sep
+nov:oct
+dec:nov
+jan:dec"
+    echo "$database_" | grep -i "^$1:" | cut -d : -f 2 | tr 'a-z' 'A-Z' || return 1
+}
+
 function alliant_csv_filter () {
     #!/bin/bash
     what=$1
-    fname="$2"
+    l_fname="$2"
     
     [[ $1 = "" ]] || [[ $2 = "" ]] && echo "Usage: $0 <CN/other> <fname>" && exit 1
     
     if [[ $what = CN ]]; then
-        cat "$fname" | grep '^Date' # title line
-        cat "$fname" | grep -E 'CN"|(CN *|ALP.*)CREDIT"'
+        cat "$l_fname" | grep '^Date' # title line
+        cat "$l_fname" | grep -E 'CN"|(CN *|ALP.*)CREDIT"'
     elif [[ $what = other ]]; then
-        cat "$fname" | grep -vE 'CN"|(CN *|ALP.*)CREDIT"' | grep -v PAYMENT-ONLINE
+        cat "$l_fname" | grep -vE 'CN"|(CN *|ALP.*)CREDIT"' | grep -v PAYMENT-ONLINE
     else
         echo "Usage: $0 <CN/other> <fname>" && exit 1
     fi
@@ -81,7 +98,7 @@ function alliant_oneclick () {
 Prog Usage:
 1. Export Alliant 60d history as CSV file
 2. Download Alliant statement
-3. Delete all unrelated Tx from CSV file, save as 1.csv
+3. Delete all unrelated Tx from CSV file (DO NOT delete the title line)
 4. Run this script like
      alliant_oneclick 1.csv JUN 7000
 5. Send resulting HTML as email
@@ -98,6 +115,7 @@ Prog Usage:
     usd_cny_rate=`curl -s https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json | jq .usd.cny` || usd_cny_rate=7.1
     disct_cost_cny=`python -c "print('%i' % ($disct_cost_usd * $usd_cny_rate))"` || return 1
     final_bud_cny=`python -c "print($budget_cny - $disct_cost_cny)"` || return 1
+    prev_month=`prev_month "$month"` || ! echo "invalid month" || return 1
 
     ## Prep output
     echo "
@@ -117,6 +135,7 @@ After applying 2.5% cashback, you need to pay $total_cost_usd * 0.975 = $disct_c
 $disct_cost_usd USD ($disct_cost_cny CNY) will be deduced from your $month budget.  
 **Your $month budget is $final_bud_cny CNY** , which will be paid through cash.
 
+Please be aware that this is an auto-generated email, and there may be unintentional errors.  
 Thanks for using Recolic Payment Service.
 " | md2html > /tmp/.alliant-h3.html
 
@@ -128,11 +147,15 @@ Thanks for using Recolic Payment Service.
 </footer>' > /tmp/.alliant-h4.html
     
     cat /tmp/.alliant-h1.html /tmp/.alliant-h2.html /tmp/.alliant-h3.html /tmp/.alliant-h4.html > /tmp/.alliant-all.html
+    cp /tmp/.alliant-1.csv /tmp/river-statement-$prev_month.csv
 
     echo ">>>
-EMAIL DONE: /tmp/.alliant-all.html
+EMAIL DONE:
+  Title:  Your $prev_month Statement and $month Budget
+  Content:    /tmp/.alliant-all.html
+  Attachment: /tmp/river-statement-$prev_month.csv
 >>>
-Please also check non-CNY cost: /tmp/.alliant-other.csv"
+Also check non-CNY cost: /tmp/.alliant-other.csv"
 }
 
 "$@"
