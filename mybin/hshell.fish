@@ -1,22 +1,33 @@
 #!/bin/fish
 echo '
-function h
-    set nfsdir $HOME/nfs
-    if not test -d $nfsdir/.henc
-        echo "Error: $nfsdir/.henc not exist"
+function _secret_mount
+    set encfsdir $argv[1]
+    set mountdir $argv[2]
+    set pswd_seed $argv[3]
+    set envname $argv[4]
+
+    if not test -d $encfsdir
+        echo "Error: $encfsdir not exist"
         return 1
     end
-    set mountdir /tmp/hshell.mount # Firefox want fixed data directory
-    mkdir -p $mountdir
-    echo "++ Mount $nfsdir/.henc to $mountdir..."
-    encfs --extpass="genpasswd .henc" $nfsdir/.henc $mountdir
-    or return $status
+    mkdir -p $mountdir ; or return $status
+    echo "++ Mount $encfsdir to $mountdir..."
+    encfs --extpass="genpasswd $pswd_seed" $encfsdir $mountdir ; or return $status
 
-    env RECOLIC_ENV_NAME=HSHELL_NFS fish --private -C "cd $mountdir"
+    env "RECOLIC_ENV_NAME=$envname" fish --private -C "cd $mountdir"
 
     echo "-- umount $mountdir..."
     sudo umount -l -f $mountdir
     rmdir $mountdir
+end
+
+function h
+    # Firefox want fixed data directory (mountdir)
+    _secret_mount $HOME/nfs/.henc /tmp/hshell.mount .henc HSHELL_NFS
+end
+
+function rbackup
+    _secret_mount $HOME/nfs/backups_enc /tmp/.rbackup.mount backups_enc HSHELL_RB
 end
 
 function m

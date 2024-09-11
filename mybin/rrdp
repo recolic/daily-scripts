@@ -63,7 +63,8 @@ else if test $XDG_SESSION_TYPE = wayland
     if which wlfreerdp
         set rdp wlfreerdp
     else
-        set rdp wlfreerdp3
+        set rdp sdl-freerdp3
+        set h (math $h-50)
     end
 else
     die "Unknown XDG_SESSION_TYPE $XDG_SESSION_TYPE"
