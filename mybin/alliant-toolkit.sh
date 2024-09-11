@@ -150,7 +150,7 @@ Thanks for using Recolic Payment Service.
     cp /tmp/.alliant-1.csv /tmp/river-statement-$prev_month.csv
 
     echo ">>>
-EMAIL DONE:
+EMAIL DONE! (Use Thunderbird -> Insert -> HTML)
   Title:  Your $prev_month Statement and $month Budget
   Content:    /tmp/.alliant-all.html
   Attachment: /tmp/river-statement-$prev_month.csv
