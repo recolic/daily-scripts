@@ -64,6 +64,7 @@ else if test $XDG_SESSION_TYPE = wayland
         set rdp wlfreerdp
     else
         set rdp xfreerdp3
+        set h (math $h-50)
         # clipboard doesnt work in wlfreerdp3 sdl-freerdp3
     end
 else

@@ -26,22 +26,27 @@ function h
     _secret_mount $HOME/nfs/.henc /tmp/hshell.mount .henc HSHELL_NFS
 end
 
-function rbackup
-    _secret_mount $HOME/nfs/backups_enc /tmp/.rbackup.mount backups_enc HSHELL_RB
+function rb
+    mount | grep C2_M ; and echo "Dangerous: C2_M already mounted" ; and return 1
+
+    rm -rf /tmp/.rbackup.mount ; mkdir -p /tmp/.rbackup.mount/C2_M
+    ln -s $HOME/nfs/backups/I2 /tmp/.rbackup.mount/
+    ln -s $HOME/nfs/backups/MX /tmp/.rbackup.mount/
+    _secret_mount $HOME/nfs/backups/C2_M /tmp/.rbackup.mount/C2_M C2_M HSHELL_RB
 end
 
-function m
-    set mountdir (mktemp -d)
-    echo "++ Mount DRIVE to $mountdir..."
-    sudo mount --uuid f4a5b62c-1a98-4ae4-b121-cd8b06cff603 $mountdir
-    or return $status
-
-    env RECOLIC_ENV_NAME=HSHELL_M fish --private -C "cd $mountdir"
-
-    echo "-- umount $mountdir..."
-    sudo umount -l -f $mountdir
-    rmdir $mountdir
-end
+# function m
+#     set mountdir (mktemp -d)
+#     echo "++ Mount DRIVE to $mountdir..."
+#     sudo mount --uuid f4a5b62c-1a98-4ae4-b121-cd8b06cff603 $mountdir
+#     or return $status
+# 
+#     env RECOLIC_ENV_NAME=HSHELL_M fish --private -C "cd $mountdir"
+# 
+#     echo "-- umount $mountdir..."
+#     sudo umount -l -f $mountdir
+#     rmdir $mountdir
+# end
 ' > /tmp/.hs.fish
 
 env RECOLIC_ENV_NAME=HSHELL fish --private -C 'source /tmp/.hs.fish'
