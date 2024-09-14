@@ -1,6 +1,7 @@
 # secure v2ray docker image, with vless
 # 
 # sudo docker build -t recolic/secure-v2ray .
+# WARNING: If redirecting 443 to other port, you must pass 80 instead, for TLS cert verification.
 # sudo docker run -d --restart always --log-opt max-size=1M --name rv -p 443:443 -e DOMAIN=cheap.my-domain.com -e SECRET_UUID=ec0cba37-926d-4386-b8c1-0a71c06bcebd recolic/secure-v2ray
 # sudo docker run -d --restart always --log-opt max-size=1M --name rv -p 443:443 -e DOMAIN=cheap.my-domain.com -e SECRET_UUID=ec0cba37-926d-4386-b8c1-0a71c06bcebd -e PROXY_PASS=https://azure.microsoft.com/zh-cn recolic/secure-v2ray
 from ubuntu:22.04
