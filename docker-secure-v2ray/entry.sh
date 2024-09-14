@@ -22,7 +22,18 @@ timeouts none
         websocket
     }
 }
-" > /tmp/caddy.config
+" > /tmp/caddyfile_v1
+
+echo "
+{
+    encode gzip
+	handle_path /teams {
+		reverse_proxy /teams 127.0.0.1:10000
+	}
+    reverse_proxy $pp
+    # TODO: timeouts none
+}
+" > /tmp/caddyfile_v2
 
 echo "
 Link:
@@ -32,5 +43,6 @@ Link:
 "
 
 # nginx # background
-caddyserver start --config /tmp/caddy.config # background
+# caddy2 start --config /tmp/caddyfile_v2 # background
+caddy1  -conf /tmp/caddyfile_v1 -email stupid$RANDOM@shit$RANDOM.com -agree &
 v2ray -config /app/naive-vless-server.json
