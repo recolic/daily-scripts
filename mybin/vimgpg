@@ -1,0 +1,32 @@
+#!/bin/bash
+
+function die () {
+    [[ -f "$tmpfname" ]] && rm -f "$tmpfname"
+    echo "ERROR:" "$@" 1>&2
+    exit 1
+}
+
+fname="$1"
+[[ $fname = "" ]] && die "Usage: $0 <fname.gpg>"
+
+tmpfname_=`echo "$fname" | sha256sum | head -c 10` || die
+tmpfname="/tmp/.$tmpfname_.tmp"
+
+gpg -d "$fname" > "$tmpfname" || die "gpg decrypt fail"
+
+hash1=`sha256sum "$tmpfname"` || die
+vim "$tmpfname"
+hash2=`sha256sum "$tmpfname"` || die "out file unaccessible"
+grep . "$tmpfname" > /dev/null || die "empty out file"
+
+if [[ "$hash1" != "$hash2" ]]; then
+    echo "Writing output file..." 1>&2
+    gpg --yes --encrypt -a -o "$fname.backupnew" -r root@recolic.net "$tmpfname" || die "failed to encrypt output file"
+    mv "$fname.backupnew" "$fname" || die "failed to write output file. ref: $fname.backupnew"
+else
+    echo "file unchanged" 1>&2
+fi
+
+rm -f "$tmpfname"
+echo DONE 1>&2
+
