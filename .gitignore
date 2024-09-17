@@ -11,3 +11,5 @@ config/vim/.netrwhist
 recolic.net-mirrors-sync-dev/mirrors/recolic-aur/*
 test.exe
 
+*.git-ignored
+

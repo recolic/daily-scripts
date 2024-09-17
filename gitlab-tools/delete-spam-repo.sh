@@ -1,8 +1,9 @@
 # gitlab cleanup spam repos
 
 # this token has already expired. dont waste time try.
-token=glpat-1148aapc8XeMRh67amDH
+token="$glpat"
 regex='/.*[^0-9][0-9][0-9][0-9][0-9].git$'
+[[ $token = "" ]] && echo ERROR MISSING TOKEN && exit 1
 
 echo > /tmp/.list
 for i in {1..100}; do
