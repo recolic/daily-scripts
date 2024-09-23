@@ -1,5 +1,6 @@
 #!/bin/fish
 # version 1.03: allows setting env target_line
+# version 1.04: if target_name starts with @, it is ssh target (customize port not supported yet). Allows bash command in password.
 
 function die
     echo $argv 1>&2
@@ -27,6 +28,7 @@ host2021|local\Administrator|$R_SEC_OVL_HOST_RDP|10.10.15.30
 kedardbg|local\Administrator|$R_SEC_OVL_HOST_RDP|10.10.12.79
 kedardbg2|local\Administrator|$R_SEC_OVL_HOST_RDP|10.10.12.80
 tmpvsbox|recolic|$R_SEC_WEAK10|localhost:30477
+@openwrt|root|sh://genpasswd 10.100.100.1|10.100.100.1
 "
 
 if test $target = help
@@ -44,44 +46,58 @@ set user (echo $target_line | cut -d '|' -f 2)
 set pass (echo $target_line | cut -d '|' -f 3)
 set host (echo $target_line | cut -d '|' -f 4)
 
-if test $XDG_SESSION_TYPE = x11
-    set resolution (xrandr | grep -o 'current [0-9]* x [0-9]*')
-    set w (echo $resolution | cut -d x -f 1 | grep -o '[0-9]*')
-    set h (math (echo $resolution | cut -d x -f 2 | grep -o '[0-9]*')-100)
-    # current 1920 x 1080
-    if which xfreerdp
-        set rdp xfreerdp
-    else
-        set rdp xfreerdp3
-    end
-else if test $XDG_SESSION_TYPE = wayland
-    # Xwayland is also working
-    set resolution (xrandr | grep -o 'current [0-9]* x [0-9]*')
-    set w (echo $resolution | cut -d x -f 1 | grep -o '[0-9]*')
-    set h (math (echo $resolution | cut -d x -f 2 | grep -o '[0-9]*')-50)
-    # For wayland, fullscreen is acceptable because shortcuts are not captured on deny
-    if which wlfreerdp
-        set rdp wlfreerdp
-    else
-        set rdp xfreerdp3
-        set h (math $h-50)
-        # clipboard doesnt work in wlfreerdp3 sdl-freerdp3
-    end
-else
-    die "Unknown XDG_SESSION_TYPE $XDG_SESSION_TYPE"
+if string match "sh://*" $pass
+    # need to expand password
+    set pass_command (echo $pass | sed 's|sh://||')
+    set pass (bash -c "$pass_command")
+    or exit $status
 end
 
-if string match '*win7*' $target
-    set rdp rdesktop
+if string match "@*" $target_line
+    # SSH
+    sshpass -p $pass ssh $user@$host
+else
+    # RDP
+    if test $XDG_SESSION_TYPE = x11
+        set resolution (xrandr | grep -o 'current [0-9]* x [0-9]*')
+        set w (echo $resolution | cut -d x -f 1 | grep -o '[0-9]*')
+        set h (math (echo $resolution | cut -d x -f 2 | grep -o '[0-9]*')-100)
+        # current 1920 x 1080
+        if which xfreerdp
+            set rdp xfreerdp
+        else
+            set rdp xfreerdp3
+        end
+    else if test $XDG_SESSION_TYPE = wayland
+        # Xwayland is also working
+        set resolution (xrandr | grep -o 'current [0-9]* x [0-9]*')
+        set w (echo $resolution | cut -d x -f 1 | grep -o '[0-9]*')
+        set h (math (echo $resolution | cut -d x -f 2 | grep -o '[0-9]*')-50)
+        # For wayland, fullscreen is acceptable because shortcuts are not captured on deny
+        if which wlfreerdp
+            set rdp wlfreerdp
+        else
+            set rdp xfreerdp3
+            set h (math $h-50)
+            # clipboard doesnt work in wlfreerdp3 sdl-freerdp3
+        end
+    else
+        die "Unknown XDG_SESSION_TYPE $XDG_SESSION_TYPE"
+    end
+    
+    if string match '*win7*' $target
+        set rdp rdesktop
+    end
+    
+    if test $rdp = rdesktop
+        echo "EXEC: $rdp -g $w'x'$h -r disk:abc=/home/recolic/Downloads -u $user -p $pass -v $host"
+        $rdp -K -g $w'x'$h -r disk:abc=/home/recolic/Downloads -u $user -p $pass -v $host
+    else
+        echo "EXEC: $rdp -disable-grab-keyboard -disable-toggle-fullscreen -w $w -h $h -drive mapped_tmp,$HOME/tmp -u $user -p $pass -v $host"
+        $rdp -disable-grab-keyboard -disable-toggle-fullscreen -w $w -h $h -drive mapped_tmp,$HOME/tmp -u $user -p $pass -v $host
+        # disable krb5: /auth-pkg-list:!kerberos 
+    end
 end
 
-if test $rdp = rdesktop
-    echo "EXEC: $rdp -g $w'x'$h -r disk:abc=/home/recolic/Downloads -u $user -p $pass -v $host"
-    $rdp -K -g $w'x'$h -r disk:abc=/home/recolic/Downloads -u $user -p $pass -v $host
-else
-    echo "EXEC: $rdp -disable-grab-keyboard -disable-toggle-fullscreen -w $w -h $h -drive mapped_tmp,$HOME/tmp -u $user -p $pass -v $host"
-    $rdp -disable-grab-keyboard -disable-toggle-fullscreen -w $w -h $h -drive mapped_tmp,$HOME/tmp -u $user -p $pass -v $host
-    # disable krb5: /auth-pkg-list:!kerberos 
-end
 exit $status
 
