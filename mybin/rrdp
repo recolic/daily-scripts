@@ -46,14 +46,14 @@ set user (echo $target_line | cut -d '|' -f 2)
 set pass (echo $target_line | cut -d '|' -f 3)
 set host (echo $target_line | cut -d '|' -f 4)
 
-if string match "sh://*" $pass
+if string match "sh://*" $pass > /dev/null
     # need to expand password
     set pass_command (echo $pass | sed 's|sh://||')
     set pass (bash -c "$pass_command")
     or exit $status
 end
 
-if string match "@*" $target_line
+if string match "@*" $target_line > /dev/null
     # SSH
     sshpass -p $pass ssh $user@$host
 else
