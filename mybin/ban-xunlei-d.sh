@@ -7,7 +7,7 @@
 api_endpoint="http://127.0.0.1:8080/api/v2"
 # You can customize the blacklist keywords. 
 blacklists=(
-    "Xunlei"
+    "Xun[Ll]ei"
     "XL00"
     "^7\."
 )
