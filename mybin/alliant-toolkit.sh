@@ -31,21 +31,47 @@ function csv2html () {
     echo "</table>"
 }
 
-function prev_month () {
+function txt_month () {
     local database_="
-feb:jan
-mar:feb
-apr:mar
-may:apr
-jun:may
-jul:jun
-aug:jul
-sep:aug
-oct:sep
-nov:oct
-dec:nov
-jan:dec"
+0:dec:just in case for prevmonth(JAN)
+13:jan
+1:jan
+2:feb
+3:mar
+4:apr
+5:may
+6:jun
+7:jul
+8:aug
+9:sep
+01:jan
+02:feb
+03:mar
+04:apr
+05:may
+06:jun
+07:jul
+08:aug
+09:sep
+10:oct
+11:nov
+12:dec"
     echo "$database_" | grep -i "^$1:" | cut -d : -f 2 | tr 'a-z' 'A-Z' || return 1
+}
+
+function auto_get_month () {
+    local cur_m=`date +%m`
+    local cur_d=`date +%d`
+    if [[ $cur_d -gt 15 ]]; then
+        # for 8.28, prev:next == 8:9
+        local prev_m_txt=`txt_month $cur_m` || return 1
+        local next_m_txt=`txt_month $(($cur_m+1))` || return 1
+    else
+        # for 9.2, prev:next == 8:9
+        local next_m_txt=`txt_month $cur_m` || return 1
+        local prev_m_txt=`txt_month $(($cur_m-1))` || return 1
+    fi
+    echo "$prev_m_txt:$next_m_txt"
 }
 
 function alliant_csv_filter () {
@@ -91,17 +117,17 @@ function alliant_csv_calc () {
 
 function alliant_oneclick () {
     fname="$1"
-    month="$2"
-    budget_cny="$3"
+    budget_cny="$2"
     type md2html || ! echo "md2html not available. DO pacman -S md4c" || exit 1
-    [[ ! -f $fname ]] || [[ $month = "" ]] || [[ $budget_cny = "" ]] && echo "
+    [[ ! -f $fname ]] || [[ $budget_cny = "" ]] && echo "
 Prog Usage:
 1. Export Alliant 60d history as CSV file
 2. Download Alliant statement
 3. Delete all unrelated Tx from CSV file (DO NOT delete the title line)
 4. Run this script like
-     alliant_oneclick 1.csv JUN 7000
-5. Send resulting HTML as email
+     alliant_oneclick 1.csv 7000
+5. Visual check: check if month_txt is correct
+6. Send HTML as email
 " && exit 1
 
     ## start working
@@ -115,7 +141,9 @@ Prog Usage:
     usd_cny_rate=`curl -s https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json | jq .usd.cny` || usd_cny_rate=7.1
     disct_cost_cny=`python -c "print('%i' % ($disct_cost_usd * $usd_cny_rate))"` || return 1
     final_bud_cny=`python -c "print($budget_cny - $disct_cost_cny)"` || return 1
-    prev_month=`prev_month "$month"` || ! echo "invalid month" || return 1
+
+    prev_month=`auto_get_month | cut -d : -f 1` || ! echo "invalid month" || return 1
+    next_month=`auto_get_month | cut -d : -f 2` || ! echo "invalid month" || return 1
 
     ## Prep output
     echo "
@@ -132,8 +160,8 @@ This is the statement for your Alliant VISA Credit Card.
 Your total spending (after applying special budget credit) in this billing $total_cost_usd USD.  
 After applying 2.5% cashback, you need to pay $total_cost_usd * 0.975 = $disct_cost_usd USD.
 
-$disct_cost_usd USD ($disct_cost_cny CNY) will be deduced from your $month budget.  
-**Your $month budget is $final_bud_cny CNY** , which will be paid through cash.
+$disct_cost_usd USD ($disct_cost_cny CNY) will be deduced from your $next_month budget.  
+**Your $next_month budget is $final_bud_cny CNY** , which will be paid through cash.
 
 Please be aware that this is an auto-generated email, and there may be unintentional errors.  
 Thanks for using Recolic Payment Service.
@@ -151,7 +179,7 @@ Thanks for using Recolic Payment Service.
 
     echo ">>>
 EMAIL DONE! (Use Thunderbird -> Insert -> HTML)
-  Title:  Your $prev_month Statement and $month Budget
+  Title:  Your $prev_month Statement and $next_month Budget
   Content:    /tmp/.alliant-all.html
   Attachment: /tmp/river-statement-$prev_month.csv
 >>>
