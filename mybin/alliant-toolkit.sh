@@ -31,6 +31,18 @@ function csv2html () {
     echo "</table>"
 }
 
+function csv_wash () {
+echo "
+import csv,sys
+reader = csv.reader(sys.stdin)
+writer = csv.writer(sys.stdout)
+for row in reader:
+    cleaned_row = [cell.replace(',', '') for cell in row]
+    writer.writerow(cleaned_row)
+" > /tmp/.csv-wash.py
+    python -u /tmp/.csv-wash.py
+}
+
 function txt_month () {
     local database_="
 0:dec:just in case for prevmonth(JAN)
@@ -134,7 +146,8 @@ Prog Usage:
     alliant_csv_filter CN "$fname" > /tmp/.alliant-1.csv || return $?
     alliant_csv_filter other "$fname" > /tmp/.alliant-other.csv || return $?
     alliant_csv_calc /tmp/.alliant-1.csv > /tmp/.alliant-tx.txt || return $?
-    csv2html /tmp/.alliant-1.csv > /tmp/.alliant-h2.html || return $?
+    cat /tmp/.alliant-1.csv | csv_wash > /tmp/.alliant-1.washed.csv || return $?
+    csv2html /tmp/.alliant-1.washed.csv > /tmp/.alliant-h2.html || return $?
 
     total_cost_usd=`cat /tmp/.alliant-tx.txt | tr -d ' ' | cut -d = -f 2 | head -n 1` || return 1
     disct_cost_usd=`cat /tmp/.alliant-tx.txt | tr -d ' ' | cut -d = -f 2 | tail -n 1` || return 1
