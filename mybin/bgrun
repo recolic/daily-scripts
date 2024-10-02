@@ -1,0 +1,13 @@
+#!/bin/bash
+
+function bgrun () {
+    # Usage: bgrun /var/log/your.log sslocal -s xxx -p 'hello world my password' -l xxx --xxx
+    # v20201208-1
+    logF="$1"
+    echo "EXEC $@ AT $(date --utc)" >> "$logF"
+    shift
+    nohup "$@" >> "$logF" 2>&1 & disown
+    return $?
+}
+
+bgrun "$@"
