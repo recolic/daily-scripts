@@ -26,7 +26,8 @@ select_random_dns() {
 
 # Function to fix internet using fix-2
 fix_2() {
-    dhcpcd br0 &
+    # dhcpcd br0 &
+    dhcpcd eno2 &
     sleep 20
 }
 
