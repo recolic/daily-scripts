@@ -21,8 +21,9 @@ def code_of_today(date_str=None):
         month = today.month
 
     day_code = day_to_code(day)
+    month_code = day_to_code(month)
     today_str = f"{month:02d}{day:02d}"
-    today_code = f"{month:01d}{day_code}"
+    today_code = f"{month_code}{day_code}"
 
     print(f"{today_str} -> {today_code}")
 
