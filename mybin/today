@@ -1,7 +1,7 @@
 #!/bin/python -u
 
 from datetime import datetime
-import sys
+import sys, os
 
 def day_to_code(day):
     """Convert the day of the month to the appropriate code."""
@@ -25,7 +25,10 @@ def code_of_today(date_str=None):
     today_str = f"{month:02d}{day:02d}"
     today_code = f"{month_code}{day_code}"
 
-    print(f"{today_str} -> {today_code}")
+    if os.environ.get('short') is None:
+        print(f"{today_str} -> {today_code}")
+    else:
+        print(today_code)
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:

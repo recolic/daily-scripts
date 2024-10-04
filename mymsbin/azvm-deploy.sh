@@ -14,7 +14,7 @@ accelnet=1
 # Use alternative IP range. Set a non-zero number (1-253) if you need vnet peering. Will be part of LAN addr.
 vnet_altaddr=0
 
-prefix="${prefix:=$(head -c8 /dev/urandom | base64 -w0 | tr -d =/+)}"
+prefix="${prefix:=$(short=1 today || echo zz)$(head -c6 /dev/urandom | base64 -w0 | tr -d =/+)}"
 resgrp="${resgrp:=rshgrp-$prefix}"
 vmname="${vmname:=$prefix-vm}"
 avname="$vmname-av"
