@@ -2,7 +2,7 @@
 
 # this token has already expired. dont waste time try.
 token="$glpat"
-regex='/.*[^0-9][0-9][0-9][0-9][0-9].git$'
+regex='/.*[0-9][0-9][0-9][0-9].*.git$'
 [[ $token = "" ]] && echo ERROR MISSING TOKEN && exit 1
 
 echo > /tmp/.list
