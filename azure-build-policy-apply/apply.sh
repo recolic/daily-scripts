@@ -94,6 +94,9 @@ fi
 if [[ ! "${pat}" ]]; then
     echo "Please set 'pat' as your personalAccessToken"
     exit 2
+else
+    echo "Devops login with PAT..."
+    echo "$pat" | az devops login || ! echo "AZ DEVOPS login failed." || exit 2
 fi
 
 if [[ ! "${proj_id}" ]]

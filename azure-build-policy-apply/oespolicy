@@ -24,6 +24,9 @@ if [[ $1 = sm ]]; then
     # repo id: 12e0c399-4e80-42b6-aff2-dc693505d5f7
 elif [[ $1 = vfp ]]; then
     _repo_nm=Networking-Datapath-HostSdnStack-VFP
+elif [[ $1 = ndpa ]]; then
+    # this stupid repo doesn't check for validation pipeline. Give it a wrong one!
+    _repo_nm=Networking-Datapath-SoC-DatapathAgent
 else
     echo "ERROR: unknown repo $1"
     exit 1
