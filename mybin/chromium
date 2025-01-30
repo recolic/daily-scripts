@@ -1,0 +1,11 @@
+#!/bin/bash
+
+loginctl show-session $(loginctl | grep $(whoami) | awk '{print $1}') -p Type | grep wayland && iswayland=1
+
+[[ $iswayland = 1 ]] &&
+    /usr/bin/chromium --enable-features=UseOzonePlatform --ozone-platform=wayland "$@" ||
+    /usr/bin/chromium "$@"
+
+exit $?
+
+

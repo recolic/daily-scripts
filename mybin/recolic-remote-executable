@@ -1,0 +1,20 @@
+#!/bin/bash
+# For rarely used cold executable, if it's too big, download it as-needed from remote HTTP_PREFIX.
+# Usage: `ln recolic-remote-executable yt-dlp`, and then use yt-dlp as needed.
+
+EXECNAME=$(basename "$0")
+TMP_BIN="/tmp/.tmpbin-$EXECNAME"
+HTTP_PREFIX="https://recolic.net/hms.php?/softwares/bin/linux-amd64"
+
+if [ ! -f "$TMP_BIN" ]; then
+    wget -O "$TMP_BIN" "$HTTP_PREFIX/$EXECNAME" 1>&2
+    if [ $? -ne 0 ]; then
+        echo "Unable to download $HTTP_PREFIX/$EXECNAME" 1>&2
+        exit 1
+    fi
+    chmod +x "$TMP_BIN"
+fi
+
+"$TMP_BIN" "$@"
+exit $?
+

@@ -1,0 +1,15 @@
+test
+ip.txt
+cloudflare.log
+cloudflare.ids
+nohup.out
+fish_variables
+__pycache__
+config/vim/.netrwhist
+
+.netrwhist
+recolic.net-mirrors-sync-dev/mirrors/recolic-aur/*
+test.exe
+
+*.git-ignored
+

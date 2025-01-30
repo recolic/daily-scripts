@@ -1,0 +1,30 @@
+### docker image for sms-remote-access + door-watchdog combined
+### note that both program requires specific serial device to function well.
+#
+# docker build -t 600163736385.dkr.ecr.us-west-2.amazonaws.com/hms-sms-and-door-api --build-arg "HMSAPI_KEY=$(rsec HMSAPI_KEY)" --build-arg "SMARTRENT_KEY=$(rsec SMARTRENT_KEY)" .
+#
+# docker run -d --restart always --log-opt max-size=10M --name rsmsdoor     --device=/dev/ttyUSB0 --device=/dev/tty0 -p 30801:30801 -p 30802:30802 600163736385.dkr.ecr.us-west-2.amazonaws.com/hms-sms-and-door-api
+
+from ubuntu:22.04
+label org.opencontainers.image.authors="docker.pub@me.recolic.net"
+
+arg DEBIAN_FRONTEND=noninteractive
+arg HMSAPI_KEY=PleaseChangeMe
+arg SMARTRENT_KEY=PleaseSetMe
+
+run apt update && apt install -y python3 python3-pip wget
+# For sms-remote-access, requires --device=/dev/ttyUSB0
+run pip install web.py usim800
+# For door-watchdog, requires --device=/dev/tty0
+run pip install smartrent.py pytz 
+
+copy * /
+run sed -i s/SEC_PLACEHOLDER_HMSAPI_KEY/${HMSAPI_KEY}/g /*.py
+run sed -i s/SEC_PLACEHOLDER_SMARTRENT_KEY/${SMARTRENT_KEY}/g /*.py
+
+# Download latest version of usim800, not published to pip yet
+run wget https://raw.githubusercontent.com/Bhagyarsh/usim800/master/usim800/Sms/sms.py -O /tmp/sms.py && \
+    find /usr -name sms.py -exec cp /tmp/sms.py '{}' ';'
+
+cmd /entry.sh
+

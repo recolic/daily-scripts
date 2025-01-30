@@ -1,0 +1,24 @@
+#!/usr/bin/fish
+#switch between azure work profile & personal profile
+
+set target $argv[1]
+
+rm -f /home/recolic/.azure
+mkdir -p /home/recolic/.azure-ms /home/recolic/.azure-recolic
+
+if test $target = ms
+    echo "az: Switching to ms..."
+    ln -s /home/recolic/.azure-ms /home/recolic/.azure
+else if test $target = recolic
+    echo "az: Switching to recolic..."
+    ln -s /home/recolic/.azure-recolic /home/recolic/.azure
+else
+    echo "azswitch ms/recolic"
+    exit 1
+end
+
+exit $status
+
+
+
+

@@ -1,0 +1,17 @@
+#!/bin/bash
+_dom="$1"
+_slient=1
+
+[[ "$_dom" = "" ]] && echo 'Incomplete argument.' && exit 19
+[[ "$_dom" = "s" ]] && _slient=1 && _dom="$2" && shift
+
+shift
+
+if [[ $_slient = 0 ]]; then
+    SEED=$(rsec PSWDGEN_SECRET) &&
+    printf '%s' "$SEED" | _pswdGen-dynlink -s - -f $_dom -y $* -l 16
+else
+    SEED=$(rsec PSWDGEN_SECRET) &&
+    printf '%s' "$SEED" | _pswdGen-dynlink -s - -f $_dom -y $* -l 16 | sed 's/^.* //g' | tr -d '\n'
+fi
+
