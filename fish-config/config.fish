@@ -12,7 +12,7 @@ set -gx EDITOR vim
 # Microsoft PAT and git-credentials
 if test $hostname = RECOLICMPC ; or test $hostname = RECOLICPC
     # Must use --no-config to avoid infinite loop
-    set -gx pat (env DONT_REGEN_EXPIRED_TOKEN=1 fish --no-config /usr/mymsbin/patnew.fish)
+    set -gx pat (env DONT_REGEN_EXPIRED_TOKEN=1 fish --no-config $HOME/ms-scripts/patnew.fish)
     and begin
         set -gx devops_header "Authorization: Basic "(printf ":%s" "$pat" | base64 -w0)
         echo "https://bensl:$pat@msazure.visualstudio.com" > ~/.git-credentials
@@ -36,6 +36,7 @@ set -gx PATH $GOPATH/bin $PATH
 type thefuck > /dev/null 2>&1 ; and thefuck --alias shit | source
 
 set -gx SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
+set -gx NugetMachineInstallRoot /mnt/windows_pkgs
 
 # fundle plugin 'tuvistavie/fish-ssh-agent'
 # if status --is-login

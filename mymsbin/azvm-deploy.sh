@@ -126,6 +126,7 @@ for cter in $(seq $vmcount); do
 
     # Clear these args for only 1st VM
     [ "$cter" -ge "$only_n_vms_in_tip" ] && vm_create_xtra_arg_first_n=()
+    [ "$cter" -ge "$only_n_vms_in_tip" ] && vmsize=Standard_E4_v4
 done
 
 call_if_any plugin_after_vm_creat

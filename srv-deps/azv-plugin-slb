@@ -11,7 +11,8 @@ Extra Optional Args:
   outbound_ports_per_vm (default value = 1000)
 
 Note:
-  SLB will redirect public_ip:8888 to ANY RANDOM VM:22, so it's recommended to only create 1 VM, or manually create inbound-nat-rule on azure portal.
+  SLB will redirect public_ip:8888 to ANY RANDOM VM:22, so it's recommended to only create 1 VM.
+  inbound-nat-rule is not reliable even if manually created on azure portal.
 "
     # TODO: move this to other doc
     echo "-----BEGIN PGP MESSAGE-----
@@ -48,7 +49,7 @@ function plugin_after_vm_creat () {
     var_default_val outbound_ports_per_vm 1000
     debugexec az network lb create --resource-group $resgrp --name $LB_NAME --sku Standard --frontend-ip-name $FE_IP --backend-pool-name $BE_PL --vnet-name $vnetname || exit
     debugexec az network lb address-pool update -g $resgrp --lb-name $LB_NAME -n $BE_PL --vnet $vnetname --backend-addresses "[{name:addr1,ip-address:10.0.0.4}]" || exit
-    # TODO: The correct way to redirect PUBLIC:4022 to VM1:22. But azure-cli cannot associate nat-rule to machine. So it doesn't work.
+    # TODO: The correct way to redirect PUBLIC:4022 to VM1:22. But azure-cli cannot associate nat-rule to machine. Even if u manually created one on az portal, it will de-associate after some time.
     # debugexec az network lb inbound-nat-rule create --resource-group $resgrp --lb-name $LB_NAME  --name nat_rule_nt --protocol Tcp --frontend-port 4022 --backend-port 22 --frontend-ip-name $FE_IP || exit
     # Warning: outbound-rule + lb-rule = outbound internet access
     debugexec az network lb outbound-rule    create --resource-group $resgrp --lb-name $LB_NAME --name MyOutboundRule --protocol All --idle-timeout 4 --frontend-ip-configs $FE_IP --address-pool $BE_PL --outbound-ports $outbound_ports_per_vm || exit
