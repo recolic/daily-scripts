@@ -6,8 +6,8 @@ Usage:
     $0 --org-url {string} --proj-name {string} [--repo-name {string} | --repo-id {string}] [--branch {string}] [--pipeline-name {string} | --build-definition-id {number}]
 
 Examples:
-    $0 --org-url azvse --proj-name aztest --repo-name aztest --branch bensl/tmpbuild/1201 --pipeline-name Overlake-Build-PullRequest
-    $0 --org-url azvse --proj-name aztest --repo-id a4822210-511f-427f-a36d-26a14c29cc89 --branch bensl/tmpbuild/1201 --build-definition-id 2
+    $0 --org-url azvse --proj-name aztest --repo-name aztest --branch user/tmpbuild/1201 --pipeline-name Overlake-Build-PullRequest
+    $0 --org-url azvse --proj-name aztest --repo-id a4822210-511f-427f-a36d-26a14c29cc89 --branch user/tmpbuild/1201 --build-definition-id 2
 
 EOF
 }
@@ -82,9 +82,8 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-############### Harcode! change me!
-# user_email="tmp1@recolic.net"
-user_email="bensl@microsoft.com"
+############### Hardcode! change me!
+[[ "$user_email" = "" ]] && user_email="tmp1@recolic.net"
 
 if [[ ! ${org_url} || ! ${proj_name} || (! ${repo_name} && ! ${repo_id}) || (! ${pipeline_name} && ! ${build_definition_id}) ]]; then
     show_usage

@@ -55,7 +55,8 @@ function target_nas_data
     run_until_success rsync -avz --partial --delete --no-links \
         root@remote.nfs.recolic:/mnt/fsdisk/nfs/backups /storage/cache/target_nas_data
 
-    and pack_backup_dir /storage/cache/target_nas_data
+    # replica only, skip history version packing.
+    # and pack_backup_dir /storage/cache/target_nas_data
     return $status
 end
 
@@ -89,12 +90,7 @@ function target_mail_www_recolic_net_data
 end
 
 function target_extern_lwl
-    # Temporary: Remove this fallback after upgrading client side do.bash.
-    if test -d /storage/cache/target_extern_lwl
-        pack_backup_dir /storage/cache/target_extern_lwl
-    else
-        pack_backup_dir /storage/backups/extern
-    end
+    pack_backup_dir /storage/cache/target_extern_lwl
 end
 
 

@@ -1,4 +1,5 @@
 // GPT-4o generated. NOT thread safe.
+// v2502.1
 #ifndef SIMPLE_LOGGER_H
 #define SIMPLE_LOGGER_H
 

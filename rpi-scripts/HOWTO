@@ -1,0 +1,2 @@
+1. copy keep_unlocked.py to app/
+2. apply keep-awake.patch to app/main.py

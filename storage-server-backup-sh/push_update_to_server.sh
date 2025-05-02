@@ -1,4 +1,7 @@
 #!/bin/sh
+
+set -e
+
 rsync . root@storage.recolic.cc:/storage/storage-server-backup-sh -avz --progress --delete
 
 mailkey=$(rsec MAILAPI_KEY) &&

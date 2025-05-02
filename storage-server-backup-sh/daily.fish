@@ -39,11 +39,7 @@ else
     end
 
     # Check if extern target needs packing
-    # TODO: remove this fallback after upgrade client side do.bash
-    if test -f /storage/backups/extern/NEED_PACKING
-        rm -f /storage/backups/extern/NEED_PACKING
-        reach_target target_extern_lwl
-    else if test -f /storage/cache/target_extern_lwl/NEED_PACKING
+    if test -f /storage/cache/target_extern_lwl/NEED_PACKING
         rm -f /storage/cache/target_extern_lwl/NEED_PACKING
         reach_target target_extern_lwl
     end
@@ -54,10 +50,11 @@ end
 ./old-backup-clean.exe /storage/backups
 
 # Send warning if running out of harddisk (less than 100GiB left)
-# test (df -T | grep /storage | tr -s ' ' | cut -d ' ' -f 3,5 | sed 's/^.* //g') -lt 104857600
-# Modify the filter to make it working on base.lt1.recolic.net. time4vps mount 2TB HDD at /
-test (df -T | grep /dev/ploop | tr -s ' ' | cut -d ' ' -f 3,5 | sed 's/^.* //g') -lt 104857600
-    and email_notify "Backup system has low disk space. "(df -Th | grep /dev/ploop)
+# Modify & test this when moving to new system.
+set space_check_df_keyword /dev/mapper/ubuntu--vg-lv--root
+test (df -T | grep $space_check_df_keyword | tr -s ' ' | cut -d ' ' -f 3,5 | sed 's/^.* //g') -lt 104857600
+    and email_notify "Backup system has low disk space. "(df -Th | grep $space_check_df_keyword)
 
+# Not used by any extern user right now... But still worth keep it running.
 fish check_extern.fish
 

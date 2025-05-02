@@ -1,16 +1,26 @@
 #!/bin/bash
 
+set -e
+
 # git restore config/vim/.netrwhist
-git stash clear
+git stash clear || true
 
-git fetch && 
-git stash &&
-git pull || exit $?
-git stash apply # This command would fail if no stashed change
+git fetch
+git stash
+git pull
+git stash apply || true # This command would fail if no stashed change
 
-git add -A &&
-git commit -m quick_push &&
+git add -A
+git commit -m ".$1" || true # fail if no change
 git push
 
-exit $?
+# copy to mirror
+msmirror=$HOME/code/msdoc/proj/sh-mirror
+if [[ -d $msmirror ]]; then
+    rm -rf $msmirror/*/ # remove all directories
+    cp -r linuxconf/files/mybin linuxconf/files/mymsbin srv-deps $msmirror/
+
+    rm -f $msmirror/mymsbin/oespolicy
+    gpg -d -o $msmirror/mymsbin/oespolicy $msmirror/mymsbin/oespolicy.gpg
+fi
 

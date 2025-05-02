@@ -1,0 +1,5 @@
+# when doing dangerous test, use the following spammer website as target
+
+https://mail.emailcamel.com/admin/index.php
+https://www.fengemail.com/
+

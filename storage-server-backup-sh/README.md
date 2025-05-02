@@ -39,11 +39,11 @@ fish 3.x (to eval variable without `eval`)
 ## migration guide
 
 ```
-Copy the following things to new machine:
+# Copy the following things to new machine:
 /root/.ssh
 /storage
 crontab -l
-[optional] /etc/ssh (and restart sshd afterward)
+# [optional] /etc/ssh (and restart sshd afterward)
 
 # If fish version < 3.0, install latest fish 3.x:
 apt install software-properties-common
