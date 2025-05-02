@@ -15,7 +15,7 @@ RSEC_LINS="$(gpg -d "$RSEC_ENC_DB")" || die "gpg decrypt failure"
 if [[ "$_key" = "" ]]; then
     echo "$RSEC_LINS" | cut -d : -f 1 | tr -d ' ' | grep -v '^#' | grep .
 else
-    RSEC_LINE="$(echo "$RSEC_LINS" | grep "^$_key *:")" || die "gpg decrypt failure or key not found"
+    RSEC_LINE="$(echo "$RSEC_LINS" | grep -i "^$_key *:")" || die "gpg decrypt failure or key not found"
     echo "$RSEC_LINE" | sed 's/^[^:]*://'
 fi
 exit $?
