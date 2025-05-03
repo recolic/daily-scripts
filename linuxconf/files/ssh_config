@@ -13,16 +13,16 @@ host vs-ssh.visualstudio.com
     IdentitiesOnly yes
 
 host main.recolic
-    hostname func.main.recolic.cc
+    hostname func.main.recolic.net
     user root
 
 host drive.recolic
-    hostname git.recolic.cc
+    hostname git.recolic.net
     port 4022
     user root
 
 host storage.recolic
-    hostname storage.recolic.cc
+    hostname storage.recolic.net
     user root
 
 host ms.recolic

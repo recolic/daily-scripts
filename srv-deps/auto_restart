@@ -1,7 +1,0 @@
-#!/bin/bash
-
-while true; do
-    "$@"
-    [[ $? = 130 ]] && break
-    sleep 1
-done
