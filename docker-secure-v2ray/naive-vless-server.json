@@ -62,9 +62,9 @@
 
         "dns": {
 "hosts": { // washconnect app crack here
-      "domain:getwashconnect.com": "38.126.46.120",
-      "domain:us-central1-washmobilepay.cloudfunctions.net": "38.126.46.120",
-      "domain:o424104.ingest.sentry.io": "38.126.46.120"
+      "domain:getwashconnect.com": "20.83.237.126",
+      "domain:us-central1-washmobilepay.cloudfunctions.net": "20.83.237.126",
+      "domain:o424104.ingest.sentry.io": "20.83.237.126"
     }
         },
 
