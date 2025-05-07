@@ -20,6 +20,10 @@ host drive.recolic
     hostname git.recolic.net
     port 4022
     user root
+host rp.drive.recolic
+    hostname git.recolic.net
+    port 2022
+    user root
 
 host storage.recolic
     hostname storage.recolic.net

@@ -21,7 +21,7 @@ msdev-backup|recolic      |sh://rsec DEVBOX           |proxy-cdn.recolic.net:306
 labjump     |fareast\bensl|sh://rsec MSPASS           |labjump.m.recolic
 lanbox      |recolic      |sh://genpasswd lanbox      |10.100.100.101:30473
 lanbox-tmp  |recolic      |sh://genpasswd lanbox      |base.ddns1.recolic.cc:30573
-cnbox       |recolic      |sh://rsec WEAK10           |proxy-cdn.recolic.net:30625
+cnbox       |recolic      |sh://genpasswd cnbox       |proxy-cdn.recolic.net:30625
 host16      |Administrator|sh://rsec OVL_HOST_RDP     |host.blade16.m.recolic
 host18      |Administrator|sh://rsec OVL_HOST_RDP     |host.blade18.m.recolic
 host32      |Administrator|sh://rsec OVL_HOST_RDP     |host.blade32.m.recolic
