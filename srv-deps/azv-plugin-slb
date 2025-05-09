@@ -55,6 +55,7 @@ function plugin_after_vm_creat () {
     #    debugexec az network lb address-pool update -g $resgrp --lb-name $LB_NAME -n $BE_PL --vnet $vnetname --backend-addresses [0].name="${resgrp}_${vmname}VMNicipconfig${vmname}" || exit
     #else
         echo -e "$COLOR_RED_BLD Warning: enable_outbound_rule_fix not enabled. outbound_ports_per_vm limit won't make effect $COLOR_CLR" 1>&2
+        echo -e "$COLOR_RED_BLD If needed this feature, clear backend_pool and add VMs manually on az portal. $COLOR_CLR" 1>&2
         # When a backend pool is configured by IP address, the backend instances are not secure by default and still use default outbound access.
         # This means: outbound_ports_per_vm won't make effect
         # Ref: https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/default-outbound-access#how-can-i-transition-to-an-explicit-method-of-public-connectivity-and-disable-default-outbound-access
