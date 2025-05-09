@@ -13,7 +13,7 @@ Extra Args:
   (tip2 must be in the same region)
 
 Example:
-  vmsize=Standard_E4a_v4 vnet_enc=1 only_n_vms_in_tip=1 tip2_id=e45c538c-8c14-4770-ba0e-1bc6c7da3ddf azvm-deploy.sh centraluseuap 2 5d710a1b-6f7c-46d7-bc5c-21052d0050c9 CDM40PrdApp04
+  plugin=extra-tip-session vmsize=Standard_E4a_v4 vnet_enc=1 only_n_vms_in_tip=1 tip2_id=e45c538c-8c14-4770-ba0e-1bc6c7da3ddf azvm-deploy.sh centraluseuap 2 5d710a1b-6f7c-46d7-bc5c-21052d0050c9 CDM40PrdApp04
   (VM1 will land on tip1, VM2 will land on tip2)
 "
 }
