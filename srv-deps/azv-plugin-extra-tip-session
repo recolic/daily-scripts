@@ -22,6 +22,8 @@ function plugin_before_vm_creat () {
     var_default_val tip2_id
     var_default_val tip2_cluster "$cluster"
     [ "$tip2_id" = "" ] && echo "ERROR tip2_id not set" && exit 1
+
+    echo -e "${COLOR_RED_BLD}++ Using Extra TiP session $tip2_id at cluster $tip2_cluster$COLOR_CLR"
     debugexec az deployment group create -g "$resgrp" --template-file /tmp/template-avset.json --parameters "avname=tip2_$avname" "location=$location" "tipid=$tip2_id" "cluster=$tip2_cluster" || exit $?
 }
 
