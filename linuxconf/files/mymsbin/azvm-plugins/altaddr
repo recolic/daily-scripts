@@ -1,0 +1,29 @@
+#!/bin/bash
+
+function plugin_help () {
+    echo "
+###############################################
+### azvm-deploy.sh plugin 'altaddr' v2505.1 ###
+
+Use alternative vnet IP range. (Useful for vnet peering)
+
+Args: vnet_altaddr (default = no effect)
+Set a non-zero number (1-253) and your vnet ip will look like '10.XXX.0.0/24'
+
+Please include this plugin **before** 'secured'
+"
+}
+
+function plugin_before_vnet_creat () {
+    var_default_val vnet_altaddr 0
+
+    if [ "$vnet_altaddr" != 0 ]; then
+        [ "$vnet_ipv6" = 1 ] && echo_warn "++ Conflict: vnet_altaddr conflicts with vnet_ipv6." && exit 1
+        [[ " ${vnet_create_xtra_arg[@]} " =~ " --subnets " ]] && echo_warn "++ Conflict: please include 'altaddr' plugin before 'secured'"
+    
+        vnet_iprange=10.$vnet_altaddr.0.0
+        echo_info "++ alt_addr: vnet IP range $vnet_iprange"
+        vm_create_xtra_arg+=(--vnet-address-prefix $vnet_iprange/16 --subnet-address-prefix $vnet_iprange/24)
+        vnet_create_xtra_arg+=(--address-prefixes $vnet_iprange/16 --subnet-prefixes $vnet_iprange/24)
+    fi
+}

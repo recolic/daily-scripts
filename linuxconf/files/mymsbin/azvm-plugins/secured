@@ -1,5 +1,4 @@
 #!/bin/bash
-# azvm-deploy.sh plugin: secured
 
 function plugin_help () {
     echo "
