@@ -17,14 +17,14 @@ syntax match FlowLevel2 /^  \S.*: *$/
 " ends just before the next level-1 or level-2 tag
 syntax region FlowMultiline start=/^\S.*[^:]$/ end=/^\(\S.*: *$\|  \S.*: *$\)/me=s-1 keepend contains=NONE
 
-" Level 3 args (4-space indent) (lower priority than Multiline)
-syntax match FlowLevel3 /^    .*$/ 
+" " Level 3 args (4-space indent) (lower priority than Multiline)
+" syntax match FlowLevel3 /^    .*$/ 
 
 " Highlight links
 highlight def link FlowLevel1 Statement
-highlight def link FlowLevel2 String
+highlight def link FlowLevel2 Function
 highlight def link FlowLevel3 Identifier
-highlight FlowMultiline guifg=#888888 ctermfg=8
+highlight def link FlowMultiline String
 
 let b:current_syntax = "flow"
 
