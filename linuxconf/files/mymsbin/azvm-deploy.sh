@@ -20,9 +20,6 @@ var_default_val accelnet            1
 # If set to n: First n VMs will be deployed into TiP (if provided TiP session), and TiP session would be ignored for the rest VMs.
 var_default_val only_n_vms_in_tip   999
 
-# Use alternative IP range. Set a non-zero number (1-253) if you need vnet peering. Will be part of LAN addr.
-var_default_val vnet_altaddr        0
-
 var_default_val prefix              $(short=1 today || echo zz)$(head -c6 /dev/urandom | base64 -w0 | tr -d =/+)
 var_default_val resgrp              rshgrp-$prefix
 var_default_val vmname              $prefix-vm
@@ -112,15 +109,6 @@ fi
 if [ "$vnet_ipv6" = 1 ]; then
     vnet_create_xtra_arg+=(--address-prefixes 10.0.0.0/16 fd00:db8:deca::/48 --subnet-prefixes 10.0.0.0/24 fd00:db8:deca::/64)
     explicit_vnet_create=1
-fi
-
-# This could also be a plugin.
-if [ "$vnet_altaddr" != 0 ]; then
-    [ "$vnet_ipv6" = 1 ] && echo_warn "++ Error: vnet_altaddr conflicts with vnet_ipv6." && exit 1
-    vnet_iprange=10.$vnet_altaddr.0.0
-    echo_info "++ alt_addr: vnet IP range $vnet_iprange"
-    vm_create_xtra_arg+=(--vnet-address-prefix $vnet_iprange/16 --subnet-address-prefix $vnet_iprange/24)
-    vnet_create_xtra_arg+=(--address-prefixes $vnet_iprange/16 --subnet-prefixes $vnet_iprange/24)
 fi
 
 plugin_hook plugin_before_vnet_creat
