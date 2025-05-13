@@ -24,7 +24,8 @@ syntax region FlowMultiline start=/^\S.*[^:]$/ end=/^\(\S.*: *$\|  \S.*: *$\)/me
 highlight def link FlowLevel1 Statement
 highlight def link FlowLevel2 Function
 highlight def link FlowLevel3 Identifier
-highlight def link FlowMultiline String
+" highlight def link FlowMultiline String
+highlight FlowMultiline guifg=#888888 ctermfg=8
 
 let b:current_syntax = "flow"
 
