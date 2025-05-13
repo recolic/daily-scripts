@@ -39,6 +39,8 @@ set hlsearch
 map <C-f> viwyk/<C-r>"<CR>
 set mouse=
 
+" my private flow file format
+au BufRead,BufNewFile *.flow set filetype=flow
 
 
 " """""""""""""""""""""" BEGIN edit GPG file """"""""""""""""""""""""""""""

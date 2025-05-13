@@ -1,0 +1,37 @@
+" syntax/flow.vim
+
+if exists("b:current_syntax")
+  finish
+endif
+
+syntax clear
+
+" Level 1 tags (0 space, ends with :)
+syntax match FlowLevel1 /^\S.*: *$/
+
+" Level 2 tags (2 spaces, ends with :)
+syntax match FlowLevel2 /^  \S.*: *$/
+
+" Level 3 args (4-space indent, no colon)
+syntax match FlowLevel3 /^    .*/ contains=FlowArg1,FlowArg2,FlowArg3
+
+" Round-robin word highlight in level 3
+syntax match FlowArg1 /\%(^    \)\@<=\S\+/ contained
+syntax match FlowArg2 /\%(^    \S\+\s\+\)\@<=\S\+/ contained
+syntax match FlowArg3 /\%(^    \S\+\s\+\S\+\s\+\)\@<=\S\+/ contained
+
+" Multi-line block: starts on non-space line not ending with ':', ends before next label
+syntax region FlowMultiline start=/^\S.*[^:]$/ end=/^\(\S.*: *$\|  \S.*: *$\)/me=s-1 contains=NONE keepend
+
+" Highlights
+highlight def link FlowLevel1 Statement
+highlight def link FlowLevel2 String
+
+highlight def link FlowArg1 Identifier
+highlight def link FlowArg2 Type
+highlight def link FlowArg3 Constant
+
+highlight FlowMultiline guifg=#888888 ctermfg=8
+
+let b:current_syntax = "flow"
+
