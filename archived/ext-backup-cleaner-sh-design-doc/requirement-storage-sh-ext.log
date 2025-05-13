@@ -1,0 +1,20 @@
+I have many backup in a single directory. Your script must check all archive file (with filename "*.tar.*") in current directory, parse filename, and:
+  - The first archive for every year must be kept.
+  - For latest year:
+    - For latest month, keep all archives.
+    - For previous months, keep no more than 2 latest monthly archive.
+    - Keep the first archive for the latest year.
+  - Delete all other archives.
+
+Your script MUST NOT rely on system time or timezone.
+Your script must get all information from filename, and make decision basing on filename ONLY.
+
+You can use script (bash/fish/python/perl/ruby) or static-compiled language (C/C++/Go/Rust),
+  but it MUST NOT depends on external library / runtime.
+
+Example: [PLEASE check 'sample' folder]
+In this example, after running `./your-program.exe /path/to/sample/folder` , your script should only list the sample folder (not subdir). For "target_ch_mainsite_packed", the following version should be kept:
+v20220410-150008 v20230110-160008 v20231110-160007 v20231010-150007 v20230910-150006
+Other archives must be deleted.
+=========================================================================================
+

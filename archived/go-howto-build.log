@@ -1,0 +1,9 @@
+apt update ; apt install git wget software-properties-common
+add-apt-repository ppa:longsleep/golang-backports
+apt update ; apt install golang-1.21
+export PATH=$PATH:/usr/lib/go-1.21/bin
+
+git clone https://github.com/pouriyajamshidi/tcping.git
+cd tcping/
+make
+

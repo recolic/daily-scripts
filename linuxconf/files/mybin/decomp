@@ -1,0 +1,62 @@
+#!/bin/bash
+# version 1.07
+# update log:
+# 1.06: allow decompress nupkg
+# 1.07: allow decompress tar.zst
+
+[[ $1 == '' ]] && echo 'Usage: decompress [-g: use GB2312 aur/unzip-iconv] [-c: extract to new folder] <files ...>' && exit 1
+
+function _e () {
+    fname=`basename "$1"`
+    case "$fname" in
+        *.7z )
+            7z x "$1"
+            ;;
+        *.zip | *.nupkg )
+            [[ $arg_zip_gb2312 = 1 ]] && unzip -O GB18030 "$1" || unzip "$1"
+            ;;
+        *.rar )
+            unrar x "$1"
+            ;;
+        *.tar.xz | *.txz )
+            tar -xvJf "$1"
+            ;;
+        *.tar.gz | *.tgz )
+            tar -xvzf "$1"
+            ;;
+        *.tar.bz2 | *.tbz2 )
+            tar -xvjf "$1"
+            ;;
+        *.tar.zst )
+            tar --use-compress-program=unzstd -xvf "$1"
+            ;;
+        *.tar )
+            tar -xvf "$1"
+            ;;
+        * )
+            echo 'Unknown format.'
+            return 2
+    esac
+}
+
+function _e_to_new () {
+    mkdir -p "_$1" && cd "_$1" &&
+    _e "../$1" &&
+    cd - && return 0 || return $?
+}
+
+arg_create_dir=0
+arg_zip_gb2312=0
+
+for _file in "$@"
+do
+    [[ "$_file" = "-c" ]] && arg_create_dir=1 && continue
+    [[ "$_file" = "-g" ]] && arg_zip_gb2312=1 && continue
+    [[ ! -f "$_file" ]] && echo "$_file not exist" && exit 1
+    [[ $arg_create_dir = 1 ]] && {
+        _e_to_new "$_file" || exit $?
+    } || {
+        _e "$_file" || exit $?
+    }
+done
+

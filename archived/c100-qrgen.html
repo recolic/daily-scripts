@@ -1,0 +1,43 @@
+<html><head>
+<script type="text/javascript" src="davidshimjs-qrcodejs-04f46c6/qrcode.min.js"></script>
+</head><body>
+	<script>
+function httpGet(theUrl)
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+}
+
+// Get nodes ---------------------------------------------------------
+var get_param = new URL(window.location.href).search;
+get_param = get_param == '' ? 'default' : get_param.substring(1);
+var base_url = window.location.protocol + '//' + window.location.hostname + '/v2rayng/' + get_param;
+var nodes = httpGet(base_url).split('\n');
+
+// Draw Head ---------------------------------------------------------
+document.write('<h1>Qrcode Generation API for user '+get_param+'</h1><hr />')
+
+// Show textx --------------------------------------------------------
+for (var i = 0; i < nodes.length; ++i) {
+	var node = nodes[i].trim();
+	if(node.length == 0 || node[0] == '#') continue;
+
+	var tag = node.split('#')[1];
+	if(tag == undefined) {
+		// full base64-encoded url
+		tag = JSON.parse(atob(node.split('//')[1])).ps;
+	}
+	var divid = "qrcode" + i;
+	document.write('<h2>' + tag + '</h2>')
+	document.write('<p>'+node+'</p>')
+	document.write('<div id="' + divid + '"></div>');
+	document.write('<br /><hr />');
+	new QRCode(document.getElementById(divid), node);
+}
+
+;
+	</script>
+</body></html>
+

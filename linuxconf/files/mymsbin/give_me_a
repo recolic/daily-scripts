@@ -1,0 +1,43 @@
+#!/usr/bin/fish
+
+if test (count $argv) -lt 1
+    echo "Usage: give_me_a win/linux"
+    exit 1
+end
+
+set admin_pass (rsec WEAK12)
+    or set admin_pass dummypassW12
+
+function give_me_a_windows
+    set vmname r-wintmp(random 0 99999)
+    # FOR MSCORP VM:  southeastasia 
+    az vm create -n $vmname -g recolic-test --image Win2019Datacenter --admin-password $admin_pass --admin-username r --location japaneast --size Standard_B2als_v2 | tee /tmp/.gml
+    and set ip (cat /tmp/.gml | grep publicIpAddress | sed 's/^.*: "//g' | sed 's/".*$//g')
+    # FOR MSCORP VM:  and set whitelist (curl ip.sb -s4 | sed 's/[0-9]*\.[0-9]*$/0.0/g')/16
+    and set whitelist 0.0.0.0/0
+    and az network nsg rule create --nsg-name "$vmname"NSG --resource-group recolic-test --name (random 1 9999999) --priority 106 --source-address-prefixes $whitelist --destination-port-ranges '*' --access Allow
+    and echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    and echo "env 'target_line=|r|$admin_pass|$ip' rrdp ."
+    return $status
+end
+
+function give_me_a_linux
+    set vmname r-lintmp(random 0 99999)
+    az vm create -n $vmname -g recolic-test --image Ubuntu2204 --admin-password $admin_pass --admin-username r --location japaneast --size Standard_B2als_v2 | tee /tmp/.gml
+    and set ip (cat /tmp/.gml | grep publicIpAddress | sed 's/^.*: "//g' | sed 's/".*$//g')
+    # and set whitelist (curl ip.sb -s4 | sed 's/[0-9]*\.[0-9]*$/0.0/g')/16
+    and set whitelist 0.0.0.0/0
+    and az network nsg rule create --nsg-name "$vmname"NSG --resource-group recolic-test --name (random 1 9999999) --priority 106 --source-address-prefixes $whitelist --destination-port-ranges '*' --access Allow
+    and echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    and echo "sshpass -p $admin_pass ssh r@$ip"
+    return $status
+end
+
+if test $argv[1] = win
+    give_me_a_windows
+else if test $argv[1] = linux
+    give_me_a_linux
+end
+
+exit $status
+

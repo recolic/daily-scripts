@@ -1,0 +1,11 @@
+## init VM from cloudimg
+# name;cloudimg;disk;username;password (space will be trimmed)
+ndpa-build  ;focal-server-cloudimg-amd64.img ;60G;r;1
+gitlab-ci-ms;focal-server-cloudimg-amd64.img ;50G;r;1
+drive-reco  ;focal-server-cloudimg-amd64.img ;200G;r;1
+
+## or init VM from pre-deployed backing image (please put it into data/base/)
+# name;existing_img_fname
+devbox      ;win10pro-22h2-virtio-uefi.qcow2
+chinabox    ;win10-tiny10-virtio-uefi.qcow2
+vsbox       ;win10pro-22h2-virtio-uefi.qcow2

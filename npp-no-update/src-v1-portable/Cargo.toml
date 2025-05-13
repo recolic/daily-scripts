@@ -1,0 +1,17 @@
+[package]
+name = "npp_disable_auto_updater"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+quick-xml = "0.31.0"
+sevenz-rust = "0.6.0"
+
+[profile.release]
+lto = true
+strip = true
+opt-level = "s"
+codegen-units = 1
+panic = "abort"

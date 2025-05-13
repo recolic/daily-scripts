@@ -1,0 +1,5 @@
+#!/bin/bash
+exit 1
+
+This tool has been deprecated & archived.
+Build from msauth-httpd-guide.go if needed.

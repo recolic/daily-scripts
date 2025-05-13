@@ -1,0 +1,109 @@
+#!/bin/fish
+# v1.03: allows setting env target_line
+# v1.04: if target_name starts with @, it is ssh target (customize port not supported yet). Allows bash command in password.
+# v1.05: accept new rsec, and allow space in name
+# v1.06: trim extra space in user/pass/host, not only NAME
+
+function die
+    echo $argv 1>&2
+    exit 1
+end
+
+set target $argv[1]
+if test -z $target
+    set target help
+end
+
+set targets "
+NAME        |USERNAME     |PASSWORD                   |HOSTNAME
+msdev       |recolic      |sh://rsec DEVBOX           |proxy-cdn.recolic.net:30623
+msdev-backup|recolic      |sh://rsec DEVBOX           |proxy-cdn.recolic.net:30624
+labjump     |fareast\bensl|sh://rsec MSPASS           |labjump.m.recolic
+lanbox      |recolic      |sh://genpasswd lanbox      |10.100.100.101:30473
+lanbox-tmp  |recolic      |sh://genpasswd lanbox      |base.ddns1.recolic.cc:30573
+cnbox       |recolic      |sh://genpasswd cnbox       |proxy-cdn.recolic.net:30625
+host16      |Administrator|sh://rsec OVL_HOST_RDP     |host.blade16.m.recolic
+host18      |Administrator|sh://rsec OVL_HOST_RDP     |host.blade18.m.recolic
+host32      |Administrator|sh://rsec OVL_HOST_RDP     |host.blade32.m.recolic
+host33      |Administrator|sh://rsec OVL_HOST_RDP     |host.blade33.m.recolic
+host1030    |Administrator|sh://rsec OVL_HOST_RDP     |host.blade30.m.recolic
+host2021    |Administrator|sh://rsec OVL_HOST_RDP     |host.rack21.m.recolic
+tmpvsbox    |recolic      |sh://rsec WEAK10           |localhost:30477
+@openwrt    |root         |sh://genpasswd 10.100.100.1|10.100.100.1
+"
+
+if test $target = help
+    echo "Usage: rrdp <target_name>"
+    echo "Target list:"
+    echo $targets | grep -v '^NAME' | cut -d '|' -f 1 | grep . | string join ', '
+    echo "or Usage: env 'target_line=|Administrator|password|my-vm.example.com:3389' rrdp ."
+    exit 0
+end
+
+test -n "$target_line"
+or set target_line (echo $targets | grep "^$target *|")
+or die "Target $target not found."
+set user (string trim (echo $target_line | cut -d '|' -f 2))
+set pass (string trim (echo $target_line | cut -d '|' -f 3))
+set host (string trim (echo $target_line | cut -d '|' -f 4))
+
+# expand secrets..
+if string match "sh://*" $pass > /dev/null
+    set _command (echo $pass | sed 's|sh://||')
+    set pass (bash -c "$_command")
+    or exit $status
+end
+if string match "sh://*" $host > /dev/null
+    set _command (echo $host | sed 's|sh://||')
+    set host (bash -c "$_command")
+    or exit $status
+end
+
+if string match "@*" $target_line > /dev/null
+    # SSH
+    sshpass -p $pass ssh $user@$host
+else
+    # RDP
+    if test $XDG_SESSION_TYPE = x11
+        set resolution (xrandr | grep -o 'current [0-9]* x [0-9]*')
+        set w (echo $resolution | cut -d x -f 1 | grep -o '[0-9]*')
+        set h (math (echo $resolution | cut -d x -f 2 | grep -o '[0-9]*')-100)
+        # current 1920 x 1080
+        if which xfreerdp
+            set rdp xfreerdp
+        else
+            set rdp xfreerdp3
+        end
+    else if test $XDG_SESSION_TYPE = wayland
+        # Xwayland is also working
+        set resolution (xrandr | grep -o 'current [0-9]* x [0-9]*')
+        set w (echo $resolution | cut -d x -f 1 | grep -o '[0-9]*')
+        set h (math (echo $resolution | cut -d x -f 2 | grep -o '[0-9]*')-50)
+        # For wayland, fullscreen is acceptable because shortcuts are not captured on deny
+        #if which wlfreerdp
+        #    set rdp wlfreerdp
+        #else
+            set rdp xfreerdp
+            set h (math $h-50)
+            # clipboard doesnt work in wlfreerdp3 sdl-freerdp3
+            #end
+    else
+        die "Unknown XDG_SESSION_TYPE $XDG_SESSION_TYPE"
+    end
+    
+    if string match '*win7*' $target
+        set rdp rdesktop
+    end
+    
+    if test $rdp = rdesktop
+        echo "EXEC: $rdp -g $w'x'$h -r disk:abc=/home/recolic/Downloads -u $user -p $pass -v $host"
+        $rdp -K -g $w'x'$h -r disk:abc=/home/recolic/Downloads -u $user -p $pass -v $host
+    else
+        echo "EXEC: $rdp -disable-grab-keyboard -disable-toggle-fullscreen --auth-pkg-list !kerberos -w $w -h $h -drive mapped_tmp,$HOME/tmp -u $user -p $pass -v $host"
+        $rdp -disable-grab-keyboard -disable-toggle-fullscreen --auth-pkg-list !kerberos -w $w -h $h -drive mapped_tmp,$HOME/tmp -u $user -p $pass -v $host
+        # disable krb5: /auth-pkg-list:!kerberos 
+    end
+end
+
+exit $status
+

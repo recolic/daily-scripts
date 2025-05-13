@@ -1,0 +1,110 @@
+var Base64={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",encode:function(e){var t="";var n,r,i,s,o,u,a;var f=0;e=Base64._utf8_encode(e);while(f<e.length){n=e.charCodeAt(f++);r=e.charCodeAt(f++);i=e.charCodeAt(f++);s=n>>2;o=(n&3)<<4|r>>4;u=(r&15)<<2|i>>6;a=i&63;if(isNaN(r)){u=a=64}else if(isNaN(i)){a=64}t=t+this._keyStr.charAt(s)+this._keyStr.charAt(o)+this._keyStr.charAt(u)+this._keyStr.charAt(a)}return t},decode:function(e){var t="";var n,r,i;var s,o,u,a;var f=0;e=e.replace(/[^A-Za-z0-9\+\/\=]/g,"");while(f<e.length){s=this._keyStr.indexOf(e.charAt(f++));o=this._keyStr.indexOf(e.charAt(f++));u=this._keyStr.indexOf(e.charAt(f++));a=this._keyStr.indexOf(e.charAt(f++));n=s<<2|o>>4;r=(o&15)<<4|u>>2;i=(u&3)<<6|a;t=t+String.fromCharCode(n);if(u!=64){t=t+String.fromCharCode(r)}if(a!=64){t=t+String.fromCharCode(i)}}t=Base64._utf8_decode(t);return t},_utf8_encode:function(e){e=e.replace(/\r\n/g,"\n");var t="";for(var n=0;n<e.length;n++){var r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r)}else if(r>127&&r<2048){t+=String.fromCharCode(r>>6|192);t+=String.fromCharCode(r&63|128)}else{t+=String.fromCharCode(r>>12|224);t+=String.fromCharCode(r>>6&63|128);t+=String.fromCharCode(r&63|128)}}return t},_utf8_decode:function(e){var t="";var n=0;var r=c1=c2=0;while(n<e.length){r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r);n++}else if(r>191&&r<224){c2=e.charCodeAt(n+1);t+=String.fromCharCode((r&31)<<6|c2&63);n+=2}else{c2=e.charCodeAt(n+1);c3=e.charCodeAt(n+2);t+=String.fromCharCode((r&15)<<12|(c2&63)<<6|c3&63);n+=3}}return t}}
+
+var encode = Base64.encode, decode = Base64.decode;
+var ssUrl = /** @class */ (function () {
+    function SsUrl() {
+    }
+    SsUrl.genSS = function (config) {
+        var settings = "" + encode(config.method + ":" + config.password);
+        var hostname = config.server + ":" + config.server_port;
+        var name = '';
+        var plugin = '';
+        if (config.plugin) {
+            plugin = "?plugin=" + config.plugin;
+        }
+        if (config.plugin && config.plugin_param) {
+            plugin = plugin + encodeURIComponent(';' + config.plugin_param);
+        }
+        if (config.name) {
+            name = '#' + encodeURI(config.name ? config.name : '');
+        }
+        return "ss://" + settings + "@" + hostname + plugin + name;
+    };
+    SsUrl.genSSR = function (config) {
+        var hostname = config.server + ":" + config.server_port;
+        var settings = config.protocol + ":" + config.method + ":" + encode(config.obfs) + ":" + config.password;
+        var params = '?obfsparam=' + encode(config.obfs_param) +
+            '&protoparam=' + encode(config.protocol_param) +
+            '&remarks=' + encode(config.name) +
+            '&group=' + encode(config.group);
+        var URI = hostname + ":" + settings + "/" + params;
+        return 'ssr://' + encode(URI);
+    };
+    SsUrl.parseSS = function (url) {
+        var URI = url.replace('ss://', '').split('@');
+        var params = new url_1.URLSearchParams(URI[1].split('?')[1]);
+        var parsedURL = {
+            method: /*------*/ decode(URI[0])
+                .split(':')[0],
+            password: /*----*/ decode(URI[0])
+                .split(':')[1],
+            server: /*------*/ URI[1]
+                .split('#')[0]
+                .split(':')[0],
+            server_port: /*-*/ Number(URI[1]
+                .split('#')[0]
+                .split(':')[1]
+                .split('?')[0])
+        };
+        var name = URI[1].split('#')[1];
+        if (name)
+            parsedURL.name = decodeURI(name);
+        if (params.has('plugin')) {
+            parsedURL.plugin = params.get('plugin')
+                .split(';')[0];
+            var pluginRaramEncoded = URI[1].split('?')[1]
+                .split('#')[0];
+            if (pluginRaramEncoded) {
+                parsedURL.plugin_param = decodeURIComponent(pluginRaramEncoded)
+                    // "plugin=v2ray;" <<< path=/v2ray/;host=example.com;tls
+                    .replace("plugin=" + parsedURL.plugin + ";", '');
+            }
+        }
+        return parsedURL;
+    };
+    SsUrl.parseSSR = function (url) {
+        var URI = decode(url.replace('ssr://', '')).split(':');
+        var params = new url_1.URLSearchParams(URI[5].split('/')[1]);
+        return {
+            server: /*---------*/ URI[0],
+            server_port: /*----*/ Number(URI[1]),
+            protocol: /*-------*/ URI[2],
+            method: /*---------*/ URI[3],
+            obfs: /*-----------*/ decode(URI[4]),
+            password: /*-------*/ URI[5].split('/')[0],
+            name: /*-----------*/ decode(params.get('remarks')),
+            obfs_param: /*-----*/ decode(params.get('obfsparam')),
+            protocol_param: /*-*/ decode(params.get('protoparam')),
+            group: /*----------*/ decode(params.get('group'))
+        };
+    };
+    return SsUrl;
+}());
+
+
+/*
+
+https://github.com/izzqz/shadowsocks-link-generator
+const myUrl = ssUrl.genSS({
+  server: '8.8.8.8',
+  server_port: 8388,
+  password: 'mypassword',
+  method: 'aes-256-cfb',
+  plugin: 'obfs-plugin',
+  plugin_param: '',
+  name: 'my server'
+})
+const myUrl = ssUrl.genSSR({
+    server: "77.88.8.8",
+    server_port: 8388,
+    password: 'mysecretpassword123',
+    method: 'chacha20',
+    name: 'my server',
+    protocol: 'plain',
+    protocol_param: '',
+    obfs: 'http_simple',
+    obfs_param: 'someparams',
+    group: 'My server list' // Group is used in the shadowsocksR application
+})
+
+*/

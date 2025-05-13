@@ -1,0 +1,65 @@
+#!/bin/python -u
+
+from datetime import datetime
+import sys, os
+
+def day_to_code(day):
+    """Convert the day of the month to the appropriate code."""
+    if 1 <= day <= 9:
+        return str(day)
+    else:
+        return chr(ord('a') + (day - 10))
+
+def code_of_today(date_str=None):
+    """Prints the code of the given date or today in the format MMDD -> M<day_code>."""
+    if date_str:
+        month = int(date_str[:2])
+        day = int(date_str[2:])
+    else:
+        today = datetime.now()
+        day = today.day
+        month = today.month
+
+    day_code = day_to_code(day)
+    month_code = day_to_code(month)
+    today_str = f"{month:02d}{day:02d}"
+    today_code = f"{month_code}{day_code}"
+
+    if os.environ.get('short') is None:
+        print(f"{today_str} -> ", file=sys.stderr, end="")
+        print(f"{today_code}")
+    else:
+        print(today_code)
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        date_str = sys.argv[1]
+        code_of_today(date_str)
+    else:
+        code_of_today()
+
+
+# #!/bin/python -u
+# from datetime import datetime
+# 
+# def day_to_code(day):
+#     """Convert the day of the month to the appropriate code."""
+#     if 1 <= day <= 9:
+#         return str(day)
+#     else:
+#         return chr(ord('a') + (day - 10))
+# 
+# def code_of_today():
+#     """Prints the code of today in the format MMDD -> M<day_code>."""
+#     today = datetime.now()
+#     day = today.day
+#     month = today.month
+# 
+#     day_code = day_to_code(day)
+#     today_str = f"{month:02d}{day:02d}"
+#     today_code = f"{month:01d}{day_code}"
+# 
+#     print(f"{today_str} -> {today_code}")
+# 
+# # Run the function
+# code_of_today()

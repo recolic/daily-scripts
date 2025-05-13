@@ -1,0 +1,33 @@
+#!/bin/bash
+
+function plugin_help () {
+    echo "
+###########################################
+### azvm-deploy.sh plugin 'extra-tip' v2504.1 ###
+
+This plugin helps creating VM across more than 1 tip session.
+
+Extra Args:
+  tip2_id
+  tip2_cluster (optional)
+  (tip2 must be in the same region)
+
+Example:
+  plugin=extra-tip vmsize=Standard_E4a_v4 vnet_enc=1 only_n_vms_in_tip=1 tip2_id=e45c538c-8c14-4770-ba0e-1bc6c7da3ddf azvm-deploy.sh centraluseuap 2 5d710a1b-6f7c-46d7-bc5c-21052d0050c9 CDM40PrdApp04
+  (VM1 will land on tip1, VM2 will land on tip2)
+"
+}
+
+function plugin_before_vm_creat () {
+    var_default_val tip2_id
+    var_default_val tip2_cluster "$cluster"
+    [ "$tip2_id" = "" ] && echo "ERROR tip2_id not set" && exit 1
+
+    echo -e "${COLOR_RED_BLD}++ Using Extra TiP session $tip2_id at cluster $tip2_cluster$COLOR_CLR"
+    debugexec az deployment group create -g "$resgrp" --template-file /tmp/template-avset.json --parameters "avname=tip2_$avname" "location=$location" "tipid=$tip2_id" "cluster=$tip2_cluster" || exit $?
+}
+
+function plugin_after_each_vm_creat () {
+    [ "$cter" -ge "$only_n_vms_in_tip" ] && vm_create_xtra_arg_first_n+=(--availability-set "tip2_$avname")
+}
+

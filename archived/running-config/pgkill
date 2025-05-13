@@ -1,0 +1,38 @@
+#!/bin/bash
+# By Recolic Keghart, used to kill process quicker.
+# Usage: pgkill <keywork> [kill args ...]
+#        Then use `dd` to delete processes which you'd like to kill.
+#        It's undefined behavior if you do some other operations.
+# version: 1.03mpc
+
+function ps-aux-to-pid-list() {
+    cat $1 | sed 's/\t/ /g' | tr -s ' ' | cut -d ' ' -f 2 > $1.pso
+    mv $1.pso $1
+}
+
+[[ $1 == '-h' ]] || [[ $1 == '--help' ]] || [[ $1 == '' ]] && echo 'Usage: pgkill <keyword> [kill args...]' && exit 1
+this="$0 $1"
+
+psout=`mktemp`
+psless=`mktemp`
+pscp=`mktemp`
+
+ps aux > $psout
+greped_ps=`grep "$1" $psout | grep -v "$this"`
+[[ $greped_ps == '' ]] && echo 'No process to kill.' && exit 0 || echo -n "$greped_ps" > $psless
+
+cp $psless $pscp
+vim $psless
+
+ps-aux-to-pid-list $psless
+ps-aux-to-pid-list $pscp
+
+diff $psless $pscp > /dev/null && echo "No process to kill." && rm $psless $pscp $psout && exit 0
+
+shift
+while read line; do
+    ! grep "^$line\$" $psless > /dev/null 2>&1 && echo "Killing pid $line." && kill $@ $line
+done <$pscp
+
+rm $psless $pscp $psout
+

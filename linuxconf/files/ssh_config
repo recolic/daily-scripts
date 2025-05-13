@@ -1,0 +1,211 @@
+host *
+    KexAlgorithms +diffie-hellman-group1-sha1
+    PubkeyAcceptedAlgorithms +ssh-rsa
+    hostkeyAlgorithms +ssh-rsa
+    Ciphers +aes256-cbc
+    StricthostKeyChecking no
+    #userKnownhostsFile=/dev/null
+    ServerAliveInterval 3
+    #LogLevel ERROR
+
+host vs-ssh.visualstudio.com
+    IdentityFile ~/.ssh/aur
+    IdentitiesOnly yes
+
+host main.recolic
+    hostname func.main.recolic.net
+    user root
+
+host drive.recolic
+    hostname git.recolic.net
+    port 4022
+    user root
+host drive.recolic-proxy
+    hostname git.recolic.net
+    port 2022
+    user root
+
+host storage.recolic
+    hostname storage.recolic.net
+    user root
+
+host ms.recolic
+    hostname proxy-cdn.recolic.net
+    port 30622
+    user recolic
+
+host msbackup.recolic
+    hostname proxy.recolic.cc
+    port 30622
+    user recolic
+
+host vm.ndpa-build.recolic
+    hostname 127.0.0.1
+    port 30472
+    user r
+    proxyjump ms.recolic
+
+host intpyf.com
+    user root
+    port 4022
+
+host remote.river-mac.recolic
+    hostname proxy.recolic.net
+    user river
+    port 30702
+
+### Recolic Home LAN
+
+host hms.r
+    user root
+
+host remote.hms.r
+    hostname base.ddns1.recolic.cc
+    port 25567
+    #hostname proxy-cdn.recolic.net
+    #port 30512
+    user root
+
+host pc.r
+    port 25566
+    user recolic
+
+host remote.pc.r
+    hostname base.ddns1.recolic.cc
+    port 25566
+    user recolic
+
+host mpc.r
+    hostname RECOLICMPC
+    port 22
+    user recolic
+
+host playg.r
+    hostname hms.r
+    port 30474
+    user root
+    proxyjump remote.hms.r
+
+host rpi.r
+    user root
+
+host remote.rpi.r
+    hostname rpi.r
+    user root
+    proxyjump remote.hms.r
+
+### Work machine. IP must be protected.
+
+host rack20
+    hostname soc.rack20.m.recolic
+    # Host: host.rack20.m.recolic
+    user root
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 %h %p
+
+host rack21
+    hostname soc.rack21.m.recolic
+    # Host: with rack20
+    user root
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 %h %p
+
+host blade10
+    # hostname soc2.blade10.m.recolic
+    hostname soc.blade10.m.recolic
+    # Host: host.blade30.m.recolic
+    user root
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 %h %p
+
+host blade30
+    hostname soc.blade30.m.recolic
+    # hostname soc2.blade30.m.recolic
+    # Host: with blade10
+    user root
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 %h %p
+
+host blade16
+    hostname soc.blade16.m.recolic
+    #hostname soc2.blade16.m.recolic
+    # Host: host.blade16.m.recolic
+    #!rmssh: rm.blade18.m.recolic;16;R_SEC_RM1618_PSWD
+    user root
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 %h %p
+    
+host blade18
+    hostname soc.blade18.m.recolic
+    #hostname soc2.blade18.m.recolic
+    # Host: host.blade18.m.recolic
+    #!rmssh: rm.blade18.m.recolic;18;R_SEC_RM1618_PSWD
+    user root
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 %h %p
+
+host blade32
+    hostname soc.blade32.m.recolic
+    # Host: host.blade32.m.recolic
+    #!rmssh: rm.blade33.m.recolic;32;R_SEC_RM3233_PSWD
+    user root
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d ' ' -f 1) %p
+
+host blade33
+    hostname soc.blade33.m.recolic
+    # Host: host.blade33.m.recolic
+    #!rmssh: rm.blade33.m.recolic;33;R_SEC_RM3233_PSWD
+    user root
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d ' ' -f 1) %p
+
+host vm.blade32
+    hostname vm.blade32.m.recolic
+    user root
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d ' ' -f 1) %p
+
+host vm.blade33
+    hostname vm.blade33.m.recolic
+    user root
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d ' ' -f 1) %p
+
+# -----BEGIN PGP MESSAGE-----
+# 
+# hQIMA2xDZEbjUq0tAQ/+JHKfN5NnyE1KHWomvZ0Ofy5GFgzAZLRh1fCGaso2EZdP
+# G+vdJgUtUaDLi3iXO653oeOKxJ6mFY2L0MGzOL8EL86UIMHHxBNklJkXVJHXwbrM
+# LWgefSnQakk7ML2jfXHugyEqcjxZ39tNKdveRmR5rpEz1jV/tj+VM/yOWhl2x4Y5
+# h3pVFt9zIj/Oa1UnNjr2wthBM4+5qy5Zll0Q1PVl4sRTOBvWDtW4YAgbFz52vnqu
+# yFtTZcMoePTUq+xgLY69SjOcArZuWTPgR+rVbBhnt+7B1gq6NiZxYxM5xGDr8wmb
+# yf3dOKssZXat8NkXhfUx27OFxQqo4Tz7NlYw3T90ZVbTy6tWbVoZqW52F5jCfIdK
+# 96+CZT1OOAoQBqpa9EKhlGk8bRJC4bHDhr0WxzNmoENCgGHbzbzgV74M4hTlOBca
+# vT7yq81oEPFIUMTDuF0VlDTZ1QpvByuE+aZ7N2ja6pZI0gd3llVECcoIMHaXhBGO
+# zmFgSHQW1heHK30YB1bsR6LT1/bVMy/ehZhCh8UBZN4374EBg346oLT0sJ6QW0Xk
+# fqwmwWnI7iJZWN0FimpnzywZ9QUSFMdBaR/vzFgXM61cViMqnawQ2MVgcrQGNLJB
+# frT9nQa7LWADVPtMdJNK96yr+dQhF6K/dBzJBhcv087Jo9DSJZ6TgBorPO7iMOLS
+# wD4BaJrQyW9DDa5yqW49ADw+AnyHfpVBpoQL6tsI2XGa1sZr8iFoaYCEA/+/7GV9
+# u46Ao9vx+mstglo7kHO06EbLfXr7bUBkuZsS6UjLlP/T9+Xf12ExMSLy/CYEFaZy
+# boVWl65uNmHQvo9sysAHDY8TkbgEpeDrP3UfGSxnWCkCfgKOCnexQXICg9D4EYvv
+# x9hy3QdMl/3VX0t5tL5aQfvm3Qh5cUGsRP41HTeiIFy5sjsZZjF7tHkizVNlsmkw
+# 6oVcpGW59XcE1S0L+MvB9nBE5QWQsaddyA4crSx5Ze6/0L5yz7NMtxtBm4rE2y8z
+# 152vy2NYhTbygG4MQUuGGA==
+# =zPsv
+# -----END PGP MESSAGE-----
+
+host vm.blade18
+    hostname vm.blade18.m.recolic
+    user root
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 %h %p
+host vm.blade16
+    hostname vm.blade18.m.recolic
+    user root
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 %h %p
+host vm.rack20
+    hostname vm.rack20.m.recolic
+    user root
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 %h %p
+host vm.rack21
+    hostname vm.rack21.m.recolic
+    user root
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 %h %p
+host vm.blade10
+    hostname vm.blade10.m.recolic
+    user root
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 %h %p
+host vm.blade30
+    hostname vm.blade30.m.recolic
+    user root
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 %h %p
+

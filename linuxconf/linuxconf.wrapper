@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ ! -f /usr/bin/linuxconf ]; then
+    curl "https://git.recolic.net/root/linuxconf/-/raw/master/linuxconf?ref_type=heads" -o /usr/bin/linuxconf &&
+        grep lci_version /usr/bin/linuxconf > /dev/null ||
+        ! echo "Unable to download linuxconf executable." || exit 1
+    chmod +x /usr/bin/linuxconf
+fi
+
+/usr/bin/linuxconf "$@"

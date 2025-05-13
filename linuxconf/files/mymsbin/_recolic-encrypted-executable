@@ -1,0 +1,14 @@
+#!/bin/bash
+# This is equivalent to running decrypted binary directly.
+
+set -e
+
+EXECNAME=$(basename "$0")
+TMP_BIN="/tmp/.tmpbin-$EXECNAME"
+
+if [ ! -f "$TMP_BIN" ]; then
+    gpg -d -o "$TMP_BIN" "$0.gpg"
+    chmod +x "$TMP_BIN"
+fi
+
+"$TMP_BIN" "$@"

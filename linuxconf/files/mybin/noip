@@ -1,0 +1,14 @@
+#!/bin/bash
+
+ip="$1"
+if [[ $ip = "" ]]; then
+    curl "https://dynamicdns.park-your-domain.com/update?host=rtmp&domain=896444.xyz&password=$(rsec DDNS_XYZ_TOKEN)"
+    echo "Set rtmp.896444.xyz => Current_Machine_IPv4"
+    #curl "https://freemyip.com/update?token=$(rsec FREEMYIP_TOKEN)&domain=recolic-tmp.freemyip.com"
+    #echo "Set recolic-tmp.freemyip.com => Current_Machine_IP"
+else
+    curl "https://dynamicdns.park-your-domain.com/update?host=rtmp&domain=896444.xyz&password=$(rsec DDNS_XYZ_TOKEN)&ip=$ip"
+    echo "Set rtmp.896444.xyz => $ip"
+    #curl "https://freemyip.com/update?token=$(rsec FREEMYIP_TOKEN)&domain=recolic-tmp.freemyip.com&myip=$ip"
+    #echo "Set recolic-tmp.freemyip.com => $ip"
+fi

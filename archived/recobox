@@ -1,0 +1,147 @@
+#!/bin/bash
+# mediactl for multi-media XF86 key implementation.
+# and many other alias for convenience.
+# to support openbox key-bind.
+
+function help_info () {
+	cat <<EOF
+recolic's toolbox for cmdline.
+by Recolic Keghart. Jun 26, 2017
+version 1.02
+
+Usage:
+recobox <sub-command> [additional command]
+
+sub-commands:
+<- sessionctl
+lock
+lock-suspend
+<- mediactl
+backlight [inc/dec]
+audio [inc/dec/mute]
+screenshot
+<- powerctl
+touchpad [switch/on/off]
+battery
+<- dectl
+decfg [qt5/qt4/gnome/gtk]
+
+EOF
+	return 0
+}
+
+function case_touchpad () {
+# $2 for main as $1
+	SH_PATH=~/sh/running-config/touchpad.sh
+	case "$1" in 
+		"switch" )
+			$SH_PATH
+			;;
+		"on" )
+			$SH_PATH on
+			;;
+		"off" )
+			$SH_PATH off
+			;;
+		* )
+			help_info
+			;;
+	esac
+	return $?
+}
+
+function case_decfg () {
+# $2 for main as $1
+	case "$1" in 
+		"qt5" )
+			~/sh/running-config/config-qt5.fish
+			;;
+		"qt4" )
+			qtconfig-qt4
+			;;
+		"gtk" )
+			~/sh/running-config/setgtktheme.py
+			;;
+        "gnome" )
+            gnome-tweak-tool
+            ;;
+		* )
+			help_info
+			;;
+	esac
+	return $?
+}
+
+
+function case_backlight () {
+# $2 for main as $1
+	SH_PATH=xbacklight
+	case "$1" in 
+		"inc" )
+			$SH_PATH -inc 5
+			;;
+		"dec" )
+			$SH_PATH -dec 5
+			;;
+		* )
+			help_info
+			;;
+	esac
+	return $?
+}
+
+function case_audio () {
+# $2 for main as $1
+	echo "?> case_audio $1"
+	SH_PATH="amixer set Master"
+	case "$1" in 
+		"mute" )
+			$SH_PATH toggle
+			;;
+		"inc" )
+			$SH_PATH 5%+
+			;;
+		"dec" )
+			$SH_PATH 5%-
+			;;
+		* )
+			help_info
+			;;
+	esac
+	return $?
+}
+
+case "$1" in 
+	"lock" )
+		gnome-screensaver-command -l
+		;;
+	"lock-suspend" )
+        systemctl suspend
+		;;
+	"touchpad" )
+		case_touchpad $2
+		;;
+	"battery" )
+		upower -i /org/freedesktop/UPower/devices/battery_BAT0
+		;;
+	"backlight" )
+		case_backlight $2
+		;;
+	"audio" )
+		case_audio $2
+		;;
+    "screenshot" )
+        gnome-screenshot -a --file=$HOME/tmp/snap-$(date +%m%d-%H%M%S).png
+        ;;
+    "screenshot-copy" )
+        gnome-screenshot -a -c
+        ;;
+	"decfg" )
+		case_decfg $2
+		;;
+	* )
+		help_info
+		;;
+esac
+
+exit $?

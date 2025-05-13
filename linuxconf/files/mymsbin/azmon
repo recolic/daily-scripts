@@ -1,0 +1,25 @@
+#!/bin/fish
+#Usage: azmon <build_id>
+#This script will monitor this pipeline, and beep when pipeline finished.
+
+function azmon
+    set id $argv[1]
+    while true
+        sleep 15
+        curl -s -H $devops_header "https://msazure.visualstudio.com/b32aa71e-8ed2-41b2-9d77-5bc261222004/_apis/build/builds/$id" > /tmp/azmon$id
+          or echo "FAILED TO req API. check devops_header"
+        cat /tmp/azmon$id | grep 'Azure DevOps services are currently unavailable'
+          and continue
+
+        cat /tmp/azmon$id | grep 'status":"notStarted' -v | grep 'status":"inProgress' -v
+        and begin
+          beep
+          or mpg123 ~/Nextcloud/tmp/alarm/alarm.mp3
+          or notify-send "ppl complete $id"
+          or echo Failed to send notify
+        end
+    end
+end
+
+azmon $argv[1]
+

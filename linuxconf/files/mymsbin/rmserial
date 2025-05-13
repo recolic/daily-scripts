@@ -1,0 +1,38 @@
+#!/bin/bash
+
+function die () {
+    echo "$1"
+    exit 1
+}
+
+[ -z "$1" ] && die "Usage: $0 <ssh_config hostname>"
+
+# Hostname provided by the user
+HOST=$1
+
+# Path to SSH config file
+SSH_CONFIG="$HOME/.ssh/config"
+
+# Extract the block of text between the matching host line and the next host line
+HOST_BLOCK=$(awk -v host="$HOST" '
+    $1 == "host" && $2 == host {flag=1; next}
+    $1 == "host" && flag {exit}
+    flag' $SSH_CONFIG)
+
+# Extract the line containing the IP range and rmport value
+IP_LINE=$(echo "$HOST_BLOCK" | grep '#!rmssh')
+
+[ -z "$IP_LINE" ] && die "No matching rmssh entry found for host: $HOST"
+
+# Extract the IP range and rmport value
+RMSSH_CONFIG_LINE=$(echo "$IP_LINE" | awk -F ': ' '{print $2}')
+IP=$(echo "$RMSSH_CONFIG_LINE" | cut -d ';' -f 1) || die "invalid config line"
+PORT=$(echo "$RMSSH_CONFIG_LINE" | cut -d ';' -f 2) || die "invalid config line"
+PASS_VAR=$(echo "$RMSSH_CONFIG_LINE" | cut -d ';' -f 3) || die "invalid config line"
+
+# Run the very-special-command with the extracted IP and rmport
+# pass=$(eval echo \$"$PASS_VAR")
+pass=$(rsec "$PASS_VAR") || die "failed to get secret"
+echo EXEC: sshpass -p $pass ssh -o ProxyCommand='nc --proxy-type socks5 --proxy 127.0.0.1:10809 %h %p' "root@$IP" start serial session -b 1 -i "$PORT"
+sshpass -p $pass -- ssh -tt -o ProxyCommand='/usr/bin/nc -X 5 -x 127.0.0.1:10809 %h %p' "root@$IP" start serial session -b 1 -i "$PORT"
+

@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Used on server where GPG not available, must be updated every year.
+# presalted_key="[PLEASE GENERATE BY RUNNING THIS SCRIPT ONCE]"
+salt1=recolic.salt
+salt2=recolic.$(date +%Y)
+input="$1"
+RESULT_LEN=10
+
+function myhash () {
+    local data="$1"
+    local hash_in_hex=$(echo -n "$data" | sha256sum | cut -d ' ' -f 1) || return 1
+    echo -n "$hash_in_hex" | xxd -r -p | base64 -w0
+    return $?
+}
+
+if [[ "$input" = "" ]]; then
+    echo "Usage: $0 <text>"
+    exit 1
+fi
+
+# on local computer, GPG available
+if [[ $presalted_key = "" ]]; then
+    key=$(genpasswd rshortsign) || exit $?
+    presalted_key="$(myhash $salt1$key)" || exit $?
+    echo "DEBUG: Presalted_key: $presalted_key" 1>&2
+fi
+
+myhash "$input$presalted_key" | tr -d '/+=' | head -c $RESULT_LEN
+
+exit $?
+

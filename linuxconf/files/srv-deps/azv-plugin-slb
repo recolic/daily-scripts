@@ -1,0 +1,74 @@
+#!/bin/bash
+
+function plugin_help () {
+    echo "
+###########################################
+### azvm-deploy.sh plugin 'slb' v2501.1 ###
+
+This plugin helps creating VM behind SLB.
+
+Extra Optional Args:
+  outbound_ports_per_vm (default value = 1000)
+
+Note:
+  SLB will redirect public_ip:8888 to ANY RANDOM VM:22, so it's recommended to only create 1 VM.
+  inbound-nat-rule is not reliable even if manually created on azure portal.
+"
+    # TODO: move this to other doc
+    echo "-----BEGIN PGP MESSAGE-----
+
+hQIMA2xDZEbjUq0tAQ//TCSKvoBseLb2rGS1X1WhOWs0Voa3xlCVleeGCCOlEThu
+ZUSV+ivpYo5pyaZaAPNoqqIYvsRGw/CjRrhvJuCpvOJ2g+sohipQiQu1fPwIFUtX
+2jOEfpK2ZcMbkdmEvs7UlZsdd0zkFNzDu4cBaOVEHq5hO7cyEzSIFr2dmbmhfkbQ
+7XnHzz/GBF43fz6aq/ZZnU1hgsHy7oOkmpNVzTczAqA02bI0bRHSkg0SbrEOF5Gx
+rCuDaZ9VDqhJD6DgA8Rh8YabkPpzSo1A5PDwAo0Yo/YKdXJ//p0bYSqp02VzkYgC
+yqIotxvqUDUVwm3nsSGp8IM3o4ONJsqVgeEd+2dfaBW03tTZUT+jm0/MdmnUarxF
+XcKrq9SuSec99/RguQCNfUi5SXRtV/s8Q5rRh25Ga4kelSz2quemKFq9Bnzv5hah
+VVlR01kmYU+hlRNAk+pjvL+tIvmkDElPRpqdK1RDXYdjUDuTcRLwi3ge8kihAHPU
+JPhZRAVSFHuRcIF7XTayBG/uC5T0/OyyeJuhdQ72peP9sCAmaQasdiKPJ3OLFC9w
+dniJZL+nUA+mSdSSfLi6I2T1k+mUWEFS1gIQH34qlixRFfiHbzmACQ/XdVeridAi
+cJM3LCWuGI3C6i+dPBWhPabsNJcAON3fSmpzUkkbR/lNEC1QozZp9uuGYronnE3S
+wFwB6zLtViMdJEDUv7m/+ULUEiqAviwMWrUkdB74G+s6kreVKME+idTu5d1nKuql
+xEw65hXQsVnIRS6YhBtRzEZTvyEthRR5SSxxEUneSzREV+s4VkclYqYfrQaI35b5
+jAkuQgY8SS6KT97DPiyb5OoLNNTID3mulUvujPErWQ5cvglY93733e8Wh3isWhI8
+YJNGSceSRezBbn0WOYVRiHnYvemvbrdvs/YIbjoOICMmTJj+iZKckGYhnyftomIc
+DsleGnaAvBSBZElIjKb1sRetm2N+b9r+kShqKnFFsjMd2s8srcL5CuvkuLSPg1n2
+Mj9lmEOewcfoBvZ+Tu8rL6w/lY7NzfgrvSYV5PyZVgj57r8D8GjyyGvfDtvwQg==
+=QGFP
+-----END PGP MESSAGE-----" | gpg -d
+}
+
+function plugin_before_vm_creat () {
+    vm_create_xtra_arg+=(--public-ip-address "")
+}
+
+function plugin_after_vm_creat () {
+    LB_NAME=lbt_$prefix
+    FE_IP=feip_$prefix
+    BE_PL=bepl_$prefix
+    var_default_val outbound_ports_per_vm 1000
+    var_default_val enable_outbound_rule_fix 1
+    debugexec az network lb create --resource-group $resgrp --name $LB_NAME --sku Standard --frontend-ip-name $FE_IP --backend-pool-name $BE_PL --vnet-name $vnetname || exit
+
+    #if [[ $enable_outbound_rule_fix = 1 ]]; then
+    #    # This is an unreliable trick to use NIC directly. It's from good-case ARM template dump. 
+    #    debugexec az network lb address-pool update -g $resgrp --lb-name $LB_NAME -n $BE_PL --vnet $vnetname --backend-addresses [0].name="${resgrp}_${vmname}VMNicipconfig${vmname}" || exit
+    #else
+        echo -e "$COLOR_RED_BLD Warning: enable_outbound_rule_fix not enabled. outbound_ports_per_vm limit won't make effect $COLOR_CLR" 1>&2
+        # When a backend pool is configured by IP address, the backend instances are not secure by default and still use default outbound access.
+        # This means: outbound_ports_per_vm won't make effect
+        # Ref: https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/default-outbound-access#how-can-i-transition-to-an-explicit-method-of-public-connectivity-and-disable-default-outbound-access
+        debugexec az network lb address-pool update -g $resgrp --lb-name $LB_NAME -n $BE_PL --vnet $vnetname --backend-addresses "[{name:addr1,ip-address:10.0.0.4}]" || exit
+    #fi
+
+    # TODO: The correct way to redirect PUBLIC:4022 to VM1:22. But azure-cli cannot associate nat-rule to machine. Even if u manually created one on az portal, it will de-associate after some time.
+    # debugexec az network lb inbound-nat-rule create --resource-group $resgrp --lb-name $LB_NAME  --name nat_rule_nt --protocol Tcp --frontend-port 4022 --backend-port 22 --frontend-ip-name $FE_IP || exit
+    # Warning: outbound-rule + lb-rule = outbound internet access
+    debugexec az network lb outbound-rule    create --resource-group $resgrp --lb-name $LB_NAME --name MyOutboundRule --protocol All --idle-timeout 4 --frontend-ip-configs $FE_IP --address-pool $BE_PL --outbound-ports $outbound_ports_per_vm || exit
+
+    # Redirects 8888 to ANY_MACHINE:22. Backend machine selected randomly. (replacement to inbound-nat-rule as workaround)
+    debugexec az network lb rule             create --resource-group $resgrp --lb-name $LB_NAME --name lb_rule_a --protocol All --frontend-port 8888 --backend-port 22 --backend-pool-name $BE_PL --frontend-ip $FE_IP --protocol Tcp --disable-outbound-snat 1 || exit
+    if [[ $vmcount != 1 ]]; then
+        echo -e "$COLOR_RED_BLD Warning: PublicIp:8888 is mapped to RANDOM_MACHINE:22. Add inbound-nat-rule on az portal manually if required.$COLOR_CLR" 1>&2
+    fi
+}

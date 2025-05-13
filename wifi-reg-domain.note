@@ -1,0 +1,16 @@
+WARNING: Usually you SHOULD NOT set this for your device. Only set country code on router.
+-------------
+Install package /etc/conf.d/wireless-regdom
+
+/etc/modprobe.d/cfg80211.conf:
+
+options cfg80211 ieee80211_regdom=US
+options cfg80211 internal_regdb=y
+options cfg80211 crda_support=y
+
+Also set: /etc/conf.d/wireless-regdom
+
+
+
+iw reg get
+iw reg set

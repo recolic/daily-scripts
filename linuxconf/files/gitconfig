@@ -1,0 +1,29 @@
+[user]
+	name = Recolic
+	email = git@me.recolic.net
+	signingkey = 6861D89984E7887F0FFE6E08C344D5EAE3933636
+[commit]
+	gpgsign = false
+[color]
+	ui = auto
+[pull]
+	rebase = false
+[credential]
+	helper = store
+[push]
+	autoSetupRemote = true
+[core]
+	autocrlf = input
+	excludesFile = ~/.gitignore
+[diff "vfpc"]
+    xfuncname = "^(([A-Za-z0-9_]+ *)+\\(|(typedef )? *struct .*\\{) *$"
+
+# In vfpc repo, add the following to .gitattributes
+# *.c     diff=vfpc
+# *.h     diff=vfpc
+
+
+[includeIf "hasconfig:remote.*.url:msazure@vs-ssh.visualstudio.com:v3/**"]
+	path = ~/.cache/git-work-config.inc
+[includeIf "hasconfig:remote.*.url:https://msazure.visualstudio.com/**"]
+	path = ~/.cache/git-work-config.inc
