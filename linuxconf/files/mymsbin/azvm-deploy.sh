@@ -42,7 +42,7 @@ var_default_val dryrun              0
 
 function plugin_hook () {
   for p in $plugins; do
-    source "$p"
+    source "$plugin_dir/$p"
     if declare -f "$1" > /dev/null; then
       "$1" ; unset -f "$1"
     fi
@@ -63,7 +63,12 @@ Optional variables (read script for help):
 $(grep '^var' $0 | sed 's/^/  /')
 
 Set 'plugins' variable to see plugin-specific help. Available plugins:
-$(ls $plugin_dir)
+$(ls -m $plugin_dir)
+
+Use plugins like this:
+  plugins=secured $0 eastus2 1
+  plugins='secured slb' resgrp=mygrp $0 eastus2 2
+  plugins='*' $0
 "
     plugin_hook plugin_help
     exit 1
