@@ -57,7 +57,8 @@ function plugin_before_vnet_creat () {
     if [ "$secured_version" -ge 2504 ]; then
         # Block default-outbound-access.
         # We have to parse vnet args, remove subnet config, and compose a json one.
-        local subnets_json="$(vnet_args_parse_helper "${vnet_create_xtra_arg[@]}")"
+        vnet_args_parse_helper "${vnet_create_xtra_arg[@]}" > /tmp/.azvm-tmp-subnets-json || exit 1
+        local subnets_json="$(cat /tmp/.azvm-tmp-subnets-json)"
         vnet_create_xtra_arg=("${vnet_args_parse_remaining[@]}")
         vnet_create_xtra_arg+=(--subnets "$subnets_json")
         explicit_vnet_create=1
