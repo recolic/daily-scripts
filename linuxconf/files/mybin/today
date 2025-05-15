@@ -25,11 +25,9 @@ def code_of_today(date_str=None):
     today_str = f"{month:02d}{day:02d}"
     today_code = f"{month_code}{day_code}"
 
-    if os.environ.get('short') is None:
+    if os.environ.get('short') == "0":
         print(f"{today_str} -> ", file=sys.stderr, end="")
-        print(f"{today_code}")
-    else:
-        print(today_code)
+    print(today_code)
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
