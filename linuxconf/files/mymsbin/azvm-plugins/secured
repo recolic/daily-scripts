@@ -80,8 +80,8 @@ function plugin_before_vm_creat () {
 
 function plugin_after_each_vm_creat () {
     if [ "$secured_version" -ge 2505 ]; then
-        az vm extension set -n AzureMonitorLinuxAgent  --publisher Microsoft.Azure.Monitor             --version 1.0 --vm-name "$vmname$cter" --resource-group "$resgrp" --enable-auto-upgrade true --settings '{"GCS_AUTO_CONFIG":true}'
-        az vm extension set -n AzureSecurityLinuxAgent --publisher Microsoft.Azure.Security.Monitoring --version 2.0 --vm-name "$vmname$cter" --resource-group "$resgrp" --enable-auto-upgrade true --settings '{"enableGenevaUpload":true,"enableAutoConfig":true}'
+        debugexec az vm extension set -n AzureMonitorLinuxAgent  --publisher Microsoft.Azure.Monitor             --version 1.0 --vm-name "$vmname$cter" --resource-group "$resgrp" --enable-auto-upgrade true --settings '{"GCS_AUTO_CONFIG":true}'
+        debugexec az vm extension set -n AzureSecurityLinuxAgent --publisher Microsoft.Azure.Security.Monitoring --version 2.0 --vm-name "$vmname$cter" --resource-group "$resgrp" --enable-auto-upgrade true --settings '{"enableGenevaUpload":true,"enableAutoConfig":true}'
     fi
 }
 
