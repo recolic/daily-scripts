@@ -16,11 +16,11 @@ end
 
 set targets "
 NAME        |USERNAME     |PASSWORD                   |HOSTNAME
-msdev       |recolic      |sh://rsec DEVBOX           |proxy-cdn.recolic.net:30623
-msdev-backup|recolic      |sh://rsec DEVBOX           |proxy-cdn.recolic.net:30624
+msdev       |recolic      |sh://rsec DEVBOX           |mspc.m.recolic:30474
+msdev-backup|recolic      |sh://rsec DEVBOX           |mspc.wlo.m.recolic:30474
+msdev-rp    |recolic      |sh://rsec DEVBOX           |proxy-cdn.recolic.net:30623
 labjump     |fareast\bensl|sh://rsec MSPASS           |labjump.m.recolic
 lanbox      |recolic      |sh://genpasswd lanbox      |10.100.100.101:30473
-lanbox-tmp  |recolic      |sh://genpasswd lanbox      |base.ddns1.recolic.cc:30573
 cnbox       |recolic      |sh://genpasswd cnbox       |proxy-cdn.recolic.net:30625
 host16      |Administrator|sh://rsec OVL_HOST_RDP     |host.blade16.m.recolic
 host18      |Administrator|sh://rsec OVL_HOST_RDP     |host.blade18.m.recolic
