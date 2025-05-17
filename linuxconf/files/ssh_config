@@ -37,7 +37,7 @@ host msbackup.recolic
     hostname mspc.wlo.m.recolic
     user recolic
 
-host int.msbackup.recolic
+host remote.msbackup.recolic
     hostname proxy-cdn.recolic.net
     port 30622
     user recolic
