@@ -30,12 +30,15 @@ host storage.recolic
     user root
 
 host ms.recolic
-    hostname proxy-cdn.recolic.net
-    port 30622
+    hostname mspc.m.recolic
     user recolic
 
 host msbackup.recolic
-    hostname proxy.recolic.cc
+    hostname mspc.wlo.m.recolic
+    user recolic
+
+host int.msbackup.recolic
+    hostname proxy-cdn.recolic.net
     port 30622
     user recolic
 
@@ -100,27 +103,27 @@ host rack20
     hostname soc.rack20.m.recolic
     # Host: host.rack20.m.recolic
     user root
-    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 %h %p
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d ' ' -f 1) %p
 
 host rack21
     hostname soc.rack21.m.recolic
     # Host: with rack20
     user root
-    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 %h %p
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d ' ' -f 1) %p
 
 host blade10
     # hostname soc2.blade10.m.recolic
     hostname soc.blade10.m.recolic
     # Host: host.blade30.m.recolic
     user root
-    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 %h %p
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d ' ' -f 1) %p
 
 host blade30
     hostname soc.blade30.m.recolic
     # hostname soc2.blade30.m.recolic
     # Host: with blade10
     user root
-    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 %h %p
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d ' ' -f 1) %p
 
 host blade16
     hostname soc.blade16.m.recolic
@@ -128,7 +131,7 @@ host blade16
     # Host: host.blade16.m.recolic
     #!rmssh: rm.blade18.m.recolic;16;R_SEC_RM1618_PSWD
     user root
-    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 %h %p
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d ' ' -f 1) %p
     
 host blade18
     hostname soc.blade18.m.recolic
@@ -136,7 +139,7 @@ host blade18
     # Host: host.blade18.m.recolic
     #!rmssh: rm.blade18.m.recolic;18;R_SEC_RM1618_PSWD
     user root
-    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 %h %p
+    proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d ' ' -f 1) %p
 
 host blade32
     hostname soc.blade32.m.recolic

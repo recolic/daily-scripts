@@ -20,5 +20,13 @@ lc_startup () {
     ip6tables-restore < files/ip6tables.rules
     
     sysctl kernel.sysrq=1
+
+    # wait for Internet
+    while true; do
+      ping -c 1 cloudflare.com && break ; sleep 2
+    done
+
+    local ips="$(ip a | grep inet | grep global | sed 's/^ *//g' | cut -d ' ' -f 2 | paste -sd' ' -)"
+    curl 'https://recolic.net/api/cloudlog.php' --data "lc.arch-common Powered up $(uname -a), IP $ips"
 }
 
