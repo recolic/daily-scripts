@@ -69,7 +69,8 @@ function plugin_before_vm_creat () {
     if [ "$secured_version" -ge 2405 ]; then
         # The following image are considered TLS-compliant: ["2022-datacenter-azure-edition","2022-datacenter","2022-datacenter-core","2022-datacenter-azure-edition-core","2022-datacenter-core-g2","2022-datacenter-g2","pro-22_04","pro-22_04-gen2","24_04","24_04-gen2","22_04-lts-arm64","azure-linux-3","azure-linux-arm64","azure-linux-gen2","1-gen2","cbl-mariner-1","cbl-mariner-2","cbl-mariner-2-arm64","cbl-mariner-2-fips","cbl-mariner-2-gen2","cbl-mariner-2-gen2-fips","cbl-mariner-2-kata","79-gen2"]
         # az vm image list --publisher Canonical --output table --all | grep 0001-com-ubuntu-pro-microsoft | grep 22_04-gen2
-        if [[ "$vmsize" = *v3 ]]; then
+        if [[ "$vmsize" = Standard_D*v3 ]] || [[ "$vmsize" = Standard_E*v3 ]]; then
+            # Adjust this filter for other gen1-only VM sku.
             vmimg=Canonical:0001-com-ubuntu-pro-microsoft:pro-22_04:22.04.202405240
         else
             vmimg=Canonical:0001-com-ubuntu-pro-microsoft:pro-22_04-gen2:22.04.202405240

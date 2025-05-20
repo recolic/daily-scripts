@@ -33,6 +33,6 @@ PASS_VAR=$(echo "$RMSSH_CONFIG_LINE" | cut -d ';' -f 3) || die "invalid config l
 # Run the very-special-command with the extracted IP and rmport
 # pass=$(eval echo \$"$PASS_VAR")
 pass=$(rsec "$PASS_VAR") || die "failed to get secret"
-echo EXEC: sshpass -p $pass ssh -o ProxyCommand='nc --proxy-type socks5 --proxy 127.0.0.1:10809 %h %p' "root@$IP" start serial session -b 1 -i "$PORT"
-sshpass -p $pass -- ssh -tt -o ProxyCommand='/usr/bin/nc -X 5 -x 127.0.0.1:10809 %h %p' "root@$IP" start serial session -b 1 -i "$PORT"
+echo EXEC: sshpass -p $pass -- ssh -tt -o ProxyCommand='/usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d " " -f 1) %p' "root@$IP" start serial session -b 1 -i "$PORT"
+sshpass -p $pass -- ssh -tt -o ProxyCommand='/usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d " " -f 1) %p' "root@$IP" start serial session -b 1 -i "$PORT"
 
