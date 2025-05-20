@@ -112,7 +112,7 @@ if [ "$vnet_ipv6" = 1 ]; then
 fi
 
 # bug fix: some VM size (M96s_v3) doesnt support Trusted Launch, but --security-type Standard broken in azcli 2.71.
-if [ "$vmsize" = Standard_M*_v3 ]; then
+if [[ "$vmsize" = Standard_M*_v3 ]]; then
     if az --version | grep azure-cli | grep "2\\.7[123]\\." 2>/dev/null; then
         echo_warn "Mitigation doesnt work. This VM size wont work with Trusted Launch, and azcli 2.71 doesnt allow --security-type Standard"
         echo_warn "Please downgrade to azure-cli 2.70. https://github.com/Azure/azure-cli/issues/31191"
