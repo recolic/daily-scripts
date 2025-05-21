@@ -13,7 +13,7 @@ lc_startup () {
         fi  
 
         # Azure VPN fix
-        [ -f /usr/share/applications/microsoft-azurevpnclient.desktop ] && sed -i 's|Exec=/opt/microsoft|Exec=env BR=microsoft-edge-stable /opt/microsoft|' /usr/share/applications/microsoft-azurevpnclient.desktop
+        [ -f /usr/share/applications/microsoft-azurevpnclient.desktop ] && sed -i 's|^Exec=/opt/microsoft|Exec=env BR=microsoft-edge-stable /opt/microsoft|' /usr/share/applications/microsoft-azurevpnclient.desktop
 
         # azcli fix
         [ -f /usr/bin/az ] && sed -i 's|^/opt/azure-cli|BR=microsoft-edge-stable /opt/azure-cli|' /usr/bin/az
