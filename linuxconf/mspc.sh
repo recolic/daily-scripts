@@ -13,7 +13,7 @@ lc_startup () {
 
     lc_bgrun /tmp/frpc.log  auto_restart frpc -c files/secrets/mspc-frpc.ini
 
-    lc_bgrun /tmp/cron.log  every 30m bash files/srv-deps/mspc-check-internet.sh
+    lc_bgrun /tmp/cron.log  every 30m bash utils/mspc-check-internet.sh
     lc_bgrun /tmp/cron.log  every 1m  bash files/mspc-simple-vmm/cron-callback.sh
     lc_bgrun /tmp/cron.log  every 5m  curl https://recolic.net/api/mspc-keepalive.php
 }

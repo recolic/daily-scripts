@@ -21,8 +21,8 @@ done
 
 lc_login () {
     if [[ $(hostname) = RECOLICPC ]]; then
-        echo _:1 | bash files/srv-deps/unlock_keyrings
+        echo _:1 | bash utils/unlock_keyrings
         # nohup fcitx5 &
     fi
-    lc_bgrun /dev/null fish files/srv-deps/tg-backend-autokill.fish
+    lc_bgrun /dev/null fish utils/tg-backend-autokill.fish
 }
