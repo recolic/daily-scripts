@@ -13,14 +13,10 @@ lc_startup () {
         fi  
 
         # Azure VPN fix
-        if [ -f /usr/share/applications/microsoft-azurevpnclient.desktop ]; then
-            sed -i 's|Exec=/opt/microsoft|Exec=env BR=microsoft-edge-stable /opt/microsoft|' /usr/share/applications/microsoft-azurevpnclient.desktop
-        fi
+        [ -f /usr/share/applications/microsoft-azurevpnclient.desktop ] && sed -i 's|Exec=/opt/microsoft|Exec=env BR=microsoft-edge-stable /opt/microsoft|' /usr/share/applications/microsoft-azurevpnclient.desktop
 
         # azcli fix
-        if [ -f /usr/bin/az ]; then
-            sed -i 's|^/opt/azure-cli|BR=microsoft-edge-stable /opt/azure-cli|' /usr/bin/az
-        fi
+        [ -f /usr/bin/az ] && sed -i 's|^/opt/azure-cli|BR=microsoft-edge-stable /opt/azure-cli|' /usr/bin/az
     else
         lc_bgrun /dev/null every 1h systemctl restart --user microsoft-identity-broker.service
         # lc_bgrun /dev/null every 30m /etc/ar2/ar2.sh
