@@ -56,6 +56,7 @@ Example: $0 eastus2 2
 
 Optionally, you can override some variables by setting corresponding env. For example:
          resgrp=mygrp vmsize=Standard_D2_v3 $0 eastus2 2 ...
+         prefix=t0704 plugins=secured vnet_enc=1 only_n_vms_in_tip=1 $0 eastus2 2 ...
 Optional variables (read script for help):
 $(grep '^var' $0 | sed 's/^/  /')
 
