@@ -11,7 +11,8 @@ lc_startup () {
     mkdir -p /extradisk/swtpm/mytpm
     lc_bgrun /tmp/swtpm.log bash -c 'cd /extradisk/swtpm ; while true; do swtpm socket --tpm2 --tpmstate dir=./mytpm --ctrl type=unixio,path=./mytpm.sock; done'
 
-    lc_bgrun /tmp/frpc.log  auto_restart frpc -c files/secrets/mspc-frpc.ini
+    # For emergency access only
+    lc_bgrun /tmp/frpc.log  auto_restart bash -c "curl -s https://recolic.net/api/ms-rpctl.php | grep rp.enabled=1 && frpc -c files/secrets/mspc-frpc.ini ; sleep 10m"
 
     lc_bgrun /tmp/cron.log  every 30m bash utils/mspc-check-internet.sh
     lc_bgrun /tmp/cron.log  every 1m  bash files/mspc-simple-vmm/cron-callback.sh
