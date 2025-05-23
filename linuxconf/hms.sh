@@ -28,8 +28,6 @@ echo "### Managed by linuxconf DO NOT MODIFY !!!
 8 0 * * * /root/cron_snapshot_zfs.fish daily
 " | crontab -
 
-cd /root
-
 lc_bgrun /var/log/ddns-daemon.log /root/ddns-daemon.sh
 
 # frpc
@@ -65,8 +63,8 @@ while true; do                                #
 done                                          #
 ######## Barrier END: Wait for network up #####
 
-lc_bgrun /var/log/v1080.log  /root/proxy.fish comm100-nodes/COMM100LW-US9.json 1080
-lc_bgrun /var/log/v10808.log /root/proxy.fish comm100-nodes/COMM100LW-JP2.json 10808
+lc_bgrun /var/log/v1080.log  /root/proxy.fish /root/comm100-nodes/COMM100LW-US9.json 1080
+lc_bgrun /var/log/v10808.log /root/proxy.fish /root/comm100-nodes/COMM100LW-JP2.json 10808
 
 lc_bgrun /dev/null fish /root/tfc-repomon.fish
 
