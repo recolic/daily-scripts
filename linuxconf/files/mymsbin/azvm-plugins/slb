@@ -14,28 +14,6 @@ Note:
   SLB will redirect public_ip:8888 to ANY RANDOM VM:22, so it's recommended to only create 1 VM.
   inbound-nat-rule is not reliable even if manually created on azure portal.
 "
-    # TODO: move this to other doc
-    echo "-----BEGIN PGP MESSAGE-----
-
-hQIMA2xDZEbjUq0tAQ//TCSKvoBseLb2rGS1X1WhOWs0Voa3xlCVleeGCCOlEThu
-ZUSV+ivpYo5pyaZaAPNoqqIYvsRGw/CjRrhvJuCpvOJ2g+sohipQiQu1fPwIFUtX
-2jOEfpK2ZcMbkdmEvs7UlZsdd0zkFNzDu4cBaOVEHq5hO7cyEzSIFr2dmbmhfkbQ
-7XnHzz/GBF43fz6aq/ZZnU1hgsHy7oOkmpNVzTczAqA02bI0bRHSkg0SbrEOF5Gx
-rCuDaZ9VDqhJD6DgA8Rh8YabkPpzSo1A5PDwAo0Yo/YKdXJ//p0bYSqp02VzkYgC
-yqIotxvqUDUVwm3nsSGp8IM3o4ONJsqVgeEd+2dfaBW03tTZUT+jm0/MdmnUarxF
-XcKrq9SuSec99/RguQCNfUi5SXRtV/s8Q5rRh25Ga4kelSz2quemKFq9Bnzv5hah
-VVlR01kmYU+hlRNAk+pjvL+tIvmkDElPRpqdK1RDXYdjUDuTcRLwi3ge8kihAHPU
-JPhZRAVSFHuRcIF7XTayBG/uC5T0/OyyeJuhdQ72peP9sCAmaQasdiKPJ3OLFC9w
-dniJZL+nUA+mSdSSfLi6I2T1k+mUWEFS1gIQH34qlixRFfiHbzmACQ/XdVeridAi
-cJM3LCWuGI3C6i+dPBWhPabsNJcAON3fSmpzUkkbR/lNEC1QozZp9uuGYronnE3S
-wFwB6zLtViMdJEDUv7m/+ULUEiqAviwMWrUkdB74G+s6kreVKME+idTu5d1nKuql
-xEw65hXQsVnIRS6YhBtRzEZTvyEthRR5SSxxEUneSzREV+s4VkclYqYfrQaI35b5
-jAkuQgY8SS6KT97DPiyb5OoLNNTID3mulUvujPErWQ5cvglY93733e8Wh3isWhI8
-YJNGSceSRezBbn0WOYVRiHnYvemvbrdvs/YIbjoOICMmTJj+iZKckGYhnyftomIc
-DsleGnaAvBSBZElIjKb1sRetm2N+b9r+kShqKnFFsjMd2s8srcL5CuvkuLSPg1n2
-Mj9lmEOewcfoBvZ+Tu8rL6w/lY7NzfgrvSYV5PyZVgj57r8D8GjyyGvfDtvwQg==
-=QGFP
------END PGP MESSAGE-----" | gpg -d
 }
 
 function plugin_before_vm_creat () {

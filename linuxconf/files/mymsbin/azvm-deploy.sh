@@ -60,15 +60,15 @@ Optionally, you can override some variables by setting corresponding env. For ex
 Optional variables (read script for help):
 $(grep '^var' $0 | sed 's/^/  /')
 
-Set 'plugins' variable to see plugin-specific help. Available plugins:
+Available plugins:
 $(ls -m $plugin_dir)
 
 Use plugins like this:
   plugins=secured $0 eastus2 1
   plugins='secured slb' resgrp=mygrp $0 eastus2 2
-  plugins='*' $0
-"
-    plugin_hook plugin_help
+
+Plugin-specific help:"
+    plugins="$plugin_dir/*" plugin_dir="" plugin_hook plugin_help
     exit 1
 fi
 
