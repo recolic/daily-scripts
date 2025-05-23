@@ -103,7 +103,7 @@ if [ "$cluster" != "" ]; then
     # `az vm availability-set create` doesn't allow setting internalData.pinnedFabricCluster, we must use the ugly ARM deployment.
     echo "H4sIAAAAAAAAA31TTY/aMBC98yssb6VtJUgC7WX3VrFaqYfthd1eVqgakgGmdWzLnoAo4r/XTgJs+EoixZr3Zvzma9sT4ZGffL7EEuSjkEtm6x/TtLEkJWhYYImaE/hXOUxyU7aYT0fZ8GGQfRtkw7RAq8wm8l6xtAoYkz/e6DvZb27IjeYA/kLnyeh40TDJ4rsnWHBQIgc8gNvaVtthpYM92ITYSt7YeJQTdqQXctc/8pTJgZvQN3lMloo63G1eriof1ETmOa+mtWy5AkcwU3gi/HeoVKxH9IsFmRtXvtkiVObJlEB6bCrNAnQh9ugzVIo7oENR4DyaBRsxFKTFmnRh1l743JHlRGjDwofGiPUS2AteoigRdJCZiDcffqLu2z6O7Eh36E3l8lr6+0H6MYmmYm3yL5Q7482ck7EpbcWYwgpIwYwU8WaC7GW/6wmWPjR8lI2+DrLwDU95bYfl+3EIPt83jb//Mj1lf+h012MPXPBhWHTbc0Beyf40BSYT9FHoj+IsbD0xMWbHeXdyg/9bXb5gn9x3RQuNxe0o1hmLjgmvqL02KvVCnSTdcTibvKseFBbVaVBPwHBRRBOXdEjmGWaO8vFhVbqFa1forHQXEq9jrshxBeoF8iXpZian3Wr1uqdpb9f7D7e+f03CBAAA" | base64 -d | gzip -d > /tmp/template-avset.json || exit $?
     if [ "$tipid" = "" ]; then
-        echo_warn "++ tipid is empty.. Will just deploy into cluster $cluster"
+        echo_info "++ tipid is empty.. Will just deploy into cluster $cluster"
         sed -i 's/"tags": . "TipNode.SessionId": ".parameters..tipid..." .,//' /tmp/template-avset.json
     fi
     debugexec az deployment group create -g "$resgrp" --template-file /tmp/template-avset.json --parameters "avname=$avname" "location=$location" "tipid=$tipid" "cluster=$cluster" || exit $?
