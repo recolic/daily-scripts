@@ -96,6 +96,8 @@ if ! az group show -g "$resgrp" > /dev/null 2>&1; then
     debugexec az group create -n "$resgrp" --location "$location" || exit $?
 fi
 
+plugin_hook plugin_before_av_creat
+
 # Create an availability set if we want deploy into specific node/cluster. This could be a plugin.
 if [ "$cluster" != "" ]; then
     echo_warn "++ Using TiP session $tipid at cluster $cluster"

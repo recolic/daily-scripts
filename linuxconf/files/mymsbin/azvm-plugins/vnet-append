@@ -11,6 +11,10 @@ Conflict: Please include this plugin **after** 'secured'
 "
 }
 
+function plugin_before_av_creat () {
+    avname="${avname}_ex$(head -c3 /dev/urandom | base64 -w0 | tr -d =/+)"
+}
+
 function plugin_before_vnet_creat () {
     az network vnet show --name "${vnetname}" --resource-group "${resgrp}" --query "name" --output tsv >/dev/null 2>&1 || ! echo_warn "[vnet-append] Error: To use this plugin, vnet $vnetname must already exists in $resgrp." || exit 1
     vmname="${vmname}_ex$(head -c3 /dev/urandom | base64 -w0 | tr -d =/+)"
