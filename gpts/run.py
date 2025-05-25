@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import os, sys
 import base64
 import subprocess
