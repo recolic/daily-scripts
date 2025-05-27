@@ -72,7 +72,7 @@ function GenNewToken
         or return 1
 ################################### Starting ChatGPT generated code ##############################
     set -l creation_time (date +%s)
-    set -l expire_time (math "6.5 * 24 * 60 * 60 + $creation_time") # after 6.5 days
+    set -l expire_time (math "7 * 24 * 60 * 60 + $creation_time") # after 7 days
     echo "$token $expire_time" > $token_cache_file
 end
 

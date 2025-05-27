@@ -6,6 +6,7 @@ function plugin_help () {
 ### azvm-deploy.sh plugin 'vnet-append' v2505.1 ###
 
 Don't create a new vnet. Add VM into existing vnet instead.
+All vnet / subnet config would be ignored. Please do exactly same config as initial deployment.
 
 Conflict: Please include this plugin **after** 'secured'
 "
