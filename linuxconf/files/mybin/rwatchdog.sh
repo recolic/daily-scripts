@@ -159,6 +159,10 @@ elif [[ "$op" = "night" ]]; then
     if [[ $curr_time -gt $alarm_ts ]]; then
         alarm_ts=$(date +%s -d "tomorrow $MORNING_ALARM")
     fi
+    if [ $(( ($alarm_ts-$curr_time)/60 - 16*60 )) -gt 0 ]; then
+        echo "!! Refused to arm timer in more than 16 hours."
+        exit 1
+    fi
     echo "++ Arm leave timer to morning and switch to 'work' mode, in $(( ($alarm_ts-$curr_time)/60 )) min"
     echo "arm_timer $alarm_ts" >> $TMP_CTL_FILE
     echo "set_mode work"       >> $TMP_CTL_FILE
