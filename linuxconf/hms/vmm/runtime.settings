@@ -1,0 +1,8 @@
+# name;options (name will be trimmed, options will be passed as-is)
+#                              :4 reserved for HostVNC
+lanbox-win  ;-m 4G -smp 4 -vnc :17 -net user,hostfwd=tcp::30473-:3389 -bios /usr/share/edk2/x64/OVMF.4m.fd -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time
+# msauth-and  ;-m 4G -smp 2 -vnc :18 -net user,hostfwd=tcp::25582-:5555
+
+# ioit2024@outlook.com, assigned port 30800-30810
+# service until 2026.05.27, 1month notify
+Tyran_devbox;-m 8G -smp 6 -vnc :18 -net user,hostfwd=tcp::30800-:22   -bios /usr/share/edk2/x64/OVMF.4m.fd

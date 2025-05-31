@@ -54,7 +54,7 @@ MimeType=text/html;text/xml;application/xhtml_xml;image/webp;x-scheme-handler/ht
 
 lc_login () {
     if ! grep -F .m.recolic /etc/hosts > /dev/null; then
-        gpg -d -o /tmp/.hosts.tmp files/secrets/work-hosts.asc &&
+        gpg -d -o /tmp/.hosts.tmp secrets/work-hosts.asc &&
             sudo mv /tmp/.hosts.tmp /etc/hosts
     fi
 }

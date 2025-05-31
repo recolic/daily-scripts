@@ -1,0 +1,7 @@
+## init VM from cloudimg
+# name;cloudimg;disk;username;password (space will be trimmed)
+Tyran_devbox;ubuntu-24.04-server-cloudimg-amd64.img;150G;tyran;__censored__
+
+## or init VM from pre-deployed backing image (please put it into data/base/)
+# name;existing_img_fname
+lanbox-win  ;win10-tiny10-virtio-uefi.qcow2

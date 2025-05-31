@@ -11,68 +11,67 @@ lc_init () {
 }
 
 lc_startup () {
-# Send a bootup message
-beep -f 950 -l 100 -r 2
-
-# swap
-swapon /dev/disk/by-id/nvme-SAMSUNG_MZVLW256HEHP-000L7_S35ENX0K430762-part2
-
-# nfs fix
-exportfs -arv
-
-iptables -I INPUT -s 10.100.100.0/24 -j ACCEPT
-
-echo "### Managed by linuxconf DO NOT MODIFY !!!
-18 2 2 1 * /root/cron_snapshot_zfs.fish annually
-12 1 1 * * /root/cron_snapshot_zfs.fish monthly
-8 0 * * * /root/cron_snapshot_zfs.fish daily
+    # Send a bootup message
+    beep -f 950 -l 100 -r 2
+    
+    # swap
+    swapon /dev/disk/by-id/nvme-SAMSUNG_MZVLW256HEHP-000L7_S35ENX0K430762-part2
+    
+    # nfs fix
+    exportfs -arv
+    
+    echo "### Managed by linuxconf DO NOT MODIFY !!!
+18 2 2 1 * $(pwd)/hms/cron_snapshot_zfs.fish annually
+12 1 1 * * $(pwd)/hms/cron_snapshot_zfs.fish monthly
+8 0 * * *  $(pwd)/hms/cron_snapshot_zfs.fish daily
 " | crontab -
 
-lc_bgrun /var/log/ddns-daemon.log /root/ddns-daemon.sh
+    # DDNS, ipv4 only
+    lc_bgrun /var/log/ddns-daemon.log every 10m curl -s "https://dynamicdns.park-your-domain.com/update?host=rhome&domain=896444.xyz&password=__RSEC_PLACEHOLDER(rsec DDNS_XYZ_TOKEN)"
+    
+    # frpc
+    lc_bgrun /var/log/frpc.log auto_restart frpc -c secrets/hms-frpc.ini
+    
+    # aria2 rpc
+    lc_bgrun /var/log/aria2-rpcd.log bash -c "cd /mnt/fsdisk/nfs/pub/ && aria2c --enable-rpc --rpc-listen-all --rpc-allow-origin-all"
+    
+    # minecraft server
+    lc_bgrun /var/log/launch-mcserver.log hms/launch-mcserver.fish
+    
+    # ZFS monitor
+    lc_bgrun /var/log/recolic-zfs-monitor.log hms/zfs-monitor-failure-daemon.fish
+    
+    # naive file send server
+    lc_bgrun /var/log/fserver.log python -u hms/fserver/hms-fserver.py
+    
+    # extra iptables rules
+    iptables  -I INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+    iptables  -I INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+    iptables  -I INPUT -s 10.0.0.0/8 -j ACCEPT
+    iptables  -I INPUT -s 172.16.0.0/12 -j ACCEPT
+    iptables  -I INPUT -s 192.168.0.0/16 -j ACCEPT
+    ip6tables -I INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+    ip6tables -I INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+    ip6tables -I INPUT -s fc00::/7 -j ACCEPT
 
-# frpc
-lc_bgrun /var/log/frpc.log auto_restart frpc -c /root/frpc.ini
-
-# aria2 rpc
-lc_bgrun /var/log/aria2-rpcd.log bash -c "cd /mnt/fsdisk/nfs/pub/ && aria2c --enable-rpc --rpc-listen-all --rpc-allow-origin-all"
-
-# minecraft server
-lc_bgrun /var/log/launch-mcserver.log /root/launch-mcserver.fish
-
-# ZFS monitor
-lc_bgrun /var/log/recolic-zfs-monitor.log /root/zfs-monitor-failure-daemon.fish
-
-# SAW file send server
-lc_bgrun /var/log/saw-fsend.log python -u /root/saw-fsend/hms-fserver.py
-
-# extra iptables rules
-iptables  -I INPUT -p tcp -m tcp --dport 22 -j ACCEPT
-iptables  -I INPUT -p tcp -m tcp --dport 80 -j ACCEPT
-iptables  -I INPUT -s 10.0.0.0/8 -j ACCEPT
-iptables  -I INPUT -s 172.16.0.0/12 -j ACCEPT
-iptables  -I INPUT -s 192.168.0.0/16 -j ACCEPT
-ip6tables -I INPUT -p tcp -m tcp --dport 22 -j ACCEPT
-ip6tables -I INPUT -p tcp -m tcp --dport 80 -j ACCEPT
-ip6tables -I INPUT -s fc00::/7 -j ACCEPT
-
-# All services above should not fail without Internet.
-######## Barrier: Wait for network up #########
-while true; do                                #
-  ping -c 1 cloudflare.com && break           #
-  sleep 2                                     #
-done                                          #
-######## Barrier END: Wait for network up #####
+    # All services above should not fail without Internet.
+    ######## Barrier: Wait for network up #########
+    while true; do                                #
+      ping -c 1 cloudflare.com && break           #
+      sleep 2                                     #
+    done                                          #
+    ######## Barrier END: Wait for network up #####
 
 lc_bgrun /var/log/v1080.log  /root/proxy.fish /root/comm100-nodes/COMM100LW-US9.json 1080
 lc_bgrun /var/log/v10808.log /root/proxy.fish /root/comm100-nodes/COMM100LW-JP2.json 10808
 
-lc_bgrun /dev/null fish /root/tfc-repomon.fish
+    lc_bgrun /dev/null fish hms/tfc-repomon.fish
 
-lc_bgrun /var/log/cron.log every 1d docker run --rm recolic/mailbox-cleaner imap.recolic.net tmp@recolic.net $(cat files/secrets/hms-mail-pass.txt) -d 15
+    lc_bgrun /var/log/cron.log every 1d docker run --rm recolic/mailbox-cleaner imap.recolic.net tmp@recolic.net "__RSEC_PLACEHOLDER(genpasswd tmp@recolic.net)" -d 15
 lc_bgrun /var/log/cron.log every 1d bash /root/telegram-public-msg-auto-cleanup/daily.sh
-lc_bgrun /var/log/cron.log every 1d fish /root/balancemon.fish
-lc_bgrun /var/log/cron.log every 1d ntpdate -u 1.pool.ntp.org
-lc_bgrun /var/log/cron.log every 1m env svm_workdir=/mnt/fsdisk/svm /root/simple-vm-manager/cron-callback.sh
+    lc_bgrun /var/log/cron.log every 1d env suburl="__RSEC_PLACEHOLDER(rsec ProxySub_API)?1" fish hms/balancemon.fish
+    lc_bgrun /var/log/cron.log every 1d ntpdate -u 1.pool.ntp.org
+    lc_bgrun /var/log/cron.log every 1m env svm_workdir=/mnt/fsdisk/svm hms/vmm/cron-callback.sh
 }
 
 ################## OTHER SERVICE LIST #################
