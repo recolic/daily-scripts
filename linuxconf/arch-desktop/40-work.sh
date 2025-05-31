@@ -12,11 +12,16 @@ lc_startup () {
           fi  
         fi  
 
-        # Azure VPN fix
+        # default browser for Azure VPN + azcli
         [ -f /usr/share/applications/microsoft-azurevpnclient.desktop ] && sed -i 's|^Exec=/opt/microsoft|Exec=env BR=microsoft-edge-stable /opt/microsoft|' /usr/share/applications/microsoft-azurevpnclient.desktop
-
-        # azcli fix
         [ -f /usr/bin/az ] && sed -i 's|^/opt/azure-cli|BR=microsoft-edge-stable /opt/azure-cli|' /usr/bin/az
+
+        # Azure VPN fix
+        if [ -f /usr/share/polkit-1/rules.d/microsoft-azurevpnclient.rules ]; then
+            if ! grep "action.id.indexOf" /usr/share/polkit-1/rules.d/microsoft-azurevpnclient.rules; then
+                echo cG9sa2l0LmFkZFJ1bGUoZnVuY3Rpb24oYWN0aW9uLCBzdWJqZWN0KSB7CiAgICBpZiAoYWN0aW9uLmlkLmluZGV4T2YoIm9yZy5mcmVlZGVza3RvcC5yZXNvbHZlMSIpID49IDApIHtyZXR1cm4gcG9sa2l0LlJlc3VsdC5ZRVM7fQp9KTsK | base64 -d >> /usr/share/polkit-1/rules.d/microsoft-azurevpnclient.rules
+            fi
+        fi
     else
         lc_bgrun /dev/null every 1h systemctl restart --user microsoft-identity-broker.service
         # lc_bgrun /dev/null every 30m /etc/ar2/ar2.sh
