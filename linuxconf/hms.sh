@@ -5,9 +5,20 @@ lc_include arch-common/* utils/arch-virt.sh
 
 lc_assert_user_is root
 
+function install_x86_gzip_bin () {
+    binname="$1"
+    link="$2"
+    if [[ "$(uname -i)" = x86_64 ]] || [[ "$(uname -m)" = x86_64 ]]; then
+        wget "$link" -O - | gzip -d > /tmp/.out && chmod +x /tmp/.out && mv /tmp/.out /usr/bin/$binname &&
+        echo "******** $binname setup done." || echo "******** failed to setup $binname."
+    else
+        echo "******** skip $binname setup for non-x64 architecture."
+    fi
+}
 lc_init () {
     pacman -Sy --needed --noconfirm cronie
     systemctl enable cronie --now
+    install_x86_gzip_bin go-shadowsocks2 https://recolic.cc/setup/shadowsocks2-linux.gz
 }
 
 lc_startup () {
@@ -62,8 +73,10 @@ lc_startup () {
     done                                          #
     ######## Barrier END: Wait for network up #####
 
-lc_bgrun /var/log/v1080.log  /root/proxy.fish /root/comm100-nodes/COMM100LW-US9.json 1080
-lc_bgrun /var/log/v10808.log /root/proxy.fish /root/comm100-nodes/COMM100LW-JP2.json 10808
+    subline=$(curl "__RSEC_PLACEHOLDER(rsec ProxySub_API)?3lw" | base64 -d | grep C100.US1LW)
+    lc_bgrun /var/log/v1080.log  go-shadowsocks2 -c "$subline" -socks :1080
+    subline=$(curl "__RSEC_PLACEHOLDER(rsec ProxySub_API)?3lw" | base64 -d | grep C100.JP2LW)
+    lc_bgrun /var/log/v10808.log go-shadowsocks2 -c "$subline" -socks :10808
 
     lc_bgrun /dev/null fish hms/tfc-repomon.fish
 
