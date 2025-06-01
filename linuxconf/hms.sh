@@ -4,6 +4,8 @@
 lc_include arch-common/* utils/arch-virt.sh
 
 lc_assert_user_is root
+lc_fsmap hms/nginx.conf /etc/nginx/nginx.conf
+lc_fsmap hms/exports /etc/exports
 
 function install_x86_gzip_bin () {
     binname="$1"
@@ -16,9 +18,49 @@ function install_x86_gzip_bin () {
     fi
 }
 lc_init () {
-    pacman -Sy --needed --noconfirm cronie
-    systemctl enable cronie --now
-    install_x86_gzip_bin go-shadowsocks2 https://recolic.cc/setup/shadowsocks2-linux.gz
+    pacman -Sy --needed --noconfirm cronie nginx docker dhcpcd ntp
+    systemctl enable cronie nginx docker dhcpcd --now
+    command -v go-shadowsocks2 || install_x86_gzip_bin go-shadowsocks2 https://recolic.cc/setup/shadowsocks2-linux.gz
+
+    echo "=====================
+TODO: manual steps
+################## OTHER SERVICE LIST #################
+# zfs/zpool setup
+# nfs service
+# docker (systemd) for jenserat/samba-publicshare, hms-sms-and-door-api
+# fancontrol (systemd) for /sys/devices/platform/nct6775.2592/hwmon/hwmon2/pwm2_enable automodify
+# dhcpcd (systemd):
+#   modify /etc/dhcpcd.conf to set allowinterfaces to ETHERNET
+#
+## many python scripts running on this server
+# pip install python-telegram setuptools --break-system-packages
+# pacman -S openssl-1.1 # used by python-telegram
+
+## zfs setup
+# pkgs for zfs: zfs-linux-lts (https://wiki.archlinux.org/title/Unofficial_user_repositories#archzfs)
+# check: /etc/module.load.d should contain zfs
+# systemctl enable zfs-import-cache
+# systemctl enable zfs-import.target
+# systemctl enable zfs-mount
+# systemctl enable zfs.target
+# use 'zpool import xxx' and 'zfs mount xxx' to import & mount for the first time.
+# zpool set autotrim=on nas-data-raid
+
+## nfs setup
+# exportfs -arv
+# systemctl enable nfsv4-server.service
+
+#######################
+# all service require the storage disk:
+# KVM and webvirtmgr; btsync; nfs; nginx
+
+#######################################################
+#### Setup this server from stretch
+# 1. Clean-Installed archlinux
+# 2. dhcpcd patch: add 'allowinterfaces enp4s0f1' to /etc/dhdpcd.conf
+# 3. Setup everything in OTHER SERVICE LIST.
+# 4. linuxconf register
+================"
 }
 
 lc_startup () {
@@ -87,58 +129,6 @@ lc_bgrun /var/log/cron.log every 1d bash /root/telegram-public-msg-auto-cleanup/
     lc_bgrun /var/log/cron.log every 1m env svm_workdir=/mnt/fsdisk/svm hms/vmm/cron-callback.sh
 }
 
-################## OTHER SERVICE LIST #################
-# nginx (systemd) at 80
-# nfs (systemd)
-# docker (systemd) for jenserat/samba-publicshare, webvirtmgr(deprecated), hms-sms-and-door-api
-# fancontrol (systemd) for /sys/devices/platform/nct6775.2592/hwmon/hwmon2/pwm2_enable automodify
-# webvirtmgr, webvirtmgr-console (docker), refer to recolic.net/s/notebook
-# openvpn server (docker)
-# cronie (systemd):
-#   ref ~/cron-backups.log.gz
-# dhcpcd (systemd):
-#   modify /etc/dhcpcd.conf to set allowinterfaces to ETHERNET
-
-## many python scripts running on this server
-# pip install python-telegram mailbox_cleaner setuptools --break-system-packages
-# pacman -S openssl-1.1 # used by python-telegram
-
-# before starting services, ln these conf
-# ln -s /root/etc-conf/exports /etc/exports
-# ln -s /root/etc-conf/nginx.conf /etc/nginx/nginx.conf
-
-## zfs setup
-# pkgs for zfs: zfs-linux-lts (https://wiki.archlinux.org/title/Unofficial_user_repositories#archzfs)
-# check: /etc/module.load.d should contain zfs
-# systemctl enable zfs-import-cache
-# systemctl enable zfs-import.target
-# systemctl enable zfs-mount
-# systemctl enable zfs.target
-# use `zpool import xxx` and `zfs mount xxx` to import & mount for the first time.
-# zpool set autotrim=on nas-data-raid
-
-## nfs setup
-# exportfs -arv
-# systemctl enable nfsv4-server.service
-
-## kvm setup
-# pkgs for kvm: ebtables bridge-utils dnsmasq openbsd-netcat libvirt edk2-ovmf dmidecode
-# services for kvm: virtlogd
-# read recolic.net/s/notebook for kvm setup!
-
-#######################
-# all service require the storage disk:
-# KVM and webvirtmgr; btsync; nfs; nginx
-
-#######################################################
-#### Setup this server from stretch
-# 1. Clean-Installed archlinux
-# 2. Install extra packages [see below list], and enable services.
-# 3. dhcpcd patch: add `allowinterfaces enp4s0f1` to /etc/dhdpcd.conf
-# 4. Setup everything in OTHER SERVICE LIST.
-#
-# pacman packages list: dhcpcd vim v2ray ntp android-tools
-
 
 
 
@@ -167,24 +157,13 @@ lc_bgrun /var/log/cron.log every 1d bash /root/telegram-public-msg-auto-cleanup/
 # # restart smbd api interface
 # lc_bgrun /dev/null bash /root/restart-smbd-apid.sh 30411
 
-#######################################################
-##################     bug note    ####################
-#######################################################
-
-# after running for 139 days, clock have 2min31s error.
-
-#######################################################
-################## Deprecated cmds ####################
-#######################################################
-
-# # mount unreliable storage
-# mount --uuid 6ec547a1-b779-494b-822f-a2aaa0b56bd0 /mnt/fsdisk/nfs/pub/unreliable_mnt
-
 # # KMS server
 # lc_bgrun /var/log/kms.log /root/linux-kms-server/vlmcsd/vlmcsd
 
-# frp server: closed. proxy-cdn.recolic.net provided by vultr
-# lc_bgrun /var/log/frps.log frps -c /root/frps.ini
+## kvm setup
+# pkgs for kvm: ebtables bridge-utils dnsmasq openbsd-netcat libvirt edk2-ovmf dmidecode
+# services for kvm: virtlogd
+# read recolic.net/s/notebook for kvm setup!
 
 # Deprecated! Now we have simple-vmm # Setup bridge and then launch libvirtd
 # /root/kvm-setup-bridge.sh
@@ -193,28 +172,10 @@ lc_bgrun /var/log/cron.log every 1d bash /root/telegram-public-msg-auto-cleanup/
 # iptables -A INPUT -p tcp --dport 16509 -s 10.100.100.101 -j ACCEPT
 # iptables -A INPUT -p tcp --dport 16509 -s 10.0.0.0/8 -j DROP
 
-# Prevent ladlod router from accessing NFS.
-#iptables -A INPUT --dport  2049 -s 10.100.100.122 -j DROP
-#iptables -A INPUT --dport   111 -s 10.100.100.122 -j DROP
+#######################################################
+##################     bug note    ####################
+#######################################################
 
-# lc_bgrun /var/log/polipo.log polipo -c /root/polipo.config
-# lc_bgrun /var/log/miner-tcp-forward.log proxychains socat TCP-LISTEN:30955,fork,reuseaddr TCP:asia1.ethermine.org:4444
+# after running for 139 days, clock have 2min31s error.
 
-# IPLC OpenVPN online, udp2raw not required anymore.
-# lc_bgrun /dev/null udp2raw -c -l 0.0.0.0:1199 -r 102.140.91.35:587 -k rtlgn24bgn --raw-mode icmp -a
-
-# lc_bgrun /dev/null docker start river-test-machine
-
-# disabled # Genymotion VNC
-# lc_bgrun /dev/null socat tcp-listen:5903,fork,reuseaddr tcp:localhost:5902
-# # Also use proxy: docker run -d --restart=always --name novnc -p 6089:6080 -e AUTOCONNECT=true -e VNC_PASSWORD=rtlgn24bgn -e VNC_SERVER=172.17.0.1:5903 -e VIEW_ONLY=false bonigarcia/novnc:1.1.0
-
-# lc_bgrun /var/log/uploader.log bash -c 'cd /root/nfs/pub/tmp && python SimpleHTTPServerWithUpload.py'
-
-# # NTP, required by v2ray, now executed by cronie
-# lc_bgrun /var/log/ntpdate.log ntpdate -u 1.pool.ntp.org
-
-# # msauth VM will be started by simple-vmm. now running on ms.recolic
-# lc_bgrun /var/log/msauth-httpd.log /root/msauth-httpd
-# email_notify "HMS rebooted. Please VNC to hms.re:5918 to start Microsoft Auth app."
 
