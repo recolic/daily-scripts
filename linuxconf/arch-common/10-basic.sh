@@ -11,7 +11,7 @@ lc_init () {
 SigLevel = Optional TrustAll
 Server = https://drive.recolic.cc/mirrors/recolic-aur' >> /etc/pacman.conf
     sed -i 's/^[# ]*ParallelDownloads *=[ 0-9A-Za-z]*$/ParallelDownloads = 5/' /etc/pacman.conf
-    sed -i 's/^[# ]*IgnorePkg *=[ 0-9A-Za-z]*$/IgnorePkg = tpm2-tss microsoft-edge-stable-bin clion clion-jre/' /etc/pacman.conf
+    sed -i 's/^[# ]*IgnorePkg *=[ 0-9A-Za-z-]*$/IgnorePkg = tpm2-tss microsoft-edge-stable-bin clion clion-jre/' /etc/pacman.conf
     sed -i 's/^[# ]*SystemMaxUse=[ 0-9A-Za-z]*$/SystemMaxUse=150M/g' /etc/systemd/journald.conf
     sed -i 's/^[# ]*SystemMaxFileSize=[ 0-9A-Za-z]*$/SystemMaxFileSize=30M/g' /etc/systemd/journald.conf
 }
