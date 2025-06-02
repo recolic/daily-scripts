@@ -16,25 +16,43 @@ check_reachability() {
         return $HMS_BAD # Host is unreachable
     fi
 }
+check_mounted() {
+   df -T | grep nfs && return $HMS_GOOD || return $HMS_BAD
+}
 
-prev_stat=$HMS_GOOD
+#prev_stat=$HMS_GOOD
 while true; do
     check_reachability
-    stat=$?
-    if [ $stat != $prev_stat ]; then
-        # Two more double-confirmation. If difference fixed, do not update prev_stat and continue.
-        sleep 1 ; check_reachability ; [ $? = $prev_stat ] && continue
-        sleep 1 ; check_reachability ; [ $? = $prev_stat ] && continue
-        echo "$(date) State change from $prev_stat to $stat"
+    net_stat=$?
+    check_mounted
+    nfs_stat=$?
 
-        # If still doesn't match prev_stat, do something.
-        if [ $stat = $HMS_BAD ]; then
+    if [ $net_stat != $nfs_stat ]; then
+        # Two more double-confirmation. If difference fixed, do not update prev_stat and continue.
+        sleep 1 ; check_reachability ; [ $? = $nfs_stat ] && continue
+        sleep 1 ; check_reachability ; [ $? = $nfs_stat ] && continue
+        echo "$(date) State mismatch detected, network $net_stat but nfs $nfs_stat"
+
+        if [ $net_stat = $HMS_BAD ]; then
             umount -f -l /home/recolic/nfs
         else
             mount -o bg,intr,soft,timeo=1,retrans=1,actimeo=1,retry=1 hms.r:/ /home/recolic/nfs
         fi
     fi
-    prev_stat=$stat
+#    if [ $stat != $prev_stat ]; then
+#        # Two more double-confirmation. If difference fixed, do not update prev_stat and continue.
+#        sleep 1 ; check_reachability ; [ $? = $prev_stat ] && continue
+#        sleep 1 ; check_reachability ; [ $? = $prev_stat ] && continue
+#        echo "$(date) State change from $prev_stat to $stat"
+#
+#        # If still doesn't match prev_stat, do something.
+#        if [ $stat = $HMS_BAD ]; then
+#            umount -f -l /home/recolic/nfs
+#        else
+#            mount -o bg,intr,soft,timeo=1,retrans=1,actimeo=1,retry=1 hms.r:/ /home/recolic/nfs
+#        fi
+#    fi
+#    prev_stat=$stat
     sleep 3  # Sleep for 3 seconds
 done
 
