@@ -94,13 +94,21 @@ else
     if string match '*win7*' $target
         set rdp rdesktop
     end
+    set -l ext_opt
+    if test -d $HOME/nfs/tmp
+        if test $rdp = rdesktop
+            set ext_opt -r disk:ntmp=$HOME/nfs/tmp
+        else
+            set ext_opt -drive htmp2,$HOME/nfs/tmp
+        end
+    end
     
     if test $rdp = rdesktop
-        echo "EXEC: $rdp -g $w'x'$h -r disk:abc=/home/recolic/Downloads -u $user -p $pass -v $host"
-        $rdp -K -g $w'x'$h -r disk:abc=/home/recolic/Downloads -u $user -p $pass -v $host
+        echo "EXEC: $rdp -K -g $w'x'$h -r disk:htmp=$HOME/tmp $ext_opt -u $user -p $pass -v $host"
+        $rdp -K -g $w'x'$h -r disk:htmp=$HOME/tmp $ext_opt -u $user -p $pass -v $host
     else
-        echo "EXEC: $rdp -disable-grab-keyboard -disable-toggle-fullscreen --auth-pkg-list !kerberos -w $w -h $h -drive mapped_tmp,$HOME/tmp -u $user -p $pass -v $host"
-        $rdp -disable-grab-keyboard -disable-toggle-fullscreen --auth-pkg-list !kerberos -w $w -h $h -drive mapped_tmp,$HOME/tmp -u $user -p $pass -v $host
+        echo "EXEC: $rdp -disable-grab-keyboard -disable-toggle-fullscreen --auth-pkg-list !kerberos -w $w -h $h -drive htmp,$HOME/tmp $ext_opt -u $user -p $pass -v $host"
+        $rdp -disable-grab-keyboard -disable-toggle-fullscreen --auth-pkg-list !kerberos -w $w -h $h -drive htmp,$HOME/tmp $ext_opt -u $user -p $pass -v $host
         # disable krb5: /auth-pkg-list:!kerberos 
     end
 end
