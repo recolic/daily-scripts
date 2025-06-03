@@ -99,7 +99,7 @@ else
         if test $rdp = rdesktop
             set ext_opt -r disk:ntmp=$HOME/nfs/tmp
         else
-            set ext_opt -drive htmp2,$HOME/nfs/tmp
+            set ext_opt -drive ntmp,$HOME/nfs/tmp
         end
     end
     
