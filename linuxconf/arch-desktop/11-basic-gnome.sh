@@ -22,7 +22,6 @@ lc_init () {
     pacman -Sy --needed --noconfirm recolic-aur/gnome-terminal-transparency recolic-aur/oreo-cursors-git
 
     lc_fsmap files/etc_environment /etc/environment
-    lc_fsmap files/mymsbin /usr/mymsbin
     lc_fsmap files/mybin /usr/mybin
 }
 
