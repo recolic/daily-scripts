@@ -1,4 +1,5 @@
 #!/bin/bash
+# one-click serial access to a bare-metal server.
 
 function die () {
     echo "$1"
