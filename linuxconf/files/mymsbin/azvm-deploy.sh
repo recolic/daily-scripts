@@ -156,3 +156,5 @@ for cter in $(seq $vmcount); do
 done
 
 plugin_hook plugin_after_vm_creat
+
+echo_info "Done. SSH to your VM: az vm list-ip-addresses --output table -g $resgrp"
