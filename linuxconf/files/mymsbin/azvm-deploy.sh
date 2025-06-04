@@ -22,7 +22,7 @@ var_default_val only_n_vms_in_tip   999
 
 var_default_val prefix              $(short=1 today || echo zz)$(head -c6 /dev/urandom | base64 -w0 | tr -d =/+)
 var_default_val resgrp              rshgrp-$prefix
-var_default_val vmname              vm-$prefix
+var_default_val vmname              rvm-$prefix
 var_default_val avname              $vmname-av
 var_default_val vnetname            vnet-$vmname
 
