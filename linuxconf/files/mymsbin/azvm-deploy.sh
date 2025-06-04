@@ -143,14 +143,15 @@ plugin_hook plugin_before_vm_creat
 
 # Actually create the VM
 for cter in $(seq $vmcount); do
-    debugexec az vm create -g "$resgrp" --name "$vmname$cter" --image "$vmimg" --admin-password "$vm_admin_pass" --admin-username r --location "$location" --size "$vmsize" --vnet-name "$vnetname" --subnet default "${vm_create_xtra_arg[@]}" "${vm_create_xtra_arg_first_n[@]}" || exit $?
+    vm_create_xtra_arg_i=("${vm_create_xtra_arg[@]}")
+    [ "$cter" -le "$only_n_vms_in_tip" ] && vm_create_xtra_arg_i+=("${vm_create_xtra_arg_first_n[@]}")
+
+    plugin_hook plugin_before_each_vm_creat
+    debugexec az vm create -g "$resgrp" --name "$vmname$cter" --image "$vmimg" --admin-password "$vm_admin_pass" --admin-username r --location "$location" --size "$vmsize" --vnet-name "$vnetname" --subnet default "${vm_create_xtra_arg_i[@]}" || exit $?
 
     if [ "$vnet_ipv6" = 1 ]; then
         debugexec az network nic ip-config create -g "$resgrp" --name "$vmname${cter}-xtraipc" --nic-name "$vmname${cter}VMNic" --private-ip-address-version IPv6 --vnet-name "$vnetname" --subnet default
     fi
-
-    # Clear these args for only 1st VM
-    [ "$cter" -ge "$only_n_vms_in_tip" ] && vm_create_xtra_arg_first_n=()
     plugin_hook plugin_after_each_vm_creat
 done
 

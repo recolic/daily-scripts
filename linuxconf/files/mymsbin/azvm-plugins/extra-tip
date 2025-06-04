@@ -27,7 +27,7 @@ function plugin_before_vm_creat () {
     debugexec az deployment group create -g "$resgrp" --template-file /tmp/template-avset.json --parameters "avname=tip2_$avname" "location=$location" "tipid=$tip2_id" "cluster=$tip2_cluster" || exit $?
 }
 
-function plugin_after_each_vm_creat () {
-    [ "$cter" -ge "$only_n_vms_in_tip" ] && vm_create_xtra_arg_first_n+=(--availability-set "tip2_$avname")
+function plugin_before_each_vm_creat () {
+    [ "$cter" -gt "$only_n_vms_in_tip" ] && vm_create_xtra_arg_i+=(--availability-set "tip2_$avname")
 }
 

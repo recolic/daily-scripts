@@ -9,9 +9,10 @@ This plugin makes your VM compliant by:
   1. Use TLS-compliant OS img.
   2. Disable vnet outbound default access. (You need azcli older than 2.73.0)
   3. Install Azure Monitor.
+  4. Set a tag for public ip.
 
 Extra Optional Args:
-  secured_version (default = 2505)
+  secured_version (default = 2506)
 "
 }
 
@@ -52,7 +53,7 @@ function vnet_args_parse_helper() {
 }
 
 function plugin_before_vnet_creat () {
-    var_default_val secured_version 2505
+    var_default_val secured_version 2506
 
     if [ "$secured_version" -ge 2504 ]; then
         # Block default-outbound-access.
@@ -79,12 +80,17 @@ function plugin_before_vm_creat () {
     fi
 }
 
+function plugin_before_each_vm_creat () {
+    az network public-ip create -g "$resgrp" -n "pip$prefix$cter" --location "$location" --ip-tags "FirstPartyUsage=/____"
+    vm_create_xtra_arg_i+=(--public-ip-address "pip$prefix$cter")
+}
+
+
+
 function plugin_after_each_vm_creat () {
     if [ "$secured_version" -ge 2505 ]; then
         debugexec az vm extension set -n AzureMonitorLinuxAgent  --publisher Microsoft.Azure.Monitor             --version 1.0 --vm-name "$vmname$cter" --resource-group "$resgrp" --enable-auto-upgrade true --settings '{"GCS_AUTO_CONFIG":true}'
         debugexec az vm extension set -n AzureSecurityLinuxAgent --publisher Microsoft.Azure.Security.Monitoring --version 2.0 --vm-name "$vmname$cter" --resource-group "$resgrp" --enable-auto-upgrade true --settings '{"enableGenevaUpload":true,"enableAutoConfig":true}'
     fi
 }
-
-
 
