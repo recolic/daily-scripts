@@ -1,3 +1,5 @@
+#!/bin/bash
+# mingw chmod +x doesnt work if shebang is not there.
 # Run on receiver side
 
 CONNECT=/mingw64/bin/connect.exe

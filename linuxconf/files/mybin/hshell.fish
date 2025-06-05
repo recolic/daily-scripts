@@ -48,6 +48,11 @@ end
 #     rmdir $mountdir
 # end
 
+function ff2
+    mkdir -p $HOME/tmp/.ffgoogle2
+    firefox --no-remote --profile $HOME/tmp/.ffgoogle2
+end
+
 if test -d $HOME/tmp/h
     cd $HOME/tmp/h
 end
