@@ -22,6 +22,9 @@ lc_startup () {
                 echo cG9sa2l0LmFkZFJ1bGUoZnVuY3Rpb24oYWN0aW9uLCBzdWJqZWN0KSB7CiAgICBpZiAoYWN0aW9uLmlkLmluZGV4T2YoIm9yZy5mcmVlZGVza3RvcC5yZXNvbHZlMSIpID49IDApIHtyZXR1cm4gcG9sa2l0LlJlc3VsdC5ZRVM7fQp9KTsK | base64 -d >> /usr/share/polkit-1/rules.d/microsoft-azurevpnclient.rules
             fi
         fi
+
+        # Both Azure-VPN and GlobalProtect use systemd-resolved. This one won't break NetworkManager.
+        ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
     else
         lc_bgrun /dev/null every 1h systemctl restart --user microsoft-identity-broker.service
         # lc_bgrun /dev/null every 30m /etc/ar2/ar2.sh
@@ -51,6 +54,7 @@ Type=Application
 Categories=Network;WebBrowser;
 MimeType=text/html;text/xml;application/xhtml_xml;image/webp;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;" | sudo tee /usr/share/applications/default-browser.desktop
     xdg-settings set default-web-browser default-browser.desktop
+    systemctl enable systemd-resolved
 }
 
 lc_login () {
