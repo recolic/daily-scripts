@@ -9,9 +9,16 @@ _key=$(echo "$1" | sed 's/^R_SEC_//')
 
 NEXTCLOUD_PREFIX=$HOME/$(ls $HOME | grep -i nextcloud)
 RSEC_ENC_DB="$NEXTCLOUD_PREFIX/RSEC.gpg"
-[[ ! -f "$RSEC_ENC_DB" ]] && die "ENC_DB missing"
+RSEC_ENC_DB_ALT="/etc/RSEC_alt.txt"
 
-RSEC_LINS="$(gpg -d "$RSEC_ENC_DB")" || die "gpg decrypt failure"
+if [ -f "$RSEC_ENC_DB" ]; then
+    RSEC_LINS="$(gpg -d "$RSEC_ENC_DB")" || die "gpg decrypt failure"
+elif [ -f "$RSEC_ENC_DB_ALT" ]; then
+    RSEC_LINS="$(cat "$RSEC_ENC_DB_ALT")" || die "load db failure"
+else
+    die "ENC_DB missing"
+fi
+
 if [[ "$_key" = "" ]]; then
     echo "$RSEC_LINS" | cut -d : -f 1 | tr -d ' ' | grep -v '^#' | grep .
 else
