@@ -6,6 +6,7 @@ lc_include arch-common/* utils/arch-virt.sh
 lc_assert_user_is root
 lc_fsmap hms/nginx.conf /etc/nginx/nginx.conf
 lc_fsmap hms/exports /etc/exports
+export PATH="$PATH:files/mybin"
 
 function install_x86_gzip_bin () {
     binname="$1"
@@ -80,10 +81,11 @@ lc_startup () {
 " | crontab -
 
     # DDNS, ipv4 only
-    lc_bgrun /var/log/ddns-daemon.log every 10m curl -s "https://dynamicdns.park-your-domain.com/update?host=rhome&domain=896444.xyz&password=__RSEC_PLACEHOLDER(rsec DDNS_XYZ_TOKEN)"
+    lc_bgrun /var/log/ddns-daemon.log every 10m curl -s "https://dynamicdns.park-your-domain.com/update?host=rhome&domain=896444.xyz&password=$(rsec DDNS_XYZ_TOKEN)"
     
     # frpc
-    lc_bgrun /var/log/frpc.log auto_restart frpc -c secrets/hms-frpc.ini
+    lc_bgrun /var/log/frpc1.log auto_restart frpc tcp -n hms_ssh  -l 22 -r 30512 -s proxy-cdn.recolic.net -P 30999 --token $(rsec FRP_KEY)
+    lc_bgrun /var/log/frpc2.log auto_restart frpc tcp -n hms_http -l 80 -r 30513 -s proxy-cdn.recolic.net -P 30999 --token $(rsec FRP_KEY)
     
     # aria2 rpc
     lc_bgrun /var/log/aria2-rpcd.log bash -c "cd /mnt/fsdisk/nfs/pub/ && aria2c --enable-rpc --rpc-listen-all --rpc-allow-origin-all"
@@ -115,16 +117,16 @@ lc_startup () {
     done                                          #
     ######## Barrier END: Wait for network up #####
 
-    subline=$(curl "__RSEC_PLACEHOLDER(rsec ProxySub_API)?3lw" | base64 -d | grep C100.US1LW)
+    subline=$(curl "$(rsec ProxySub_API)?3lw" | base64 -d | grep C100.US1LW)
     lc_bgrun /var/log/v1080.log  go-shadowsocks2 -c "$subline" -socks :1080
-    subline=$(curl "__RSEC_PLACEHOLDER(rsec ProxySub_API)?3lw" | base64 -d | grep C100.JP2LW)
+    subline=$(curl "$(rsec ProxySub_API)?3lw" | base64 -d | grep C100.JP2LW)
     lc_bgrun /var/log/v10808.log go-shadowsocks2 -c "$subline" -socks :10808
 
     lc_bgrun /dev/null fish hms/tfc-repomon.fish
 
-    lc_bgrun /var/log/cron.log every 1d docker run --rm recolic/mailbox-cleaner imap.recolic.net tmp@recolic.net "__RSEC_PLACEHOLDER(genpasswd tmp@recolic.net)" -d 15
+    lc_bgrun /var/log/cron.log every 1d docker run --rm recolic/mailbox-cleaner imap.recolic.net tmp@recolic.net "$(rsec genpasswd_tmp@recolic.net)" -d 15
 lc_bgrun /var/log/cron.log every 1d bash /root/telegram-public-msg-auto-cleanup/daily.sh
-    lc_bgrun /var/log/cron.log every 1d env suburl="__RSEC_PLACEHOLDER(rsec ProxySub_API)?1" fish hms/balancemon.fish
+    lc_bgrun /var/log/cron.log every 1d env suburl="$(rsec ProxySub_API)?1" fish hms/balancemon.fish
     lc_bgrun /var/log/cron.log every 1d ntpdate -u 1.pool.ntp.org
     lc_bgrun /var/log/cron.log every 1m env svm_workdir=/mnt/fsdisk/svm hms/vmm/cron-callback.sh
 }

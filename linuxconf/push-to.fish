@@ -27,10 +27,8 @@ if test $argv[1] = mspc
     end
 else if test $argv[1] = hms
     e rsync -avz --progress --delete . hms.r:lc.desktop
-    # It just contains secret
-    for fl in secrets/hms-* hms.sh
-        rsec_populate hms.r lc.desktop/$fl
-    end
+    set used_sec (grep "rsec [^)]*" -o hms.sh | cut -d ' ' -f 2)
+    rsec_export $used_sec | ssh hms.r "cat > /etc/RSEC_alt"
 else
     echo Usage: push-to.fish mspc/hms
 end
