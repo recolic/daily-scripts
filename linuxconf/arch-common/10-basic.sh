@@ -6,6 +6,7 @@ lc_init () {
     pacman -S --noconfirm --asdeps openssl
 
     grep kernel.sysrq=1 /etc/sysctl.d/99-sysctl.conf > /dev/null || echo 'kernel.sysrq=1' >> /etc/sysctl.d/99-sysctl.conf
+    grep mybin /etc/environment || echo 'PATH="'"$(pwd)/files/mybin"':/usr/local/sbin:/usr/local/bin:/usr/bin"' >> /etc/environment
 
     grep recolic-aur /etc/pacman.conf || echo '[recolic-aur]
 SigLevel = Optional TrustAll
