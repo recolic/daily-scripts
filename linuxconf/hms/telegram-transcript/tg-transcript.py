@@ -2,7 +2,7 @@
 
 from telegram.client import Telegram
 import subprocess, sys
-import handler_impl
+import handler_impl, simpledb
 def rsec(k): return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
 prefix = sys.argv[1] if len(sys.argv) > 1 else '.'
 
@@ -16,6 +16,7 @@ tg = Telegram(
 
 whitelist_filename = prefix+'/whitelisted_chats.log'
 whitelisted_chat_ids = []
+simpledb.dbpath = prefix+'/data.db.gi'
 
 def read_whitelist_from_disk(fname):
     try:

@@ -18,10 +18,11 @@ def read_b64_jsonlines(filename):
             except Exception:  
                 continue  # skip malformed/corrupt lines
 
+dbpath = 'data.db.gi'
 def append(data_dict):
-    append_b64_jsonline('data.db.gi', data_dict)
+    append_b64_jsonline(dbpath, data_dict)
 def dump():
-    return read_b64_jsonlines('data.db.gi')
+    return read_b64_jsonlines(dbpath)
 
 if __name__ == "__main__":
     for d in dump():
