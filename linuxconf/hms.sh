@@ -125,6 +125,7 @@ lc_startup () {
     lc_bgrun /dev/null fish hms/tfc-repomon.fish
 
     lc_bgrun /var/log/cron.log every 1d docker run --rm recolic/mailbox-cleaner imap.recolic.net tmp@recolic.net "$(rsec genpasswd_tmp@recolic.net)" -d 15
+# $(rsec Telegram_API_HASH) $(rsec Telegram_API_ID)
 lc_bgrun /var/log/cron.log every 1d bash /root/telegram-public-msg-auto-cleanup/daily.sh
     lc_bgrun /var/log/cron.log every 1d env suburl="$(rsec ProxySub_API)?1" fish hms/balancemon.fish
     lc_bgrun /var/log/cron.log every 1d ntpdate -u 1.pool.ntp.org
