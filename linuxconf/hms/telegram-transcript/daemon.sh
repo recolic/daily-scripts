@@ -8,6 +8,6 @@ function email_notify () {
     return $?
 }
 
-mkdir -p /mnt/fsdisk/tmp/tg-msg-cleanup-workdir &&
-    python $(dirname $0)/daily.py /mnt/fsdisk/tmp/tg-msg-cleanup-workdir || email_notify "telegram-public-msg cleanup failed"
+mkdir -p /mnt/fsdisk/tmp/tg-transcript-workdir &&
+python $(dirname $0)/tg-transcript.py /mnt/fsdisk/tmp/tg-transcript-workdir || email_notify "telegram-transcript daemon failed"
 
