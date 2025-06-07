@@ -39,7 +39,7 @@ lc_startup () {
     fi
 }
 
-lc_fsmap $HOME/code/msdoc/proj/mymsbin /usr/mymsbin
+lc_fsmap /home/recolic/code/msdoc/proj/mymsbin /usr/mymsbin
 
 lc_assert_user_is_not root
 
