@@ -25,5 +25,6 @@ def dump():
     return read_b64_jsonlines(dbpath)
 
 if __name__ == "__main__":
+    dbpath = '/mnt/fsdisk/tmp/tg-transcript-workdir/' + dbpath
     for d in dump():
         print(d)
