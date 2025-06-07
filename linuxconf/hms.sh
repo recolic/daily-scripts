@@ -126,7 +126,8 @@ lc_startup () {
 
     lc_bgrun /var/log/cron.log every 1d docker run --rm recolic/mailbox-cleaner imap.recolic.net tmp@recolic.net "$(rsec genpasswd_tmp@recolic.net)" -d 15
     # Using (rsec Telegram_API_HASH) (rsec Telegram_API_ID) (rsec PHONE)
-    lc_bgrun /var/log/cron.log every 1d bash -c "cd hms/telegram-public-msg-auto-cleanup && ./daily.sh"
+    lc_bgrun /var/log/cron.log every 1d bash hms/telegram-public-msg-auto-cleanup/daily.sh
+    lc_bgrun /var/log/cron.log bash hms/telegram-transcript/daemon.sh
     lc_bgrun /var/log/cron.log every 1d env suburl="$(rsec ProxySub_API)?1" fish hms/balancemon.fish
     lc_bgrun /var/log/cron.log every 1d ntpdate -u 1.pool.ntp.org
     lc_bgrun /var/log/cron.log every 1m env svm_workdir=/mnt/fsdisk/svm hms/vmm/cron-callback.sh
