@@ -27,7 +27,7 @@ tg = Telegram(
     api_hash=rsec("Telegram_API_HASH"),
     phone=rsec("PHONE"), # you can pass 'bot_token' instead
     database_encryption_key='my_password',
-    files_directory=prefix+'/tdlib_files.gi',
+    files_directory=prefix+'/tdlib_files',
 )
 
 def result_of(async_result):
