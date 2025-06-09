@@ -17,7 +17,8 @@ check_reachability() {
     fi
 }
 check_mounted() {
-   df -T | grep nfs && return $HMS_GOOD || return $HMS_BAD
+    df_res=$(df -T) || return $HMS_GOOD # nfs io error. Return mounted=1
+    echo "$df_res" | grep nfs && return $HMS_GOOD || return $HMS_BAD
 }
 
 #prev_stat=$HMS_GOOD
