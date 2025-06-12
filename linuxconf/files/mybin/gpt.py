@@ -28,12 +28,12 @@ chat_prompt = [
 ]  
   
 def get_multiline_input():  
-    print(">> You (finish with empty line. Start/End multi-line with .ml):")  
+    print(">> You >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>") 
     lines = []  
     mlmode = False
     while True:  
         line = input()  
-        if line == ".ml":
+        if line == "..":
             mlmode = not mlmode
         elif mlmode:
             lines.append(line)  
@@ -41,7 +41,7 @@ def get_multiline_input():
             break
         else:  
             lines.append(line)  
-    print("<< Bot") 
+    print("<< Bot <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<") 
     # Reconstruct user input with newlines (including internal newlines)  
     return '\n'.join(lines).strip('\n') + '\n'  
   
@@ -58,6 +58,7 @@ def save_to_tempfile(content):
         f.write(content)
     return fn
 
+print("(finish with empty line. Start/End multi-line with ..)")  
 while True:  
     user_input = get_multiline_input()  
     if not user_input.strip():  
@@ -102,9 +103,9 @@ while True:
   
         # Print or save  
         num_lines = assistant_text.count('\n') + 1  
-        if num_lines > 48:  
+        if num_lines > 100:  
             filepath = save_to_tempfile(assistant_text)  
-            print(f"(Response longer than 48 lines. Saved to {filepath})")  
+            print(f"(Response longer than 100 lines. Saved to {filepath})")  
         else:
             print(assistant_text)
         # Add assistant response to chat history
