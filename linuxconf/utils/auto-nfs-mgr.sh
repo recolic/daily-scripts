@@ -17,6 +17,7 @@ check_reachability() {
     fi
 }
 check_mounted() {
+    # Warning: df -T might hang forever if NFS is offline!
     df_res=$(df -T) || return $HMS_GOOD # nfs io error. Return mounted=1
     echo "$df_res" | grep nfs && return $HMS_GOOD || return $HMS_BAD
 }
@@ -25,6 +26,10 @@ check_mounted() {
 while true; do
     check_reachability
     net_stat=$?
+    if [ $net_stat = $HMS_BAD ]; then
+        # Bug fix: if network unavailable, check_mounted might hang.
+        umount -f -l /home/recolic/nfs
+    fi
     check_mounted
     nfs_stat=$?
 

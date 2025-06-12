@@ -21,22 +21,20 @@ chat_prompt = [
         "content": [  
             {  
                 "type": "text",  
-                "text": "You are an AI assistant that helps people find information. Sometimes user want short daily conversation, sometimes user need detailed explain. Please act like a human and don't unnecessarily walk into detail."  
+                "text": "You are an AI assistant that helps people find information. Sometimes user want short daily conversation, sometimes user need detailed explain. Please act like a human and don't unnecessarily say too much."  
             }  
         ]  
     }  
 ]  
   
 def get_multiline_input():  
-    print(">> You (finish with empty line. Start multi-line with .ml, end multi-line with .ml.end):")  
+    print(">> You (finish with empty line. Start/End multi-line with .ml):")  
     lines = []  
     mlmode = False
     while True:  
         line = input()  
         if line == ".ml":
-            mlmode = True
-        elif line == ".ml.end":
-            mlmode = False
+            mlmode = not mlmode
         elif mlmode:
             lines.append(line)  
         elif line == "":
@@ -54,10 +52,11 @@ def save_to_tempfile(content):
     global _tempdir, _counter
     if _tempdir is None:
         _tempdir = tempfile.mkdtemp(prefix="gpt-", dir="/tmp")
-    with open(f"{_tempdir}/{_counter}.txt", 'w') as f:
-        f.write(content)
+    fn = f"{_tempdir}/{_counter}.txt"
     _counter += 1
-    return filename
+    with open(fn, 'w') as f:
+        f.write(content)
+    return fn
 
 while True:  
     user_input = get_multiline_input()  
@@ -103,9 +102,9 @@ while True:
   
         # Print or save  
         num_lines = assistant_text.count('\n') + 1  
-        if num_lines > 32:  
+        if num_lines > 48:  
             filepath = save_to_tempfile(assistant_text)  
-            print(f"(Response longer than 32 lines. Saved to {filepath})")  
+            print(f"(Response longer than 48 lines. Saved to {filepath})")  
         else:
             print(assistant_text)
         # Add assistant response to chat history
