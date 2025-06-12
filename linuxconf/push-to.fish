@@ -21,7 +21,7 @@ if test $argv[1] = mspc
     e rsync -avz --progress --delete . ms.recolic:lc.desktop
     e rsync -avz --progress --delete /home/recolic/.git-credentials ms.recolic:/home/recolic/.git-credentials
     # The whole file should be secret
-    for fl in secrets/mspc-*.asc
+    for fl in secrets/mspc-*.gpg
         # rsec_populate ms.recolic lc.desktop/$fl
         rgpg-decrypt-remote ms.recolic lc.desktop/$fl
     end
