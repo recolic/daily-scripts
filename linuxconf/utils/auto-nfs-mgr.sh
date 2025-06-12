@@ -17,12 +17,10 @@ check_reachability_i() {
     fi
 }
 check_reachability() {
-    check_reachability_i ; v1=$?
-    check_reachability_i ; v2=$?
-    [ $v1 = $v2 ] && return $v1
-    check_reachability_i ; v3=$?
-    [ $v1 = $v3 ] && return $v1
-    [ $v2 = $v3 ] && return $v2
+    for i in {1..20}; do
+        check_reachability_i && return $? ; sleep 0.2
+    done
+    return $HMS_BAD
 }
 check_mounted() {
     # Warning: df -T might hang forever if NFS is offline!
