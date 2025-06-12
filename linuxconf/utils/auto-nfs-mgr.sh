@@ -9,12 +9,20 @@ fi
 HMS_GOOD=0
 HMS_BAD=1
 # Function to check if hms.r is reachable
-check_reachability() {
+check_reachability_i() {
     if ping -c 1 hms.r &> /dev/null; then
         return $HMS_GOOD # Host is reachable
     else
         return $HMS_BAD # Host is unreachable
     fi
+}
+check_reachability() {
+    check_reachability_i ; v1=$?
+    check_reachability_i ; v2=$?
+    [ $v1 = $v2 ] && return $v1
+    check_reachability_i ; v3=$?
+    [ $v1 = $v3 ] && return $v1
+    [ $v2 = $v3 ] && return $v2
 }
 check_mounted() {
     # Warning: df -T might hang forever if NFS is offline!
@@ -29,22 +37,25 @@ while true; do
     if [ $net_stat = $HMS_BAD ]; then
         # Bug fix: if network unavailable, check_mounted might hang.
         umount -f -l /home/recolic/nfs
-    fi
-    check_mounted
-    nfs_stat=$?
-
-    if [ $net_stat != $nfs_stat ]; then
-        # Two more double-confirmation. If difference fixed, do not update prev_stat and continue.
-        sleep 1 ; check_reachability ; [ $? = $nfs_stat ] && continue
-        sleep 1 ; check_reachability ; [ $? = $nfs_stat ] && continue
-        echo "$(date) State mismatch detected, network $net_stat but nfs $nfs_stat"
-
-        if [ $net_stat = $HMS_BAD ]; then
-            umount -f -l /home/recolic/nfs
-        else
+    else
+        check_mounted
+        nfs_stat=$?
+        if [ $nfs_stat = $HMS_BAD ]; then
             mount -o bg,intr,soft,timeo=1,retrans=1,actimeo=1,retry=1 hms.r:/ /home/recolic/nfs
         fi
     fi
+
+    #if [ $net_stat != $nfs_stat ]; then
+    #    # Two more double-confirmation. If difference fixed, do not update prev_stat and continue.
+    #    sleep 1 ; check_reachability ; [ $? = $nfs_stat ] && continue
+    #    sleep 1 ; check_reachability ; [ $? = $nfs_stat ] && continue
+    #    echo "$(date) State mismatch detected, network $net_stat but nfs $nfs_stat"
+
+    #    if [ $net_stat = $HMS_BAD ]; then
+    #        umount -f -l /home/recolic/nfs
+    #    else
+    #    fi
+    #fi
 #    if [ $stat != $prev_stat ]; then
 #        # Two more double-confirmation. If difference fixed, do not update prev_stat and continue.
 #        sleep 1 ; check_reachability ; [ $? = $prev_stat ] && continue
@@ -59,6 +70,6 @@ while true; do
 #        fi
 #    fi
 #    prev_stat=$stat
-    sleep 3  # Sleep for 3 seconds
+    sleep 2  # Sleep for 3 seconds
 done
 
