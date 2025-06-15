@@ -54,7 +54,7 @@ Type=Application
 Categories=Network;WebBrowser;
 MimeType=text/html;text/xml;application/xhtml_xml;image/webp;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;" | sudo tee /usr/share/applications/default-browser.desktop
     xdg-settings set default-web-browser default-browser.desktop
-    systemctl enable systemd-resolved
+    sudo systemctl enable systemd-resolved
 }
 
 lc_login () {
