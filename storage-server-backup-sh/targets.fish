@@ -1,6 +1,6 @@
 #!/usr/bin/fish
 
-set GPG_KEY E3933636
+set GPG_KEY C344D5EAE3933636
 
 function echo_log # args... -> int
     echo -n "[" (date --utc) "]" >> /dev/fd/2
@@ -39,6 +39,9 @@ function pack_backup_dir # string -> int
 
     if test -e $fname
         echo_log Warning: filename conflict at "'"$fname"'". Overwriting...
+    end
+    if not gpg --list-keys | grep $GPG_KEY
+        gpg --recv-keys $GPG_KEY ; or return 1
     end
 
     echo_log "Compressing backup folder..."
