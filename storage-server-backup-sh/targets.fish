@@ -1,7 +1,6 @@
 #!/usr/bin/fish
 
-# Secret. Will be replaced by push_update_to_server.sh
-set MAILAPI_KEY _PLACEHOLDER_MAILKEY_
+set GPG_KEY E3933636
 
 function echo_log # args... -> int
     echo -n "[" (date --utc) "]" >> /dev/fd/2
@@ -14,7 +13,7 @@ function email_notify # string -> int
     set -l message $argv[1]
 
     echo_log ">>> Sending email:" root@recolic.net "RECOLIC STORAGE SYSTEM NOTIFY" "[storage.recolic.net] $message"
-    curl "https://recolic.net/api/email-notify.php?apiKey=$MAILAPI_KEY&recvaddr=root@recolic.net&b64Title="(echo "RECOLIC STORAGE SYSTEM NOTIFY" | base64 -w0)'&b64Content='(echo "[storage.recolic.net] $message" | base64 -w0) 1>&2
+    curl "https://recolic.net/api/email-notify.php?recvaddr=root@recolic.net&b64Title="(echo "RECOLIC STORAGE SYSTEM NOTIFY" | base64 -w0)'&b64Content='(echo "[storage.recolic.net] $message" | base64 -w0) 1>&2
     return $status
 end
 
@@ -35,7 +34,7 @@ function pack_backup_dir # string -> int
     set -l dirname $argv[1]
 
     set -l datestr (date -u +%Y%m%d-%H%M%S)
-    set -l fname "/storage/backups/"(basename $dirname)"_packed.tar.gz.v"$datestr
+    set -l fname "/storage/backups/"(basename $dirname)"_packed.tar.gpg.v"$datestr
     mkdir -p /storage/backups
 
     if test -e $fname
@@ -43,7 +42,7 @@ function pack_backup_dir # string -> int
     end
 
     echo_log "Compressing backup folder..."
-    tar -czf $fname $dirname
+    tar -c $dirname | gpg --yes -e -o $fname -r $GPG_KEY
     and echo_log "$fname done. Calculating checksum..."
     and sha256sum $fname >> "/storage/backups/SHA256SUM"
     return $status
@@ -53,6 +52,7 @@ end
 
 function target_nas_data
     run_until_success rsync -avz --partial --delete --no-links \
+        --exclude /H/ \
         root@remote.nfs.recolic:/mnt/fsdisk/nfs/backups /storage/cache/target_nas_data
 
     # replica only, skip history version packing.
