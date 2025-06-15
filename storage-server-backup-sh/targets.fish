@@ -41,11 +41,11 @@ function pack_backup_dir # string -> int
         echo_log Warning: filename conflict at "'"$fname"'". Overwriting...
     end
     if not gpg --list-keys | grep $GPG_KEY
-        gpg --recv-keys $GPG_KEY ; or return 1
+        gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys $GPG_KEY ; or return 1
     end
 
     echo_log "Compressing backup folder..."
-    tar -c $dirname | gpg --yes -e -o $fname -r $GPG_KEY
+    tar -c $dirname | gpg --yes --trust-model always -e -o $fname -r $GPG_KEY
     and echo_log "$fname done. Calculating checksum..."
     and sha256sum $fname >> "/storage/backups/SHA256SUM"
     return $status
