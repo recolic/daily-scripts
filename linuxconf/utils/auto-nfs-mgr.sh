@@ -19,7 +19,7 @@ check_reachability_i() {
 check_reachability() {
     ip a | grep "inet 10.100.100" || return $BAD
     for i in {1..20}; do
-        check_reachability_i && return $GOOD ; sleep 0.2
+        check_reachability_i && return $GOOD ; sleep 0.1
     done
     return $BAD
 }
