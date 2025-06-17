@@ -21,7 +21,7 @@ chat_prompt = [
         "content": [  
             {  
                 "type": "text",  
-                "text": "You are an AI assistant that helps people find information. Sometimes user want short daily conversation, sometimes user need detailed explain. Please act like a human and don't unnecessarily say too much."  
+                "text": "You are an AI assistant that helps people find information. Sometimes user want short daily conversation, sometimes user need detailed explain. For complex discussion, your context is limited. So please act like a human and don't unnecessarily say too much."  
             }  
         ]  
     }  
@@ -29,21 +29,23 @@ chat_prompt = [
   
 def get_multiline_input():  
     print(">> You >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>") 
-    lines = []  
+    text = ""
     mlmode = False
     while True:  
         line = input()  
         if line == "..":
             mlmode = not mlmode
         elif mlmode:
-            lines.append(line)  
+            text += line + '\n'
+        elif line.startswith(".f "):
+            text += open(line[3:].strip()).read() + '\n'
         elif line == "":
             break
-        else:  
-            lines.append(line)  
+        else:
+            text += line + '\n'
     print("<< Bot <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<") 
     # Reconstruct user input with newlines (including internal newlines)  
-    return '\n'.join(lines).strip('\n') + '\n'  
+    return text
   
 # Create the tempdir only once, on first use
 _tempdir = None
@@ -59,6 +61,7 @@ def save_to_tempfile(content):
     return fn
 
 print("(finish with empty line. Start/End multi-line with ..)")  
+print("(import file with '.f /path/to/file.txt')")  
 while True:  
     user_input = get_multiline_input()  
     if not user_input.strip():  
