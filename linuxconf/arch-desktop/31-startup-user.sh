@@ -7,6 +7,7 @@ lc_startup () {
 firefox_config='
 user_pref("browser.tabs.tabmanager.enabled", false);
 user_pref("services.sync.prefs.sync.browser.uiCustomization.state", true);
+user_pref("browser.fixup.domainsuffixwhitelist.recolic", true);
 user_pref("browser.tabs.hoverPreview.enabled", false);'
 for dir in "$HOME"/.mozilla/firefox/*.default*; do
   [[ -d "$dir" ]] && echo "$firefox_config" > "$dir/user.js"
