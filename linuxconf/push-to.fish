@@ -8,9 +8,6 @@ if not test -f push-to.fish
     exit 1
 end
 
-#echo "ERROR: DO NOT test this script before back to US"
-#exit 1
-
 function e
     echo $argv
     eval $argv
@@ -20,13 +17,12 @@ end
 if test $argv[1] = mspc
     e rsync -avz --progress --delete . ms.recolic:lc.desktop
     e rsync -avz --progress --delete /home/recolic/.git-credentials ms.recolic:/home/recolic/.git-credentials
-    # The whole file should be secret
-    for fl in secrets/mspc-*.gpg
-        # rsec_populate ms.recolic lc.desktop/$fl
-        rgpg-decrypt-remote ms.recolic lc.desktop/$fl
-    end
+
+    set used_sec (grep "rsec [^)]*" -o mspc.sh | cut -d ' ' -f 2)
+    rsec_export $used_sec | ssh ms.recolic "cat > /etc/RSEC_alt"
 else if test $argv[1] = hms
     e rsync -avz --progress --delete . hms.r:lc.desktop
+
     set used_sec (grep "rsec [^)]*" -o hms.sh | cut -d ' ' -f 2)
     rsec_export $used_sec | ssh hms.r "cat > /etc/RSEC_alt"
 else
