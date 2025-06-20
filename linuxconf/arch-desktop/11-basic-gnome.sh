@@ -21,7 +21,9 @@ lc_init () {
 
     pacman -Sy --needed --noconfirm recolic-aur/gnome-terminal-transparency recolic-aur/oreo-cursors-git
 
-    lc_fsmap files/etc_environment /etc/environment
-    lc_fsmap files/mybin /usr/mybin
+    echo "
+GTK_IM_MODULE=fcitx5
+QT_IM_MODULE=fcitx5
+XMODIFIERS=@im=fcitx5" >> /etc/environment
 }
 

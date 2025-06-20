@@ -19,7 +19,7 @@ if test $argv[1] = mspc
     e rsync -avz --progress --delete /home/recolic/.git-credentials ms.recolic:/home/recolic/.git-credentials
 
     set used_sec (grep "rsec [^)]*" -o mspc.sh | cut -d ' ' -f 2)
-    rsec_export $used_sec | ssh ms.recolic "cat > /etc/RSEC_alt"
+    rsec_export $used_sec | ssh ms.recolic "sudo tee /etc/RSEC_alt"
 else if test $argv[1] = hms
     e rsync -avz --progress --delete . hms.r:lc.desktop
 
