@@ -31,11 +31,6 @@ lc_startup () {
 
         # azure-cli login fix
         [[ -f /usr/bin/az ]] && az config set core.login_experience_v2=off
-        
-        if [ ! -f "$HOME/.cache/git-work-config.inc" ]; then
-            echo W3VzZXJdCiAgICBuYW1lID0gQmVuc29uIExpdQogICAgZW1haWwgPSBiZW5zbEBtaWNyb3NvZnQuY29tCgo= | base64 -d > "$HOME/.cache/git-work-config.inc"
-            chmod 777 "$HOME/.cache/git-work-config.inc"
-        fi
     fi
 }
 
@@ -61,6 +56,11 @@ lc_login () {
     if ! grep -F .m.recolic /etc/hosts > /dev/null; then
         gpg -d -o /tmp/.hosts.tmp secrets/work-hosts.gpg &&
             sudo mv /tmp/.hosts.tmp /etc/hosts
+    fi
+
+    if [ ! -f "$HOME/.cache/git-work-config.inc" ]; then
+        echo -e "[user]\nname = Benson\nemail = $(rsec MSID)" > "$HOME/.cache/git-work-config.inc"
+        chmod 777 "$HOME/.cache/git-work-config.inc"
     fi
 }
 
