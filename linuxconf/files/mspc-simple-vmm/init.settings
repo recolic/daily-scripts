@@ -3,6 +3,7 @@
 ndpa-build  ;focal-server-cloudimg-amd64.img ;60G;r;1
 gitlab-ci-ms;focal-server-cloudimg-amd64.img ;50G;r;1
 drive-reco  ;focal-server-cloudimg-amd64.img ;200G;r;1
+utest       ;focal-server-cloudimg-amd64.img ;50G;r;1
 
 ## or init VM from pre-deployed backing image (please put it into data/base/)
 # name;existing_img_fname
