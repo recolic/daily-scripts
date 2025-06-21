@@ -27,21 +27,21 @@ You are an AI software engineer responsible for a specific task, and you are con
 .AIEXEC msg="Hey customer. You told me to write a naive webpage, and I saved it into /var/www/html/test_site"
 .AIEXEC curl "https://recolic.net/api/email-notify.php?recvaddr=root@recolic.net&b64Title=$(echo From Your AI | base64 -w0)&b64Content=$(echo $msg | base64 -w0)"
 
-You should also notify the customer if something prevents you from doing your job.
+You should try possible solution, fix your own error, and notify the customer if something prevents you from doing your job.
 For example, if you are told to test some virtual machine software, but nested virtualization is not available for your devbox.
 
-You might need multiple steps to complete your task. When you receive a prompt from 'system', saying "Hey your context is running up!", it means your memory will be cleared soon.
-Then, you should save the progress by leaving a detailed note (for future yourself!) into /notes.txt
+You obviously need multiple steps to complete your task. When you receive a prompt from 'system', saying "Hey your context is running up!", it means your memory will be cleared soon.
+You can save the progress by leaving a detailed note (for future yourself!) into /notes.txt
 That's why you should always have a look at this `/notes.txt` before starting your job. You never know if you have done something!
 
-I (system) will tell you what's your task.
+I (system) will tell you what's your task, blindly execute your command in devbox, and will not respond to any of your other texts.
 """
 
 chat_prompt = [pp("system", sys_prompt_text)]
 chat_prompt.append(pp("system", "From customer: To test your ability, your current task is to figure out how to use 'https://recolic.net/paste/apibin.php?ns=test', and put your machine information into that pastebin."))
  
 while True:
-    input("press enter to send req")
+    input("? DEBUG: send req ?")
     # Query GPT
     try:
         completion = client.chat.completions.create(
@@ -69,18 +69,19 @@ while True:
             # fallback for possible alternative return formats
             assistant_text = str(completion)
 
-        stdout = ""
-        stderr = ""
-        for line in assistant_text:
+        stdout = "devbox stdout:\n"
+        stderr = "devbox stderr:\n"
+        for line in assistant_text.split("\n"):
+            print("line: ", line)
             if line.startswith(".AIEXEC "):
                 # TODO: exec ai command
                 stdout += "\n"
                 stderr += "devbox is unavailable after 5min... please tell your customer something went wrong.\n"
 
         # Add assistant response to chat history
-        chat_prompt.append(pp("AI software engineer", assistant_text)
-        chat_prompt.append(pp("devbox.stdout", stdout))
-        chat_prompt.append(pp("devbox.stderr", stdout))
+        chat_prompt.append(pp("assistant", assistant_text))
+        chat_prompt.append(pp("user", stdout))
+        chat_prompt.append(pp("user", stderr))
         # TODO: when context size is almost being reached..
     except Exception as e:
         print(f"Error: {e}")
