@@ -8,7 +8,7 @@ After thinking deeply about value, entropy, and natural selection, we can arrive
 
 ### 1. What is “Value”? The Maximization Principle
 
-- **Definition:** Value is whatever a living being (or agent) strives to increase—resources, information, experiences, survival chances, or order.
+- **Definition:** Value is whatever a living being (or agent) strives to increase—resources, information, experiences, survival chances, order, or other emotional (chemical) value.
 - All living systems act to maximize their own accumulated value over their lifetime—this can be written mathematically as:
 
 <!-- \text{argmax} ~ M = \int_0^\infty V(t)\,dt -->
