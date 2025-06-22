@@ -597,3 +597,12 @@ If order isn’t preserved, agency itself dissolves.
 Perfect addition!
 >> You >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+Could you write a summary about what we discussed yet? I want a blog article.
+..
+briefly, I want to include:
+1. the value definition, and how all creature are maximizing its value. And the value formular (argmax)
+2. Why value definition always holds. Show its connection to local entropy minimize, and how nature selection works.
+3. Why it's an underlying rule (even if no nature selection involves) that decision machine would actively reduce local entropy (otherwise it won't be created in the first place)
+4. Human example. Explorer, non-explorer, and other livings example. Including all 5 examples, and also why broken gene/brain is not a valid counter example.
+..
+
