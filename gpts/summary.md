@@ -11,18 +11,14 @@ After thinking deeply about value, entropy, and natural selection, we can arrive
 - **Definition:** Value is whatever a living being (or agent) strives to increase—resources, information, experiences, survival chances, or order.
 - All living systems act to maximize their own accumulated value over their lifetime—this can be written mathematically as:
 
-  \[
-  \text{argmax} ~ M = \int_0^\infty V(t)\,dt
-  \]
-
-![latex](https://latex.codecogs.com/png.image?%5Ctext%7Bargmax%7D%20%20M%20%3D%20%5Cint_0%5E%5Cinfty%20V%28t%29%5C%2Cdt)
+<!-- \text{argmax} ~ M = \int_0^\infty V(t)\,dt -->
+![tex](https://latex.codecogs.com/png.image?%5Ctext%7Bargmax%7D%20%28%20M%20%3D%20%5Cint_0%5E%5Cinfty%20V%28t%29%5C%2Cdt%20%29)
 
   where \(V(t)\) is “value” at time \(t\).
 - Alternatively, for curiosity/exploration, value can relate to accumulated knowledge (\(E\)), so:
 
-  \[
-  M = E_{\text{final}} - E_{\text{initial}}
-  \]
+<!-- M = E_{\text{final}} - E_{\text{initial}} -->
+![tex](https://latex.codecogs.com/png.image?M%20%3D%20E_%7B%5Ctext%7Bfinal%7D%7D%20-%20E_%7B%5Ctext%7Binitial%7D%7D)
 
 - In practice, every creature is constantly seeking to increase these quantities.
 
