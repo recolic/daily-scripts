@@ -15,7 +15,7 @@ After thinking deeply about value, entropy, and natural selection, we can arrive
   \text{argmax} ~ M = \int_0^\infty V(t)\,dt
   \]
 
-![latex](https://latex.codecogs.com/png.image?%5Ctext%7Bargmax%7D%20~%20M%20%3D%20%5Cint_0%5E%5Cinfty%20V%28t%29%5C%2Cdt)
+![latex](https://latex.codecogs.com/png.image?%5Ctext%7Bargmax%7D%20%20M%20%3D%20%5Cint_0%5E%5Cinfty%20V%28t%29%5C%2Cdt)
 
   where \(V(t)\) is “value” at time \(t\).
 - Alternatively, for curiosity/exploration, value can relate to accumulated knowledge (\(E\)), so:
