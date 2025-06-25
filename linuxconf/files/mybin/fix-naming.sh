@@ -14,6 +14,13 @@ function name_cleanup() {
      echo "DEBUG: mv $name $nname"
      mv -- "$name" "$nname"
   fi
+  if [[ "$name" =~ 【.*xyz.*】 ]]; then
+      local nname=`echo "$name" | sed -E 's/【[^【】]*xyz[^【】]*】//g'`
+
+     [[ "$nname" == -* ]] && nname="_${nname#-}"
+     echo "DEBUG: mv $name $nname"
+     mv -- "$name" "$nname"
+  fi
 }
 
 # remove all leading '-'

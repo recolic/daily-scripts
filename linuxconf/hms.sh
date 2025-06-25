@@ -51,6 +51,8 @@ TODO: manual steps
 # exportfs -arv
 # systemctl enable nfsv4-server.service
 
+## telegram bots: need manual login
+
 #######################
 # all service require the storage disk:
 # KVM and webvirtmgr; btsync; nfs; nginx
