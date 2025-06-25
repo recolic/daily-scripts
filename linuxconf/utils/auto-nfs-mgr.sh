@@ -28,18 +28,28 @@ check_mounted() {
     df_res=$(df -T) || return $GOOD # nfs io error. Return mounted=1
     echo "$df_res" | grep nfs && return $GOOD || return $BAD
 }
+log() {
+    echo "$(date)" "$@" >> /home/recolic/.cache/nfs.log
+}
 
 while true; do
+    log "wake"
     check_reachability
     net_stat=$?
+    log "check_reachability=$net_stat"
     if [ $net_stat = $BAD ]; then
         # Bug fix: if network unavailable, check_mounted might hang.
-        umount -f -l /home/recolic/nfs
+        log "before umount"
+        umount -f -l /home/recolic/nfs # Bug: umount could also block!!!
+        log "after umount"
     else
         check_mounted
         nfs_stat=$?
+        log "check mounted=$nfs_stat"
         if [ $nfs_stat = $BAD ]; then
-            mount -o bg,intr,soft,timeo=1,retrans=1,actimeo=1,retry=1 hms.r:/ /home/recolic/nfs
+            log "before mount"
+            mount -o bg,intr,hard,timeo=1,retrans=1,actimeo=1,retry=1 hms.r:/ /home/recolic/nfs
+            log "after mount"
         fi
     fi
     sleep 2  # Sleep for 3 seconds
