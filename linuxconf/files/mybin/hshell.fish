@@ -22,7 +22,8 @@ function _secret_mount
 end
 
 function h
-    # Firefox want fixed data directory (mountdir)
+    mount | grep hshell.mount ; and echo "Dangerous: hshell.mount already mounted" ; and return 1
+
     _secret_mount $HOME/nfs/.henc /tmp/hshell.mount .henc HSHELL_NFS
 end
 
@@ -35,22 +36,15 @@ function rb
     _secret_mount $HOME/nfs/backups/C2_M /tmp/.rbackup.mount/C2_M C2_M HSHELL_RB
 end
 
-# function m
-#     set mountdir (mktemp -d)
-#     echo "++ Mount DRIVE to $mountdir..."
-#     sudo mount --uuid f4a5b62c-1a98-4ae4-b121-cd8b06cff603 $mountdir
-#     or return $status
-# 
-#     env RECOLIC_ENV_NAME=HSHELL_M fish --private -C "cd $mountdir"
-# 
-#     echo "-- umount $mountdir..."
-#     sudo umount -l -f $mountdir
-#     rmdir $mountdir
-# end
-
 function ff2
     mkdir -p $HOME/tmp/.ffgoogle2
     firefox --no-remote --profile $HOME/tmp/.ffgoogle2
+end
+
+function henc_local
+    echo "encfs -f /mnt/fsdisk/nfs/.henc tmp/m"
+    echo "genpasswd .henc | toclip"
+    echo "Ctrl-C when done"
 end
 
 if test -d $HOME/tmp/h

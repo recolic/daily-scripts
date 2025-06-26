@@ -5,9 +5,15 @@
 #           monthly: create a monthly snapshot and delete all daily snapshots
 #           annually: create a annually snapshot and delete all monthly snapshots
 
+function backup_flist
+    date > /root/nfs-flist.log
+    find /mnt/fsdisk/nfs/pub/ >> /root/nfs-flist.log 2>/dev/null
+    gzip /root/nfs-flist.log -f
+end
+
 switch $argv[1]
     case daily
-        /root/nfs-backup-flist.sh
+        backup_flist
         zfs snapshot nas-data-raid@daily-(date +%Y%m%d-%H%M)
         exit $status
     case monthly
