@@ -26,7 +26,7 @@ function h
 
     set nfsu (mount | grep "$HOME/nfs " >/dev/null; or echo 1); test "$nfsu" = "1"; and rnfs.mount
     _secret_mount $HOME/nfs/.henc /tmp/hshell.mount .henc HSHELL_NFS
-    test "$nfsu" = "1"; and sudo umount -f -l $HOME/nfs
+    test "$nfsu" = "1"; and echo "umount nfs..." ; and sudo umount -f -l $HOME/nfs
 end
 
 function rb
@@ -38,7 +38,7 @@ function rb
 
     set nfsu (mount | grep "$HOME/nfs " >/dev/null; or echo 1); test "$nfsu" = "1"; and rnfs.mount
     _secret_mount $HOME/nfs/backups/C2_M /tmp/.rbackup.mount/C2_M C2_M HSHELL_RB
-    test "$nfsu" = "1"; and sudo umount -f -l $HOME/nfs
+    test "$nfsu" = "1"; and echo "umount nfs..." ; and sudo umount -f -l $HOME/nfs
 end
 
 function ff2
