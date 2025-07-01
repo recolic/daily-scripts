@@ -63,10 +63,10 @@ host hms.r
     user root
 
 host remote.hms.r
-    hostname base.ddns1.recolic.cc
-    port 25567
-    #hostname proxy-cdn.recolic.net
-    #port 30512
+    #hostname base.ddns1.recolic.cc
+    #port 25567
+    hostname proxy-cdn.recolic.net
+    port 30512
     user root
 
 host pc.r
