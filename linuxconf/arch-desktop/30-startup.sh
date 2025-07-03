@@ -16,6 +16,6 @@ lc_startup () {
         sysctl -w vm.swappiness=75
         # Use laptop-power-save.sh as needed
     
-        lc_bgrun /dev/null bash utils/auto-nfs-mgr.sh
+        # lc_bgrun /dev/null bash utils/auto-nfs-mgr.sh
     fi
 }
