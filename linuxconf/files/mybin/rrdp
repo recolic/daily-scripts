@@ -107,8 +107,8 @@ else
         echo "EXEC: $rdp -K -g $w'x'$h -r disk:htmp=$HOME/tmp $ext_opt -u $user -p $pass -v $host"
         $rdp -K -g $w'x'$h -r disk:htmp=$HOME/tmp $ext_opt -u $user -p $pass -v $host
     else
-        echo "EXEC: $rdp -disable-grab-keyboard -disable-toggle-fullscreen --auth-pkg-list !kerberos -w $w -h $h -drive htmp,$HOME/tmp $ext_opt -u $user -p $pass -v $host"
-        $rdp -disable-grab-keyboard -disable-toggle-fullscreen --auth-pkg-list !kerberos -w $w -h $h -drive htmp,$HOME/tmp $ext_opt -u $user -p $pass -v $host
+        echo "EXEC: $rdp -disable-grab-keyboard -disable-toggle-fullscreen --auth-pkg-list !kerberos -w $w -h $h -drive htmp,$HOME/tmp $ext_opt -u $user -p $pass -v $host -timeout 100000"
+        $rdp -disable-grab-keyboard -disable-toggle-fullscreen --auth-pkg-list !kerberos -w $w -h $h -drive htmp,$HOME/tmp $ext_opt -u $user -p $pass -v $host -timeout 100000
         # disable krb5: /auth-pkg-list:!kerberos 
     end
 end
