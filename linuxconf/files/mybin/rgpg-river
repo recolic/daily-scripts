@@ -24,12 +24,13 @@ function prefix_hex32() {
     [[ "$str" =~ ^[0-9a-f]{32}$ ]]
 }
 
-[ "$1" = "" ] && echo "Usage: $0 <ciphertext / plaintext>" && exit 1
+echo "Ciphertext / Plaintext until EOF:"
+txt="$(cat)"
 
-if prefix_hex32 "$1"; then
+if prefix_hex32 "$txt"; then
     echo "Decrypt result:"
-    dec "$1"
+    dec "$txt"
 else
     echo "Encrypt result:"
-    enc "$1"
+    enc "$txt"
 fi
