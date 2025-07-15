@@ -1,0 +1,35 @@
+#!/bin/bash
+set -e
+
+# test only. change me later.
+# Must be 32 bytes in hex
+key="$(rsec RIVER_ENC_KEY)"
+
+function enc () {
+    plaintext="$1"
+    iv=$(openssl rand -hex 16)
+    ct=$(echo -n "$plaintext" | openssl enc -aes-256-cbc -K "$key" -iv "$iv" -base64 -A)
+    echo "${iv}${ct}"
+}
+
+function dec () {
+    data="$1"
+    iv="${data:0:32}"
+    ct="${data:32}"
+    echo -n "$ct" | base64 -d | openssl enc -aes-256-cbc -d -K "$key" -iv "$iv"
+}
+
+function prefix_hex32() {
+    local str="${1:0:32}"
+    [[ "$str" =~ ^[0-9a-f]{32}$ ]]
+}
+
+[ "$1" = "" ] && echo "Usage: $0 <ciphertext / plaintext>" && exit 1
+
+if prefix_hex32 "$1"; then
+    echo "Decrypt result:"
+    dec "$1"
+else
+    echo "Encrypt result:"
+    enc "$1"
+fi
