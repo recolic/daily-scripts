@@ -1,7 +1,7 @@
 # name;options (name will be trimmed, options will be passed as-is)
 #                              :4 reserved for HostVNC
 lanbox-win  ;-m 4G -smp 4 -vnc :17 -net user,hostfwd=tcp::30473-:3389 -bios /usr/share/edk2/x64/OVMF.4m.fd -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time
-wintest     ;-m 4G -smp 4 -vnc :19 -net user,hostfwd=tcp::30474-:3389 -bios /usr/share/edk2/x64/OVMF.4m.fd -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time
+#wintest     ;-m 4G -smp 4 -vnc :19 -net user,hostfwd=tcp::30474-:3389 -bios /usr/share/edk2/x64/OVMF.4m.fd -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time
 
 # ioit2024@outlook.com, assigned port 30800-30810
 # service until 2026.05.27, 1month notify
