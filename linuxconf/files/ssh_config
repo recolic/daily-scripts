@@ -59,43 +59,43 @@ host remote.river-mac.recolic
 
 ### Recolic Home LAN
 
-host hms.r
+host hms.re
     user root
 
-host remote.hms.r
+host remote.hms.re
     #hostname base.ddns1.recolic.cc
     #port 25567
     hostname proxy-cdn.recolic.net
     port 30512
     user root
 
-host pc.r
+host pc.re
     port 25566
     user recolic
 
-host remote.pc.r
+host remote.pc.re
     hostname base.ddns1.recolic.cc
     port 25566
     user recolic
 
-host mpc.r
+host mpc.re
     hostname RECOLICMPC
     port 22
     user recolic
 
-host playg.r
-    hostname hms.r
+host playg.re
+    hostname hms.re
     port 30474
     user root
-    proxyjump remote.hms.r
+    proxyjump remote.hms.re
 
-host rpi.r
+host rpi.re
     user root
 
-host remote.rpi.r
-    hostname rpi.r
+host remote.rpi.re
+    hostname rpi.re
     user root
-    proxyjump remote.hms.r
+    proxyjump remote.hms.re
 
 ### Work machine. IP must be protected.
 
