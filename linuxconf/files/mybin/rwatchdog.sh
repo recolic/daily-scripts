@@ -21,7 +21,7 @@
 
 
 # const variables
-MORNING_ALARM="10:17"
+MORNING_ALARM="09:55"
 [[ $1 = daemon ]] && cloudalarm_token=$(rsec WEAK10)
 TMP_CTL_FILE=/tmp/.rwatchdog.cmd
 TMP_INFO_FILE=/tmp/.rwatchdog.alarm-info
