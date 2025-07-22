@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import os  
-import tempfile  
+import tempfile, json
 from openai import AzureOpenAI  
 def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
   
@@ -26,42 +26,47 @@ chat_prompt = [
         ]  
     }  
 ]  
+
+# Create the tempdir only once, on first use
+_tempdir = None
+_counter = 1
+def save_to_tempfile(content, ext = "md"):
+    global _tempdir, _counter
+    if _tempdir is None:
+        _tempdir = tempfile.mkdtemp(prefix="gpt-", dir="/tmp")
+    fn = f"{_tempdir}/{_counter}.{ext}"
+    _counter += 1
+    with open(fn, 'w') as f:
+        f.write(content)
+    return fn
   
 def get_multiline_input():  
+    global chat_prompt
     print(">> You >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>") 
     text = ""
-    mlmode = False
     while True:  
         line = input()  
         if line == "..":
-            mlmode = not mlmode
-        elif mlmode:
-            text += line + '\n'
+            break
+        elif line == ".s":
+            fname = save_to_tempfile(json.dumps(chat_prompt), "json")
+            print(f"<< gpt.py << Saved history to {fname}")
+        elif line.startswith(".l "):
+            chat_prompt = json.loads(open(line[3:].strip()).read())
+            print("<< gpt.py << Replaced history with external save")
         elif line.startswith(".f "):
             text += open(line[3:].strip()).read() + '\n'
-        elif line == "":
-            break
         else:
             text += line + '\n'
     print("<< Bot <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<") 
     # Reconstruct user input with newlines (including internal newlines)  
     return text
-  
-# Create the tempdir only once, on first use
-_tempdir = None
-_counter = 1
-def save_to_tempfile(content):
-    global _tempdir, _counter
-    if _tempdir is None:
-        _tempdir = tempfile.mkdtemp(prefix="gpt-", dir="/tmp")
-    fn = f"{_tempdir}/{_counter}.txt"
-    _counter += 1
-    with open(fn, 'w') as f:
-        f.write(content)
-    return fn
 
-print("(finish with empty line. Start/End multi-line with ..)")  
-print("(import file with '.f /path/to/file.txt')")  
+
+print("..                   (send your message)")  
+print(".f path/to/file.txt  (import text file)")  
+print(".s                   (save this chat)")
+print(".l path/to/chat.json (load previous chat)")
 while True:  
     user_input = get_multiline_input()  
     if not user_input.strip():  
