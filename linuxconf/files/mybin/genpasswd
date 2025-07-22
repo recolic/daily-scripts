@@ -5,11 +5,9 @@ _help="Usage: $0 <args...>
 Website:       $0 example.com
 Extra Mailbox: $0 xxx@recolic.net
 Named Host:    $0 hms.recolic
-               $0 rpi.recolic
                $0 ms.recolic
                $0 pc.recolic
                $0 drive.recolic
-               $0 main.recolic
 Unnamed Host:  $0 10.100.100.1
 "
 
