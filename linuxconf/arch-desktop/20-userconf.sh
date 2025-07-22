@@ -5,12 +5,14 @@ lc_init () {
     # re-entry: yes
 
 echo "## Basic package config (kernel-param, pacman, pkg install, gpg, fcitx, service, ...)"
+
+echo "========= GPG config"
 # Warning: pinentry-curses bug: ERR 83918950 Inappropriate ioctl for device
 gpg --keyserver keyserver.ubuntu.com --recv-keys E3933636 &&
 echo "pinentry-timeout 0
 pinentry-program /usr/bin/pinentry-gnome3
 enable-ssh-support" > "$HOME/.gnupg/gpg-agent.conf" &&
-echo 54AC7685396D1109586837F3B0A064712F348028 > "$HOME/.gnupg/sshcontrol" || die 
+echo "CDF90134A15862BB1568F01DFC450A62DFB5376F 0" > "$HOME/.gnupg/sshcontrol" || die 
 
 echo "##WARNING## To make effect in current session, you might need run 'set -gx SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)' in fish"
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
@@ -19,7 +21,7 @@ gpg-connect-agent reloadagent /bye
 #set -g GPG_TTY (tty)
 #gpg-connect-agent updatestartuptty /bye
 
-echo "## gnome desktop config"
+echo "========= gnome desktop config"
 gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type nothing
 gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type nothing
 gsettings set org.gnome.settings-daemon.plugins.power idle-dim false
