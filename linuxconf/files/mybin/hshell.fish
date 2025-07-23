@@ -24,9 +24,8 @@ end
 function h
     mount | grep hshell.mount ; and echo "Dangerous: hshell.mount already mounted" ; and return 1
 
-    set nfsu (mount | grep "$HOME/nfs " >/dev/null; or echo 1); test "$nfsu" = "1"; and rnfs.mount
     _secret_mount $HOME/nfs/.henc /tmp/hshell.mount .henc HSHELL_NFS
-    test "$nfsu" = "1"; and echo "umount nfs..." ; and sudo umount -f -l $HOME/nfs
+
 end
 
 function rb
@@ -36,9 +35,7 @@ function rb
     ln -s $HOME/nfs/backups/I2 /tmp/.rbackup.mount/
     ln -s $HOME/nfs/backups/MX /tmp/.rbackup.mount/
 
-    set nfsu (mount | grep "$HOME/nfs " >/dev/null; or echo 1); test "$nfsu" = "1"; and rnfs.mount
     _secret_mount $HOME/nfs/backups/C2_M /tmp/.rbackup.mount/C2_M C2_M HSHELL_RB
-    test "$nfsu" = "1"; and echo "umount nfs..." ; and sudo umount -f -l $HOME/nfs
 end
 
 function ff2
@@ -51,6 +48,9 @@ function henc_local
     echo "genpasswd .henc | toclip"
     echo "Ctrl-C when done"
 end
+
+# set nfsu (mount | grep "$HOME/nfs " >/dev/null; or echo 1); test "$nfsu" = "1"; and rnfs.mount
+# test "$nfsu" = "1"; and echo "umount nfs..." ; and sudo umount -f -l $HOME/nfs
 
 if test -d $HOME/tmp/h
     cd $HOME/tmp/h
