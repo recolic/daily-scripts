@@ -19,7 +19,7 @@ impl_umount () {
     if [ "$IMPL" = nfs ]; then
         umount -f -l /home/recolic/nfs # Bug: umount could also block!!!
     elif [ "$IMPL" = sshfs ]; then
-        fusermount -u -z nfs
+        fusermount -u -z /home/recolic/nfs
     fi
 }
 
