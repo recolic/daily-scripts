@@ -5,22 +5,21 @@ while true; do
     rename "$1" _ * || break
 done
 }
-function name_cleanup() {
+function clean_ad() {
   local name="$1"
-  if [[ "$name" =~ 【.*com.*】 ]]; then
-      local nname=`echo "$name" | sed -E 's/【[^【】]*com[^【】]*】//g'`
+  local tld="$2"
+  if [[ "$name" =~ 【.*$tld.*】 ]]; then
+      local nname=`echo "$name" | sed -E "s/【[^【】]*$tld[^【】]*】//g"`
 
      [[ "$nname" == -* ]] && nname="_${nname#-}"
      echo "DEBUG: mv $name $nname"
      mv -- "$name" "$nname"
   fi
-  if [[ "$name" =~ 【.*xyz.*】 ]]; then
-      local nname=`echo "$name" | sed -E 's/【[^【】]*xyz[^【】]*】//g'`
-
-     [[ "$nname" == -* ]] && nname="_${nname#-}"
-     echo "DEBUG: mv $name $nname"
-     mv -- "$name" "$nname"
-  fi
+}
+function name_cleanup() {
+    clean_ad "$1" com
+    clean_ad "$1" club
+    clean_ad "$1" xyz
 }
 
 # remove all leading '-'
