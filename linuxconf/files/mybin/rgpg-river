@@ -1,9 +1,8 @@
 #!/bin/bash
 set -e
 
-# test only. change me later.
 # Must be 32 bytes in hex
-key="$(rsec RIVER_ENC_KEY)"
+[ "$key" = "" ] && key="$(rsec RIVER_ENC_KEY)"
 
 function enc () {
     plaintext="$1"
