@@ -2,7 +2,7 @@
 set -e
 
 # Must be 32 bytes in hex
-[ "$key" = "" ] && key="$(rsec RIVER_ENC_KEY)"
+[ "$key" = "" ] && key="$(rsec RAUTH_RIVER_AES)"
 
 function enc () {
     plaintext="$1"
