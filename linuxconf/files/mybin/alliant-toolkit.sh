@@ -132,14 +132,23 @@ function alliant_oneclick () {
     budget_cny="$2"
     type md2html || ! echo "md2html not available. DO pacman -S md4c" || exit 1
     [[ ! -f $fname ]] || [[ $budget_cny = "" ]] && echo "
-Prog Usage:
+Usage (alliant, by statement):
 1. Export Alliant 60d history as CSV file
 2. Delete all unrelated Tx from CSV file (DO NOT delete the title line)
 3. Run this script like
-     alliant_oneclick 1.csv 7000
+     MODE=stat CSV=alliant alliant_oneclick 1.csv 7000
 4. Visual check: check if month_txt is correct
 5. Send HTML as email
+
+Usage (C1, by Post date):
+1. Export C1 60d history as CSV file
+2. Run this script like
+     MODE=post CSV=c1 alliant_oneclick 1.csv 7000
+3. Visual check: check if month_txt is correct
+4. Send HTML as email
 " && exit 1
+
+    [[ $MODE = post ]] && echo "ERR: not implemented yet" && return 1
 
     ## start working
     alliant_csv_filter CN "$fname" > /tmp/.alliant-1.csv || return $?
@@ -150,7 +159,7 @@ Prog Usage:
 
     total_cost_usd=`cat /tmp/.alliant-tx.txt | tr -d ' ' | cut -d = -f 2 | head -n 1` || return 1
     disct_cost_usd=`cat /tmp/.alliant-tx.txt | tr -d ' ' | cut -d = -f 2 | tail -n 1` || return 1
-    usd_cny_rate=`curl -s https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json | jq .usd.cny` || usd_cny_rate=7.1
+    usd_cny_rate=`curl -s https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json | jq .usd.cny` || usd_cny_rate=7.2
     disct_cost_cny=`python -c "print('%i' % ($disct_cost_usd * $usd_cny_rate))"` || return 1
     final_bud_cny=`python -c "print($budget_cny - $disct_cost_cny)"` || return 1
 

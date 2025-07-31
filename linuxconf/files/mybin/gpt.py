@@ -40,9 +40,11 @@ def save_to_tempfile(content, ext = "md"):
         f.write(content)
     return fn
   
+T_BLUEB = '\033[44m'
+T_CLR = '\033[0m'
 def get_multiline_input():  
     global chat_prompt
-    print(">> You >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>") 
+    print(T_BLUEB + ">> You >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + T_CLR) 
     text = ""
     while True:  
         line = input()  
@@ -58,7 +60,7 @@ def get_multiline_input():
             text += open(line[3:].strip()).read() + '\n'
         else:
             text += line + '\n'
-    print("<< Bot <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<") 
+    print(T_BLUEB + "<< Bot <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" + T_CLR) 
     # Reconstruct user input with newlines (including internal newlines)  
     return text
 

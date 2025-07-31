@@ -27,7 +27,7 @@ lc_init () {
 TODO: manual steps
 ################## OTHER SERVICE LIST #################
 # zfs/zpool setup
-# nfs service
+# nfs service (deprecated)
 # docker (systemd) for jenserat/samba-publicshare, hms-sms-and-door-api
 # fancontrol (systemd) for /sys/devices/platform/nct6775.2592/hwmon/hwmon2/pwm2_enable automodify
 # dhcpcd (systemd):
@@ -47,7 +47,7 @@ TODO: manual steps
 # use 'zpool import xxx' and 'zfs mount xxx' to import & mount for the first time.
 # zpool set autotrim=on nas-data-raid
 
-## nfs setup
+## nfs setup (deprecated. remove in next setup)
 # exportfs -arv
 # systemctl enable nfsv4-server.service
 
