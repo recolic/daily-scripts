@@ -37,7 +37,7 @@ import csv,sys
 reader = csv.reader(sys.stdin)
 writer = csv.writer(sys.stdout)
 for row in reader:
-    cleaned_row = [cell.replace(',', '') for cell in row]
+    cleaned_row = [cell.replace(',', '_') for cell in row]
     writer.writerow(cleaned_row)
 " > /tmp/.csv-wash.py
     python -u /tmp/.csv-wash.py
@@ -75,6 +75,7 @@ function auto_get_month () {
     local cur_m=`date +%m`
     local cur_d=`date +%d`
     if [[ $cur_d -gt 15 ]]; then
+        [[ $MODE = post ]] && echo "WARNING! MODE=post. You should wait until next month 1st day."
         # for 8.28, prev:next == 8:9
         local prev_m_txt=`txt_month $cur_m` || return 1
         local next_m_txt=`txt_month $(($cur_m+1))` || return 1
@@ -94,13 +95,24 @@ function alliant_csv_filter () {
     [[ $1 = "" ]] || [[ $2 = "" ]] && echo "Usage: $0 <CN/other> <fname>" && exit 1
     
     if [[ $what = CN ]]; then
-        cat "$l_fname" | grep '^Date' # title line
+        cat "$l_fname" | grep '^[A-Za-z]' # title line
         cat "$l_fname" | grep -E 'CN"|(CN *|ALP.*)CREDIT"'
     elif [[ $what = other ]]; then
         cat "$l_fname" | grep -vE 'CN"|(CN *|ALP.*)CREDIT"' | grep -v PAYMENT-ONLINE
     else
         echo "Usage: $0 <CN/other> <fname>" && exit 1
     fi
+}
+
+function c1_csv_filter () {
+    #!/bin/bash
+    what=$1
+    l_fname="$2"
+    
+    [[ $1 = "" ]] || [[ $2 = "" ]] && echo "Usage: $0 <Card No.> <fname>" && exit 1
+    
+    cat "$l_fname" | grep '^[A-Za-z]' # title line
+    cat "$l_fname" | grep ",$what," 
 }
 
 function alliant_csv_calc () {
@@ -127,6 +139,31 @@ function alliant_csv_calc () {
     echo "$expr_ = $res"
 }
 
+function c1_csv_calc () {
+    #!/bin/bash
+    [ ! -f "$1" ] && echo "Usage: $0 <c1.csv>" && exit 1
+    echo "
+import csv
+expr = []
+with open('$1', newline='') as f:
+    for row in csv.DictReader(f):
+        if row['Debit']:
+            expr.append(row['Debit'])
+        if row['Credit']:
+            expr.append('-' + row['Credit'])
+print('+'.join(expr))
+" > /tmp/.c1_csv_calc.py
+    expr_=`python /tmp/.c1_csv_calc.py`
+    res=`python -c "print('%.2f' %  ($expr_)  )"`
+    echo "$expr_ = $res"
+    
+    ## calc 2.5 discount
+    
+    expr_="$res * 0.975"
+    res=`python -c "print('%.2f' %  ($expr_)  )"`
+    echo "$expr_ = $res"
+} 
+
 function alliant_oneclick () {
     fname="$1"
     budget_cny="$2"
@@ -142,18 +179,26 @@ Usage (alliant, by statement):
 
 Usage (C1, by Post date):
 1. Export C1 60d history as CSV file
+[TODO] manual filter still required
 2. Run this script like
      MODE=post CSV=c1 alliant_oneclick 1.csv 7000
 3. Visual check: check if month_txt is correct
 4. Send HTML as email
 " && exit 1
 
-    [[ $MODE = post ]] && echo "ERR: not implemented yet" && return 1
-
     ## start working
-    alliant_csv_filter CN "$fname" > /tmp/.alliant-1.csv || return $?
-    alliant_csv_filter other "$fname" > /tmp/.alliant-other.csv || return $?
-    alliant_csv_calc /tmp/.alliant-1.csv > /tmp/.alliant-tx.txt || return $?
+    if [[ $CSV = alliant ]]; then
+        alliant_csv_filter CN "$fname" > /tmp/.alliant-1.csv || return $?
+        alliant_csv_filter other "$fname" > /tmp/.alliant-other.csv || return $?
+        alliant_csv_calc /tmp/.alliant-1.csv > /tmp/.alliant-tx.txt || return $?
+    elif [[ $CSV = c1 ]]; then
+        c1_csv_filter 1852 "$fname" > /tmp/.alliant-1.csv || return $?
+        c1_csv_filter 3662 "$fname" > /tmp/.alliant-other.csv || return $?
+        c1_csv_calc /tmp/.alliant-1.csv > /tmp/.alliant-tx.txt || return $?
+    else
+        echo "ERROR invalid $CSV" && exit 1
+    fi
+ 
     cat /tmp/.alliant-1.csv | csv_wash > /tmp/.alliant-1.washed.csv || return $?
     csv2html /tmp/.alliant-1.washed.csv > /tmp/.alliant-h2.html || return $?
 
