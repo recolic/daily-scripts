@@ -24,10 +24,8 @@ function csv2html () {
         echo '<table border="1" style="border-collapse: collapse;">'
     fi
     
-    head -n 1 "$CSV_FN" | \
-        sed -e 's/^/<tr><th>/' -e 's/,/<\/th><th>/g' -e 's/$/<\/th><\/tr>/'
-    tail -n +2 "$CSV_FN" | \
-        sed -e 's/^/<tr><td>/' -e 's/,/<\/td><td>/g' -e 's/$/<\/td><\/tr>/'
+    head -n 1 "$CSV_FN" | sed -e 's/^/<tr><th>/' -e 's/,/<\/th><th>/g' -e 's/$/<\/th><\/tr>/'
+    tail -n +2 "$CSV_FN" | sed -e 's/^/<tr><td>/' -e 's/,/<\/td><td>/g' -e 's/$/<\/td><\/tr>/'
     echo "</table>"
 }
 
@@ -45,7 +43,7 @@ for row in reader:
 
 function txt_month () {
     local database_="
-0:dec:just in case for prevmonth(JAN)
+0:dec:for prevmonth(JAN)
 13:jan
 1:jan
 2:feb
@@ -72,8 +70,8 @@ function txt_month () {
 }
 
 function auto_get_month () {
-    local cur_m=`date +%m`
-    local cur_d=`date +%d`
+    local cur_m=`date +%-m`
+    local cur_d=`date +%-d`
     if [[ $cur_d -gt 15 ]]; then
         [[ $MODE = post ]] && echo "WARNING! MODE=post. You should wait until next month 1st day."
         # for 8.28, prev:next == 8:9
@@ -200,6 +198,7 @@ Usage (C1, by Post date):
     fi
  
     cat /tmp/.alliant-1.csv | csv_wash > /tmp/.alliant-1.washed.csv || return $?
+    dos2unix /tmp/.alliant-1.washed.csv
     csv2html /tmp/.alliant-1.washed.csv > /tmp/.alliant-h2.html || return $?
 
     total_cost_usd=`cat /tmp/.alliant-tx.txt | tr -d ' ' | cut -d = -f 2 | head -n 1` || return 1
