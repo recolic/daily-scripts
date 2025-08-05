@@ -9,16 +9,6 @@ if test -d /opt/rocm/bin
 end
 set -gx EDITOR vim
 
-# Microsoft PAT and git-credentials
-if test $hostname = RECOLICMPC ; or test $hostname = RECOLICPC
-    # Must use --no-config to avoid infinite loop
-    set -gx pat (env DONT_REGEN_EXPIRED_TOKEN=1 fish --no-config /usr/mymsbin/patnew.fish)
-    and begin
-        set -gx devops_header "Authorization: Basic "(printf ":%s" "$pat" | base64 -w0)
-        echo "https://bensl:$pat@msazure.visualstudio.com" > ~/.git-credentials
-    end
-end
-
 # RECOLICPC
 set -gx PYTORCH_ROCM_ARCH gfx1032
 set -gx HSA_OVERRIDE_GFX_VERSION 10.3.0
