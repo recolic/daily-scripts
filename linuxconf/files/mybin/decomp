@@ -40,7 +40,7 @@ function _e () {
 }
 
 function _e_to_new () {
-    mkdir -p "_$1" && cd "_$1" &&
+    mkdir -p "$1"_ && cd "$1"_ &&
     _e "../$1" &&
     cd - && return 0 || return $?
 }
