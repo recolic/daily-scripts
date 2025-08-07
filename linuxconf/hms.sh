@@ -25,17 +25,24 @@ lc_init () {
 
     echo "=====================
 TODO: manual steps
+
+#######################################################
+#### Setup this server from stretch
+# 1. Clean-Installed archlinux
+# 2. dhcpcd patch: add 'allowinterfaces enp4s0f1' to /etc/dhdpcd.conf
+# 3. Setup everything in OTHER SERVICE LIST.
+# 4. linuxconf register
 ################## OTHER SERVICE LIST #################
 # zfs/zpool setup
-# nfs service (deprecated)
 # docker (systemd) for jenserat/samba-publicshare, hms-sms-and-door-api
 # fancontrol (systemd) for /sys/devices/platform/nct6775.2592/hwmon/hwmon2/pwm2_enable automodify
 # dhcpcd (systemd):
 #   modify /etc/dhcpcd.conf to set allowinterfaces to ETHERNET
 #
-## many python scripts running on this server
+## python telegram bot:
 # pip install python-telegram setuptools --break-system-packages
 # pacman -S openssl-1.1 # used by python-telegram
+## telegram bots: need manual login
 
 ## zfs setup
 # pkgs for zfs: zfs-linux-lts (https://wiki.archlinux.org/title/Unofficial_user_repositories#archzfs)
@@ -47,22 +54,13 @@ TODO: manual steps
 # use 'zpool import xxx' and 'zfs mount xxx' to import & mount for the first time.
 # zpool set autotrim=on nas-data-raid
 
-## nfs setup (deprecated. remove in next setup)
-# exportfs -arv
-# systemctl enable nfsv4-server.service
-
-## telegram bots: need manual login
+## smb manual setup: 
+# recolic.net/s/notebook
+# with password: (genpasswd random.asd9vjd)
 
 #######################
 # all service require the storage disk:
 # KVM and webvirtmgr; btsync; nfs; nginx
-
-#######################################################
-#### Setup this server from stretch
-# 1. Clean-Installed archlinux
-# 2. dhcpcd patch: add 'allowinterfaces enp4s0f1' to /etc/dhdpcd.conf
-# 3. Setup everything in OTHER SERVICE LIST.
-# 4. linuxconf register
 ================"
 }
 
@@ -177,6 +175,11 @@ lc_startup () {
 # # Also prevent libvirt from LAN
 # iptables -A INPUT -p tcp --dport 16509 -s 10.100.100.101 -j ACCEPT
 # iptables -A INPUT -p tcp --dport 16509 -s 10.0.0.0/8 -j DROP
+
+## nfs setup (deprecated 2025.7. remove in next setup)
+# systemd: nfs service (deprecated)
+# exportfs -arv
+# systemctl enable nfsv4-server.service
 
 #######################################################
 ##################     bug note    ####################
