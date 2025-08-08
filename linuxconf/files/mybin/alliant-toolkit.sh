@@ -106,11 +106,19 @@ function c1_csv_filter () {
     #!/bin/bash
     what=$1
     l_fname="$2"
+    lastmonth_only=$3 # 1 to enable
     
-    [[ $1 = "" ]] || [[ $2 = "" ]] && echo "Usage: $0 <Card No.> <fname>" && exit 1
+    [[ $1 = "" ]] || [[ $2 = "" ]] && echo "Usage: $0 <Card No.> <fname> [last_month_only]" && exit 1
     
     cat "$l_fname" | grep '^[A-Za-z]' # title line
-    cat "$l_fname" | grep ",$what," 
+    if [ "$lastmonth_only" = 1 ]; then
+        local cur_m=`date +%-m`
+        local cur_y=`date +%Y`
+        local prev_m=$(( cur_m == 1 ? 12 : cur_m - 1 ))
+        cat "$l_fname" | grep ",$what," | grep ",$cur_y-$prev_m-"
+    else
+        cat "$l_fname" | grep ",$what," 
+    fi
 }
 
 function alliant_csv_calc () {
