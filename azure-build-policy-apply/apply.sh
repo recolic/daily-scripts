@@ -13,7 +13,7 @@ EOF
 }
 
 get_proj_id() {
-    az devops project show  --project "$proj_name" --query "id" --org "$org_url" --output tsv --debug
+    az devops project show  --project "$proj_name" --query "id" --org "$org_url" --output tsv
 }
 typeset -fx get_proj_id
 
