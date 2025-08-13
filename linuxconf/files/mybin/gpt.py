@@ -51,7 +51,7 @@ def get_multiline_input():
         if line == "..":
             break
         elif line == ".s":
-            fname = save_to_tempfile(json.dumps(chat_prompt), "json")
+            fname = save_to_tempfile(json.dumps(chat_prompt, indent=2), "json")
             print(f"<< gpt.py << Saved history to {fname}")
         elif line.startswith(".l "):
             chat_prompt = json.loads(open(line[3:].strip()).read())
