@@ -16,10 +16,8 @@ function svim
             return $status
         end
     end
-    if begin test -w $fname
-            and test -r $fname
-        end
-        if file $fname | grep "PGP message Public-Key Encrypted" > /dev/null
+    if test -w $fname ; and test -r $fname
+        if type -q rgpg-vim ; and file $fname | grep "PGP message Public-Key Encrypted" > /dev/null
             rgpg-vim $fname
         else
             $_origin_vim $argv
