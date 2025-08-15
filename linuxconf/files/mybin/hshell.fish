@@ -42,6 +42,10 @@ function ff2
     mkdir -p $HOME/tmp/.ffgoogle2
     firefox --no-remote --profile $HOME/tmp/.ffgoogle2
 end
+function ffl
+    mkdir -p $HOME/tmp/h/.ff
+    firefox --no-remote --profile $HOME/tmp/h/.ff
+end
 
 function henc_local
     echo "encfs -f /mnt/fsdisk/nfs/.henc tmp/m"
