@@ -1,3 +1,5 @@
+# This is a fake gopeed client.
+# It just print whatever download request in aria2 format.
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import random
