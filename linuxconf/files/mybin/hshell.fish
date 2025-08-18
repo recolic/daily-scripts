@@ -14,6 +14,10 @@ function _secret_mount
     echo "++ Mount $encfsdir to $mountdir..."
     encfs --extpass="genpasswd $pswd_seed" $encfsdir $mountdir ; or return $status
 
+    echo "!! WARNING WARNING WARNING"
+    echo "zpool degraded. AVOID HEAVY WRITE"
+    echo "!! WARNING WARNING WARNING !!!!!!!!!!!!!!!!!"
+
     env "RECOLIC_ENV_NAME=$envname" fish --private -C "cd $mountdir"
 
     echo "-- umount $mountdir..."
