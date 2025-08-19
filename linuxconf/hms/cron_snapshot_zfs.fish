@@ -6,9 +6,11 @@
 #           annually: create a annually snapshot and delete all monthly snapshots
 
 function backup_flist
-    date > /root/nfs-flist.log
-    find /mnt/fsdisk/nfs/pub/ >> /root/nfs-flist.log 2>/dev/null
-    gzip /root/nfs-flist.log -f
+    set base /mnt/fsdisk/nfs/backups/I2
+    mkdir -p $base
+    date > $base/nfs-flist.log
+    find /mnt/fsdisk/nfs/pub/ >> $base/nfs-flist.log 2>/dev/null
+    gzip $base/nfs-flist.log -f
 end
 
 switch $argv[1]
