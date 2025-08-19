@@ -3,6 +3,7 @@ import simpledb
 
 buffers = defaultdict(lambda: deque())  # chat_id -> deque (acts as a queue)
 BUFFER_SIZE = 16
+SAVE_FUTURE_CONTEXT = False
 
 def evacuate_buffer(buf):
     while buf:
@@ -17,16 +18,24 @@ def handle(chat_id, is_outgoing, sender_id, msg_id, message_text):
         "msg_id": msg_id,
         "message_text": message_text,
     }   
-    if is_outgoing:
-        evacuate_buffer(buf)
-        buf.append(msg) # stay at buffer head!
-    else:  # Incoming  
-        buf.append(msg)  
-        if len(buf) > BUFFER_SIZE:
-            if buf[0]['is_outgoing']:  
-                evacuate_buffer(buf)
-            else:  
-                buf.popleft()
+    if SAVE_FUTURE_CONTEXT: # save both previous msg and following msg
+        if is_outgoing:
+            evacuate_buffer(buf)
+            buf.append(msg) # stay at buffer head!
+        else: # Incoming  
+            buf.append(msg)
+            if len(buf) > BUFFER_SIZE:
+                if buf[0]['is_outgoing']:  
+                    evacuate_buffer(buf)
+                else:  
+                    buf.popleft()
+    else: # save only previous msg
+        buf.append(msg)
+        if is_outgoing:
+            evacuate_buffer(buf)
+        elif len(buf) > BUFFER_SIZE:
+            buf.popleft()
+
 
 #    for i in range(22):
 #        message_handler("c1", False, i, f"incoming-{i}")
