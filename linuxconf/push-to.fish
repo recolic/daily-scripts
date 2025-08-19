@@ -21,10 +21,10 @@ if test $argv[1] = mspc
     set used_sec (grep "rsec [^)]*" -o mspc.sh | cut -d ' ' -f 2)
     rsec_export $used_sec | ssh ms.recolic "sudo tee /etc/RSEC_alt"
 else if test $argv[1] = hms
-    e rsync -avz --progress --delete . hms.r:lc.desktop
+    e rsync -avz --progress --delete . hms.recolic:lc.desktop
 
     set used_sec (grep "rsec [^)]*" -o hms.sh | cut -d ' ' -f 2)
-    rsec_export $used_sec | ssh hms.r "cat > /etc/RSEC_alt"
+    rsec_export $used_sec | ssh hms.recolic "cat > /etc/RSEC_alt"
 else
     echo Usage: push-to.fish mspc/hms
 end
