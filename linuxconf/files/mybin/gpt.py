@@ -1,13 +1,12 @@
 #!/usr/bin/python3
-import os
 import tempfile, json
 from openai import AzureOpenAI
 def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
 
 # Azure/OpenAI parameters
-endpoint = os.getenv("ENDPOINT_URL", rsec("Az_OpenAI_API"))
-deployment = os.getenv("DEPLOYMENT_NAME", "gpt-4.1")
-subscription_key = os.getenv("AZURE_OPENAI_API_KEY", rsec("Az_OpenAI_KEY"))
+endpoint         = rsec("Az_OpenAI_API")
+deployment       = "gpt-4.1"
+subscription_key = rsec("Az_OpenAI_KEY")
 
 client = AzureOpenAI(
     azure_endpoint=endpoint,
