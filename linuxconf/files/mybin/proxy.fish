@@ -73,6 +73,9 @@ if test -f $node
     set possible_path $node
 else if test -f $possible_path
     echo "Using $possible_path..."
+else if string match -q "*.recolic" -- "$node"
+    echo "Using ssh proxy $node..."
+    ssh -D $port -N -C $node
 else
     echo "Invalid node name $node because ./$node and $possible_path does not exist"
     exit 2
