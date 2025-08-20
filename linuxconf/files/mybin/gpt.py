@@ -4,9 +4,12 @@ from openai import AzureOpenAI
 def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
 
 # Azure/OpenAI parameters
-endpoint         = rsec("Az_OpenAI_API")
-deployment       = "gpt-4.1"
-subscription_key = rsec("Az_OpenAI_KEY")
+# endpoint         = rsec("Az_OpenAI_API")
+# deployment       = "gpt-4.1"
+# subscription_key = rsec("Az_OpenAI_KEY")
+endpoint         = rsec("Az_OpenAI_API5")
+deployment       = "gpt-5-chat"
+subscription_key = rsec("Az_OpenAI_KEY5")
 
 client = AzureOpenAI(
     azure_endpoint=endpoint,
