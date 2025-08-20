@@ -1,5 +1,5 @@
 #!/usr/bin/fish
-# v1.04.202412
+# v1.04.202508
 
 function list_possible_nodename
     set nextcloud_root $HOME/(ls $HOME | grep -i nextcloud | head -n1)
@@ -56,15 +56,8 @@ function vconfig_run_v
     return $status
 end
 
-#switch $node
-#    # case ss
-#    #     eval $ss -s xxxxxxx -p 11111 -k xxxxxxxxx -m chacha20-ietf-poly1305 -l $port --fast-open
-#    case '*'
-#end
-
 set node $argv[1]
 set port $argv[2]
-set mypath (dirname (status --current-filename))
 
 set nextcloud_root $HOME/(ls $HOME | grep -i nextcloud | head -n1)
 set possible_path $nextcloud_root/documents/proxy/comm100-nodes/$node.json
