@@ -68,7 +68,10 @@ else if test -f $possible_path
     echo "Using $possible_path..."
 else if string match -q "*.recolic" -- "$node"
     echo "Using ssh proxy $node..."
-    ssh -D $port -N -C $node
+    while true
+        ssh -o ServerAliveInterval=1 -o ServerAliveCountMax=5 -D $port -N -C $node
+        sleep 0.5 ; or exit # Allow ctrl-C
+    end
 else
     echo "Invalid node name $node because ./$node and $possible_path does not exist"
     exit 2

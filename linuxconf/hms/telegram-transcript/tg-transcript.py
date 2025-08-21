@@ -14,18 +14,7 @@ tg = Telegram(
     files_directory=prefix+'/tdlib_files.gi',
 )
 
-whitelist_filename = prefix+'/whitelisted_chats.log'
-whitelisted_chat_ids = []
 simpledb.dbpath = prefix+'/data.db.gi'
-
-def read_whitelist_from_disk(fname):
-    try:
-        with open(fname, 'r') as f:
-            for l in f.read().split('\n'):
-                if l != '':
-                    whitelisted_chat_ids.append(int(l))
-    except FileNotFoundError:
-        pass
 
 def new_message_handler(update):
     try:
@@ -38,9 +27,6 @@ def new_message_handler(update):
         is_outgoing = update['message']['is_outgoing']
         message_text = message_content.get('text', {}).get('text', '')
 
-        if chat_id in whitelisted_chat_ids:
-            return
-
         if message_content['@type'] == 'messageText':
             print("Extract: text=", message_text, file=open(prefix+'/debug.log.gi', 'a'))
             handler_impl.handle(chat_id, is_outgoing, sender_id, msg_id, message_text)
@@ -51,7 +37,6 @@ def new_message_handler(update):
         print(type(e).__name__, e, file=open(prefix+'/debug.log.gi', 'a'))
 
 if __name__ == "__main__":
-    read_whitelist_from_disk(whitelist_filename)
     tg.login()
 
     # if this is the first run, library needs to preload all chats
