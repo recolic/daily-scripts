@@ -17,7 +17,7 @@ set -gx HSA_OVERRIDE_GFX_VERSION 10.3.0
 # Bug fix: GFT: en-US is an invalid culture identifier
 set -x DOTNET_SYSTEM_GLOBALIZATION_INVARIANT 0
 # Bug fix: VFP: Couldn't find a valid ICU package installed on the system
-set -x DOTNET_SYSTEM_GLOBALIZATION_INVARIANT 1
+# set -x DOTNET_SYSTEM_GLOBALIZATION_INVARIANT 1
 
 # Bug fix: valgrind debuginfod error
 set -x DEBUGINFOD_URLS "https://debuginfod.archlinux.org"
