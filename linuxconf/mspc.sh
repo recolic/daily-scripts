@@ -17,5 +17,5 @@ lc_startup () {
 
     lc_bgrun /tmp/cron.log  every 30m bash utils/mspc-check-internet.sh
     lc_bgrun /tmp/cron.log  every 1m  env svm_workdir=/extradisk/simple-vm-manager/data bash files/mspc-simple-vmm/cron-callback.sh
-    lc_bgrun /tmp/cron.log  every 5m  curl https://recolic.net/api/mspc-keepalive.php
+    lc_bgrun /tmp/cron.log  every 5m  curl "https://recolic.net/api/echo.php?mspc-keepalive"
 }

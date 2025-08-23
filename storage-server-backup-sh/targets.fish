@@ -55,20 +55,10 @@ end
 
 function target_nas_data
     run_until_success rsync -avz --partial --delete --no-links \
-        --exclude /H/ \
         root@remote.nfs.recolic:/mnt/fsdisk/nfs/backups /storage/cache/target_nas_data
 
     # replica only, skip history version packing.
     # and pack_backup_dir /storage/cache/target_nas_data
-    return $status
-end
-
-function target_nas_home
-    run_until_success rsync -avz --partial --delete --no-links \
-        --exclude /Downloads/ --exclude /nfs/ --exclude /tmp/ \
-        root@remote.nfs.recolic:/root/ /storage/cache/target_nas_home
-
-    and pack_backup_dir /storage/cache/target_nas_home
     return $status
 end
 
