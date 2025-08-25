@@ -61,7 +61,7 @@ function _alarm () { alarm_state="$1" ; echo "alarm.reason=$2" | tee "$TMP_INFO_
 
 function pid_check_cron () {
     if [[ $(cat /tmp/.watchdog.pid) != $$ ]]; then
-        _alarm soft "only one daemon could be running. Curr pid $$ not equal to /tmp/.watchdog.pid"
+        _err="only one daemon could be running. Curr pid $$ not equal to /tmp/.watchdog.pid"
     fi
 }
 
@@ -77,49 +77,43 @@ function river_cloudalarm_cron () {
         :
     elif [[ "$curr" != "$cloudalarm_prev" ]]; then
         cloudalarm_prev="$curr"
-        _alarm "soft 3" "river cloudalarm notification, curr=$curr<<<"
+        return 1 # Got Alarm
     fi
+    return 0 # Nothing
 }
 
 function low_battery_check_cron () {
-    [[ "$mode" = "nonwork" ]] && return ; echo $FUNCNAME
+    echo $FUNCNAME
 
     if [[ $(cat /sys/class/power_supply/AC/online) = 1 ]] ; then
-        return 0 # AC pluged in, no need to check battery percentage at all.
+        return 101 # AC pluged in, no need to check battery percentage at all.
     fi
 
-    bat_percent=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep percentage: | grep '[0-9]*' -o) || ! _alarm "soft 7" "Failed to get battery percentage" || return 1
-
-    if [[ "$bat_percent" -lt 20 ]]; then
-        _alarm hard "battery lower than 20"
-        return
-    fi
-    if [[ "$bat_percent" -lt 40 ]]; then
-        _alarm soft "battery lower than 40"
-        return
-    fi
+    bat_percent=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep percentage: | grep '[0-9]*' -o) || _err="Failed to get battery percentage"
+    return "$bat_percent"
 }
 function time_check_cron () {
-    [[ "$mode" = "nonwork" ]] && return ; echo $FUNCNAME
+    echo $FUNCNAME
     
     # TODO: check if timezone is PST, check if time is synced
+    return 0 # good
 }
 
 function conscious_check_cron () {
-    [[ "$mode" = "work" ]] || return ; echo $FUNCNAME
+    echo $FUNCNAME
     local idle_time=$(gdbus call --session --dest org.gnome.Mutter.IdleMonitor --object-path /org/gnome/Mutter/IdleMonitor/Core --method org.gnome.Mutter.IdleMonitor.GetIdletime | grep uint64 | cut -d , -f 1 | cut -d ' ' -f 2)
     if [[ "$idle_time" = "" ]]; then
-        _alarm "soft 7" "idle check FAILED. gnome is not available?"
-        return
+        _err="idle check FAILED. gnome is not available?"
+        return 0
     fi
     curr_time=$(date +%s)
     if [[ $leave_timer_until -gt $curr_time ]]; then
         # no alarm if leave timer is active
         echo "++ Leave timer active, conscious_check in" $(( ($leave_timer_until-$curr_time)/60  )) "min.."
-        return
+        return 0 # OK
     fi
     if [[ "$idle_time" -gt 1200000 ]]; then # 20min in ms
-        _alarm "soft 7" "you have been idle for too long: $idle_time ms > 20min"
+        return 1 # idle too long
     fi
 }
 
@@ -192,25 +186,30 @@ alarm_state=ack
 
 echo $$ > /tmp/.watchdog.pid
 
-_min_count=0
 while true; do
     check_ctl_msg
-    pid_check_cron
 
-    river_cloudalarm_cron
-    low_battery_check_cron
-    if [[ $(($_min_count % 10)) = 0 ]]; then
-        time_check_cron
+    pid_check_cron
+    river_cloudalarm_cron  ; cloudalarm=$?
+    low_battery_check_cron ; bat=$?
+    time_check_cron        ; bad_time=$?
+    conscious_check_cron   ; too_idle=$?
+
+    ################# All Alarm Policy ###################
+    if [[ "$mode" = "work" ]]; then
+        [[ $bat -lt 30 ]] && _alarm soft "battery lower than 30"
+        [[ $too_idle = 1 ]] && _alarm "soft 7" "you have been idle for too long"
     fi
-    conscious_check_cron
+    [[ $bat -lt 7 ]] && _alarm soft "battery lower than 7"
+    [[ $cloudalarm = 1 ]] && _alarm "soft 3" "river cloudalarm notification"
+    [[ "$_err" != "" ]] && _alarm "soft 9" "Script Error: $_err"
+
 
     while [[ $alarm_state != ack ]]; do
         play_alarm_once
         sleep 8
         check_ctl_msg
     done
-
     sleep 60
-    ((_min_count++))
 done
 
