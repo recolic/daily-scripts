@@ -28,6 +28,8 @@ host32      |Administrator|sh://rsec OVL_HOST_RDP     |host.blade32.m.recolic
 host33      |Administrator|sh://rsec OVL_HOST_RDP     |host.blade33.m.recolic
 host1030    |Administrator|sh://rsec OVL_HOST_RDP     |host.blade30.m.recolic
 host2021    |Administrator|sh://rsec OVL_HOST_RDP     |host.rack21.m.recolic
+hosttest1   |Administrator|sh://rsec OVL_HOST_RDP     |host.test1.m.recolic
+hosttest0   |Administrator|sh://rsec OVL_HOST_RDP     |host.test0.m.recolic
 tmpvsbox    |recolic      |sh://rsec WEAK10           |localhost:30477
 @openwrt    |root         |sh://genpasswd 10.100.100.1|10.100.100.1
 "
