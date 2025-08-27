@@ -34,10 +34,6 @@ cloudalarm_prev=""
 
 
 function play_alarm_once () {
-    if [[ "$alarm_state" = hard ]] && nmcli d | grep MSFTGUEST > /dev/null ; then
-        echo "Patch: NO hard alarm if connected to MSFTGUEST" 1>&2
-        alarm_state=soft
-    fi
     echo "CALL alarm $alarm_state..."
     case "$alarm_state" in
         "hard")
@@ -53,6 +49,10 @@ function play_alarm_once () {
                     alarm_state="soft "$(($counter - 1))
                 fi
             fi
+            ;;
+        "office")
+            alarm_fish_vol=70% alarm_fish_file=/usr/share/sounds/freedesktop/stereo/bell.oga alarm_fish_beep_once=1 alarm.fish 0
+            sleep 10
             ;;
     esac
 }
@@ -206,6 +206,10 @@ while true; do
 
 
     while [[ $alarm_state != ack ]]; do
+        if nmcli d | grep MSFTGUEST > /dev/null ; then
+            echo "Patch: alarm_state=office if connected to MSFTGUEST" 1>&2
+            alarm_state=office
+        fi
         play_alarm_once
         sleep 8
         check_ctl_msg
