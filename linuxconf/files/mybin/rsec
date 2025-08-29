@@ -23,7 +23,7 @@ else
 fi
 
 if [[ "$_key" = "" ]]; then
-    echo "$RSEC_LINS" | cut -d : -f 1 | tr -d ' ' | grep -v '^#' | grep . | head -n1
+    echo "$RSEC_LINS" | cut -d : -f 1 | tr -d ' ' | grep -v '^#' | grep .
 else
     RSEC_LINE="$(echo "$RSEC_LINS" | grep -i "^$_key *:")" || die "gpg decrypt failure or key not found"
     echo "$RSEC_LINE" | sed 's/^[^:]*://' | head -n1
