@@ -30,13 +30,9 @@ Host func.main.recolic
     User root
 ```
 
-## requirement
-
-fish 3.x (to eval variable without `eval`)
-
 # About storage server
 
-## migration guide
+## setup or migration
 
 ```
 # Copy the following things to new machine:
@@ -49,6 +45,8 @@ crontab -l
 apt install software-properties-common
 apt-add-repository ppa:fish-shell/release-3
 apt update ; apt upgrade ; apt install fish
+
+gpg --recv-keys --keyserver hkps://keyserver.ubuntu.com C344D5EAE3933636
 ```
 
 # setup extern backup
