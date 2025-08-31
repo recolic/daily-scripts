@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# CARD_DISCOUNT=2.5
+CARD_DISCOUNT=2
+
 function csv2html () {
     #!/bin/bash
     # Script to convert a *simple* CSV file into an HTML table
@@ -70,19 +73,17 @@ function txt_month () {
 }
 
 function auto_get_month () {
+    local cur_mf=`date +%m` # Must have leading 0 to make c1_csv_filter work
     local cur_m=`date +%-m`
     local cur_d=`date +%-d`
     if [[ $cur_d -gt 15 ]]; then
-        [[ $MODE = post ]] && echo "WARNING! MODE=post. You should wait until next month 1st day."
+        [[ $MODE = post ]] && echo "WARNING! MODE=post. You should wait until next month 1st day." 1>&2
         # for 8.28, prev:next == 8:9
-        local prev_m_txt=`txt_month $cur_m` || return 1
-        local next_m_txt=`txt_month $(($cur_m+1))` || return 1
+        echo "$cur_mf:$(($cur_m+1))"
     else
         # for 9.2, prev:next == 8:9
-        local next_m_txt=`txt_month $cur_m` || return 1
-        local prev_m_txt=`txt_month $(($cur_m-1))` || return 1
+        echo "$cur_mf:$(($cur_m-1))"
     fi
-    echo "$prev_m_txt:$next_m_txt"
 }
 
 function alliant_csv_filter () {
@@ -106,7 +107,7 @@ function c1_csv_filter () {
     #!/bin/bash
     what=$1
     l_fname="$2"
-    lastmonth_only=$3 # 1 to enable
+    lastmonth_only=1 # 1 to enable
     
     [[ $1 = "" ]] || [[ $2 = "" ]] && echo "Usage: $0 <Card No.> <fname> [last_month_only]" && exit 1
     
@@ -114,7 +115,7 @@ function c1_csv_filter () {
     if [ "$lastmonth_only" = 1 ]; then
         local cur_m=`date +%-m`
         local cur_y=`date +%Y`
-        local prev_m=$(( cur_m == 1 ? 12 : cur_m - 1 ))
+        local prev_m=`auto_get_month | cut -d : -f 1`
         cat "$l_fname" | grep ",$what," | grep ",$cur_y-$prev_m-"
     else
         cat "$l_fname" | grep ",$what," 
@@ -138,9 +139,9 @@ function alliant_csv_calc () {
     res=`python -c "print('%.2f' %  ($expr_)  )"`
     echo "$expr_ = $res"
     
-    ## calc 2.5 discount
+    ## calc discount
     
-    expr_="$res * 0.975"
+    expr_="$res * (100-$CARD_DISCOUNT)/100"
     res=`python -c "print('%.2f' %  ($expr_)  )"`
     echo "$expr_ = $res"
 }
@@ -163,9 +164,9 @@ print('+'.join(expr))
     res=`python -c "print('%.2f' %  ($expr_)  )"`
     echo "$expr_ = $res"
     
-    ## calc 2.5 discount
+    ## calc discount
     
-    expr_="$res * 0.975"
+    expr_="$res * (100-$CARD_DISCOUNT)/100"
     res=`python -c "print('%.2f' %  ($expr_)  )"`
     echo "$expr_ = $res"
 } 
@@ -185,7 +186,6 @@ Usage (alliant, by statement):
 
 Usage (C1, by Post date):
 1. Export C1 60d history as CSV file
-[TODO] manual filter still required
 2. Run this script like
      MODE=post CSV=c1 alliant_oneclick 1.csv 7000
 3. Visual check: check if month_txt is correct
@@ -215,8 +215,8 @@ Usage (C1, by Post date):
     disct_cost_cny=`python -c "print('%i' % ($disct_cost_usd * $usd_cny_rate))"` || return 1
     final_bud_cny=`python -c "print($budget_cny - $disct_cost_cny)"` || return 1
 
-    prev_month=`auto_get_month | cut -d : -f 1` || ! echo "invalid month" || return 1
-    next_month=`auto_get_month | cut -d : -f 2` || ! echo "invalid month" || return 1
+    prev_month=`txt_month $(auto_get_month | cut -d : -f 1)` || ! echo "invalid month" || return 1
+    next_month=`txt_month $(auto_get_month | cut -d : -f 2)` || ! echo "invalid month" || return 1
 
     ## Prep output
     echo "
@@ -231,7 +231,7 @@ This is the statement for your Alliant VISA Credit Card.
 > $(cat /tmp/.alliant-tx.txt | head -n 1)
 
 Your total spending (after applying special budget credit) in this billing $total_cost_usd USD.  
-After applying 2.5% cashback, you need to pay $total_cost_usd * 0.975 = $disct_cost_usd USD.
+After applying $CARD_DISCOUNT% cashback, you need to pay $total_cost_usd * (1-$CARD_DISCOUNT%) = $disct_cost_usd USD.
 
 $disct_cost_usd USD ($disct_cost_cny CNY) will be deduced from your $next_month budget.  
 **Your $next_month budget is $final_bud_cny CNY** , which will be paid through cash.
