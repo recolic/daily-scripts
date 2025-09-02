@@ -21,7 +21,7 @@
 
 
 # const variables
-MORNING_ALARM="08:18"
+MORNING_ALARM="10:18"
 [[ $1 = daemon ]] && cloudalarm_token=$(rsec WEAK10)
 TMP_CTL_FILE=/tmp/.rwatchdog.cmd
 TMP_INFO_FILE=/tmp/.rwatchdog.alarm-info
@@ -157,7 +157,7 @@ elif [[ "$op" = "night" ]]; then
         echo "!! Refused to arm timer in more than 16 hours."
         exit 1
     fi
-    echo "++ Arm leave timer to morning and switch to 'work' mode, in $(( ($alarm_ts-$curr_time)/60 )) min"
+    echo "++ Arm leave timer to morning and switch to 'work' mode, in $( echo "($alarm_ts-$curr_time)/60/60" | bc -l ) hr"
     echo "arm_timer $alarm_ts" >> $TMP_CTL_FILE
     echo "set_mode work"       >> $TMP_CTL_FILE
 elif [[ "$op" = "ack" ]]; then
