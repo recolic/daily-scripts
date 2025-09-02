@@ -2,6 +2,10 @@
 
 # CARD_DISCOUNT=2.5
 CARD_DISCOUNT=2
+# BANK_NAME="Alliant Credit Union"
+BANK_NAME="Capital One"
+
+function echo2 () { echo "$@" 1>&2 ; }
 
 function csv2html () {
     #!/bin/bash
@@ -73,16 +77,17 @@ function txt_month () {
 }
 
 function auto_get_month () {
-    local cur_mf=`date +%m` # Must have leading 0 to make c1_csv_filter work
     local cur_m=`date +%-m`
     local cur_d=`date +%-d`
     if [[ $cur_d -gt 15 ]]; then
         [[ $MODE = post ]] && echo "WARNING! MODE=post. You should wait until next month 1st day." 1>&2
         # for 8.28, prev:next == 8:9
         echo "$cur_mf:$(($cur_m+1))"
+        echo "$(printf %02d $cur_m):$(printf %02d $(($cur_m+1)))"
+        # Must have leading 0 to make c1_csv_filter work
     else
         # for 9.2, prev:next == 8:9
-        echo "$cur_mf:$(($cur_m-1))"
+        echo "$(printf %02d $(($cur_m-1))):$(printf %02d $cur_m)"
     fi
 }
 
@@ -127,7 +132,7 @@ function alliant_csv_calc () {
     [ ! -f "$1" ] && echo "Usage: $0 <alliant.csv>" && exit 1
     
     ## calc sum
-    
+   echo2 abc 
     cat "$1" | sed 's/\$0.00/NUL/g' | # strip 0.00 fees
         sed -E 's/\(\$([0-9]*\.[0-9][0-9])\)/$-\1/g' | # replace ($1.11) to $-1.11
         grep -o '\$[0-9-]*\.[0-9][0-9]' | # grep all price tags
@@ -220,7 +225,7 @@ Usage (C1, by Post date):
 
     ## Prep output
     echo "
-This is the statement for your Alliant VISA Credit Card.
+This is the statement for your $BANK_NAME Credit Card.
 
 **Please report any suspicious or unauthorized transaction immediately.**
 " | md2html > /tmp/.alliant-h1.html
@@ -240,12 +245,12 @@ Please be aware that this is an auto-generated email, and there may be unintenti
 Thanks for using Recolic Payment Service.
 " | md2html > /tmp/.alliant-h3.html
 
-    echo '
-<footer style="font-size: 12px; color: grey; text-align: center; line-height: 1.5; padding: 10px 0;">
+    echo "
+<footer style='font-size: 12px; color: grey; text-align: center; line-height: 1.5; padding: 10px 0;'>
   The information contained in this communication from the sender is confidential. It is intended solely for use by the recipient and others authorized to receive it. If you are not the recipient, you are hereby notified that any disclosure, copying, distribution or taking action in relation of the contents of this information is strictly prohibited and may be unlawful.<br />
-  Please note that the emails you receive from us regarding your credit card statement are service notifications required by Alliant Credit Union Agreement and Credit Card Accountability Responsibility & Disclosure Act. These emails cannot be unsubscribed from, and they do not fall under spam protection laws related to marketing emails.<br />
+  Please note that the emails you receive from us regarding your credit card statement are service notifications required by $BANK_NAME Agreement and Credit Card Accountability Responsibility & Disclosure Act. These emails cannot be unsubscribed from, and they do not fall under spam protection laws related to marketing emails.<br />
   Digitally signed: Recolic Networking (root@recolic.net)
-</footer>' > /tmp/.alliant-h4.html
+</footer>" > /tmp/.alliant-h4.html
     
     cat /tmp/.alliant-h1.html /tmp/.alliant-h2.html /tmp/.alliant-h3.html /tmp/.alliant-h4.html > /tmp/.alliant-all.html
     cp /tmp/.alliant-1.csv /tmp/river-statement-$prev_month.csv
