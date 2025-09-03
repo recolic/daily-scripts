@@ -1,5 +1,5 @@
 function mslab-tunnel
-    sshpass -p (rsec MSPASS) ssh -D 10809 -Nf (rsec MSID)@labjump.m.recolic
+    sshpass -p (rsec MSPASS) ssh -D 10809 -Nf (rsec MSID)@jb3.backup1.m.recolic
 end
 # backup
 # function mslab-tunnel
