@@ -1,5 +1,6 @@
 #!/usr/bin/python3 -u
 import sys, os, json, tempfile
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from openai import AzureOpenAI
 def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
 
@@ -21,6 +22,7 @@ client = AzureOpenAI(
 # ===== CONSTANTS =====
 TXT_CHUNK_SIZE = 100000 # Bytes in every MAP chunk. Max ~400000 for GPT-5
 TMPDIR = "/tmp/gpt-map-reduce.stat"
+MAP_THREADS = 12
 
 def run_gpt(system_text, user_text):
     chat_prompt = [
@@ -70,19 +72,14 @@ with open(hugefile) as f:
     bigtext = f.read()
 
 chunks = [bigtext[i:i+TXT_CHUNK_SIZE] for i in range(0, len(bigtext), TXT_CHUNK_SIZE)]
-print(f">> Total chunks: {len(chunks)}. Estimated input cost: {COST_1M*len(chunks)/40} USD ({deployment})")
-
-map_files = []
+print(f">> Total chunks: {len(chunks)}, threads {MAP_THREADS}. Estimated input cost: {COST_1M*len(chunks)/40} USD ({deployment})")
 
 # MAP phase
-for idx, chunk in enumerate(chunks, 1):
+def process_chunk(idx, chunk):
     fname = f"{TMPDIR}/{os.path.basename(hugefile)}_res.{idx}_{len(chunks)}"
     os.makedirs(os.path.dirname(fname), exist_ok=True)
     if os.path.exists(fname):
-        print(f"[{idx}/{len(chunks)}] Exists, skipping.")
-        map_files.append(fname)
-        continue
-    print(f"[{idx}/{len(chunks)}] Processing...")
+        return idx, fname, "exists"
     sys_prompt_map = (
         "You are in the MAP phase of a map-reduce process.\n"
         "Your task: carefully process the given chunk of text to fulfill the specific MAP_PROMPT below.\n"
@@ -93,7 +90,17 @@ for idx, chunk in enumerate(chunks, 1):
     result = run_gpt(sys_prompt_map, chunk)
     with open(fname, "w") as f:
         f.write(result)
-    map_files.append(fname)
+    return idx, fname, "done"
+
+# MAP: Thread pool
+map_files = []
+with ThreadPoolExecutor(max_workers=MAP_THREADS) as executor:
+    futures = [executor.submit(process_chunk, idx, chunk)
+               for idx, chunk in enumerate(chunks, 1)]
+    for future in as_completed(futures):
+        idx, fname, status = future.result()
+        print(f"[{idx}/{len(chunks)}] {status}")
+        map_files.append(fname)
 
 # REDUCE phase
 print("Starting REDUCE phase...")
