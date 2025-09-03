@@ -8,8 +8,9 @@ def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, c
 # deployment       = "gpt-4.1"
 # subscription_key = rsec("Az_OpenAI_KEY")
 endpoint         = rsec("Az_OpenAI_API5")
-deployment       = "gpt-5-chat"
+deployment       = "gpt-5-mini"
 subscription_key = rsec("Az_OpenAI_KEY5")
+COST_1M = 0.25
 
 client = AzureOpenAI(
     azure_endpoint=endpoint,
@@ -39,7 +40,8 @@ def run_gpt(system_text, user_text):
     completion = client.chat.completions.create(
         model=deployment,
         messages=chat_prompt,
-        max_tokens=16384,
+        # max_tokens=16384,
+        max_completion_tokens=16000,
         temperature=1,
         top_p=1,
         frequency_penalty=0,
@@ -68,7 +70,7 @@ with open(hugefile) as f:
     bigtext = f.read()
 
 chunks = [bigtext[i:i+TXT_CHUNK_SIZE] for i in range(0, len(bigtext), TXT_CHUNK_SIZE)]
-print(f"Total chunks: {len(chunks)}. Estimated input cost: {0.03125*len(chunks)} USD (GPT-5)")
+print(f">> Total chunks: {len(chunks)}. Estimated input cost: {COST_1M*len(chunks)/40} USD ({deployment})")
 
 map_files = []
 
