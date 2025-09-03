@@ -18,7 +18,7 @@ client = AzureOpenAI(
 )
 
 # ===== CONSTANTS =====
-TXT_CHUNK_SIZE = 50000 # Bytes in every MAP chunk. Max ~400000 for GPT-5
+TXT_CHUNK_SIZE = 100000 # Bytes in every MAP chunk. Max ~400000 for GPT-5
 TMPDIR = "/tmp/gpt-map-reduce.stat"
 
 def run_gpt(system_text, user_text):
@@ -68,7 +68,7 @@ with open(hugefile) as f:
     bigtext = f.read()
 
 chunks = [bigtext[i:i+TXT_CHUNK_SIZE] for i in range(0, len(bigtext), TXT_CHUNK_SIZE)]
-print(f"Total chunks: {len(chunks)}")
+print(f"Total chunks: {len(chunks)}. Estimated input cost: {0.03125*len(chunks)} USD (GPT-5)")
 
 map_files = []
 
