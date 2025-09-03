@@ -39,18 +39,23 @@ def run_gpt(system_text, user_text):
             ]
         }
     ]
-    completion = client.chat.completions.create(
-        model=deployment,
-        messages=chat_prompt,
-        # max_tokens=16384,
-        max_completion_tokens=16000,
-        temperature=1,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0,
-        stop=None,
-        stream=False
-    )
+    while True: # Retry loop
+        try:
+            completion = client.chat.completions.create(
+                model=deployment,
+                messages=chat_prompt,
+                # max_tokens=16384,
+                max_completion_tokens=16000,
+                temperature=1,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0,
+                stop=None,
+                stream=False
+            )
+            break  # success → exit loop
+        except Exception as e:
+            print(f"Request failed, retrying... ({e})")
     assistant_text = ""
     if hasattr(completion.choices[0].message, "content"):
         for chunk in completion.choices[0].message.content:
