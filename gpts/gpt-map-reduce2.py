@@ -85,7 +85,8 @@ for idx, chunk in enumerate(chunks, 1):
         "You are in the MAP phase of a map-reduce process.\n"
         "Your task: carefully process the given chunk of text to fulfill the specific MAP_PROMPT below.\n"
         "Produce an output that can later be combined by another AI during the REDUCE phase.\n"
-        "MAP_PROMPT:\n" + map_prompt
+        "MAP_PROMPT:\n" + map_prompt + "\n"
+        "REDUCE_PROMPT:\n" + reduce_prompt + "\n"
     )
     result = run_gpt(sys_prompt_map, chunk)
     with open(fname, "w") as f:
@@ -104,7 +105,8 @@ sys_prompt_reduce = (
     "Previously, the MAP phase processed separate text chunks according to the MAP_PROMPT.\n"
     "Your task: combine the provided MAP outputs into a single, coherent final output according to the REDUCE_PROMPT.\n"
     "Ensure no important details are lost, resolve duplicates, merge related parts, and make the result as REDUCE_PROMPT requested.\n"
-    "REDUCE_PROMPT:\n" + reduce_prompt
+    "MAP_PROMPT:\n" + map_prompt + "\n"
+    "REDUCE_PROMPT:\n" + reduce_prompt + "\n"
 )
 
 final_output = run_gpt(sys_prompt_reduce, combined_chunks)
