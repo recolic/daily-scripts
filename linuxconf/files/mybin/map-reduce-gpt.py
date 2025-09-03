@@ -55,7 +55,8 @@ def run_gpt(system_text, user_text):
             )
             break  # success → exit loop
         except Exception as e:
-            print(f"Request failed, retrying... ({e})")
+            print(f"sleep 30s before retry... ({e})")
+            time.sleep(30)
     assistant_text = ""
     if hasattr(completion.choices[0].message, "content"):
         for chunk in completion.choices[0].message.content:
