@@ -1,17 +1,12 @@
 #!/usr/bin/python3
 import sys, os, json, tempfile
 from openai import AzureOpenAI
+def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
 
-# ===== CONSTANTS =====
-TXT_CHUNK_SIZE = 5000  # characters per map chunk
-TMPDIR = "/tmp/gpt-map-reduce.stat"
-
-# ===== from gpt.py =====
-def rsec(k):
-    import subprocess
-    return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
-
-# Azure/OpenAI parameters (reuse original)
+# Azure/OpenAI parameters
+# endpoint         = rsec("Az_OpenAI_API")
+# deployment       = "gpt-4.1"
+# subscription_key = rsec("Az_OpenAI_KEY")
 endpoint         = rsec("Az_OpenAI_API5")
 deployment       = "gpt-5-chat"
 subscription_key = rsec("Az_OpenAI_KEY5")
@@ -21,6 +16,10 @@ client = AzureOpenAI(
     api_key=subscription_key,
     api_version="2025-01-01-preview",
 )
+
+# ===== CONSTANTS =====
+TXT_CHUNK_SIZE = 50000 # Bytes in every MAP chunk. Max ~400000 for GPT-5
+TMPDIR = "/tmp/gpt-map-reduce.stat"
 
 def run_gpt(system_text, user_text):
     chat_prompt = [
@@ -40,7 +39,7 @@ def run_gpt(system_text, user_text):
     completion = client.chat.completions.create(
         model=deployment,
         messages=chat_prompt,
-        max_tokens=16000,
+        max_tokens=16384,
         temperature=1,
         top_p=1,
         frequency_penalty=0,
@@ -75,7 +74,8 @@ map_files = []
 
 # MAP phase
 for idx, chunk in enumerate(chunks, 1):
-    fname = f"{TMPDIR}/{hugefile}_res.{idx}"
+    fname = f"{TMPDIR}/{os.path.basename(hugefile)}_res.{idx}_{len(chunks)}"
+    os.makedirs(os.path.dirname(fname), exist_ok=True)
     if os.path.exists(fname):
         print(f"[{idx}/{len(chunks)}] Exists, skipping.")
         map_files.append(fname)
@@ -112,4 +112,5 @@ sys_prompt_reduce = (
 final_output = run_gpt(sys_prompt_reduce, combined_chunks)
 print("===== FINAL OUTPUT =====")
 print(final_output)
-
+print("")
+print(f"++ Cleanup cache dir: rm -rf {TMPDIR}")
