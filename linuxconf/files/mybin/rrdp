@@ -19,7 +19,7 @@ NAME        |USERNAME     |PASSWORD                   |HOSTNAME
 msdev       |recolic      |sh://rsec DEVBOX           |mspc.m.recolic:30474
 msdev-backup|recolic      |sh://rsec DEVBOX           |mspc.wlo.m.recolic:30474
 msdev-rp    |recolic      |sh://rsec DEVBOX           |proxy-cdn.recolic.net:30623
-labjump     |fareast\bensl|sh://rsec MSPASS           |labjump.m.recolic
+labjump     |fareast\bensl|sh://rsec MSPASS           |jb3.team1.m.recolic
 lanbox      |recolic      |sh://genpasswd lanbox      |10.100.100.101:30473
 cnbox       |recolic      |sh://genpasswd cnbox       |mspc.m.recolic:30476
 host16      |Administrator|sh://rsec OVL_HOST_RDP     |host.blade16.m.recolic
