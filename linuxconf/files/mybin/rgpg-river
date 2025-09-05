@@ -4,29 +4,26 @@ set -e
 # Must be 32 bytes in hex
 [ "$key" = "" ] && key="$(rsec RAUTH_RIVER_AES)"
 
+MAGIC=2 # v2
+b64u_enc() { base64 -w0 | tr '/+' '_-' | tr -d '='; }
+b64u_dec() { tr '_-' '/+' | base64 -d; }
+
 function enc () {
     plaintext="$1"
-    iv=$(openssl rand -hex 16)
-    ct=$(echo -n "$plaintext" | openssl enc -aes-256-cbc -K "$key" -iv "$iv" -base64 -A | tr '/+' '_-')
-    echo "${iv}${ct}"
+    iv=$(openssl rand 16 | b64u_enc)
+    ct=$(echo -n "$plaintext" | openssl enc -aes-256-cbc -K "$key" -iv $(echo "$iv" | b64u_dec | xxd -p) | b64u_enc)
+    echo "$MAGIC.$iv.$ct"
 }
 
 function dec () {
-    data="$1"
-    iv="${data:0:32}"
-    ct="${data:32}"
-    echo -n "$ct" | tr '_-' '/+' | base64 -d | openssl enc -aes-256-cbc -d -K "$key" -iv "$iv"
-}
-
-function prefix_hex32() {
-    local str="${1:0:32}"
-    [[ "$str" =~ ^[0-9a-f]{32}$ ]]
+    IFS='.' read -r magic iv ct <<<"$1"
+    echo "$ct" | b64u_dec | openssl enc -aes-256-cbc -d -K "$key" -iv $(echo "$iv" | b64u_dec | xxd -p)
 }
 
 echo "Ciphertext / Plaintext until EOF:"
 txt="$(cat)"
 
-if prefix_hex32 "$txt"; then
+if [[ "$txt" == "$MAGIC."* ]]; then
     echo "Decrypt result:"
     dec "$txt"
 else
