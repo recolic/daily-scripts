@@ -16,6 +16,11 @@ RUN sed -i 's|text/plain[^;]*;|text/plain   txt c cc log cu cpp cxx py java sh b
 RUN test -d /etc/php/7.4
 RUN echo -e "upload_max_filesize = 16M\npost_max_size = 16M" > /etc/php/7.4/fpm/conf.d/21-uploads.ini
 
+RUN sed -i 's/^upload_max_filesize.*$/upload_max_filesize = 16M/' /etc/php/7.4/fpm/php.ini
+RUN sed -i 's/^post_max_size.*$/post_max_size = 16M/' /etc/php/7.4/fpm/php.ini
+RUN grep -q '^upload_max_filesize' /etc/php/7.4/fpm/php.ini
+RUN grep -q '^post_max_size' /etc/php/7.4/fpm/php.ini
+
 COPY entry.sh /
 VOLUME /var/www/html
 
