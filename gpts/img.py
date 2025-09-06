@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import tempfile, json
+import tempfile, json, sys
 from openai import AzureOpenAI
 def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
 
@@ -35,6 +35,8 @@ from io import BytesIO
 from PIL import Image
 def encode_image_to_data_uri(image_path, max_size_mb=1):
     max_bytes = max_size_mb * 1024 * 1024
+    if image_path.startswith('http'):
+        return image_path
 
     # Check image file size
     file_size = os.path.getsize(image_path)
@@ -52,7 +54,7 @@ def encode_image_to_data_uri(image_path, max_size_mb=1):
             img.save(buffer, format="JPEG", quality=quality, optimize=True)
             size = buffer.tell()
             if size <= max_bytes or quality <= 20:
-                print("DEBUG: compressed img bytes=", size)
+                print("DEBUG: compressed img bytes=", size, file=sys.stderr)
                 encoded = base64.b64encode(buffer.getvalue()).decode("utf-8")
                 return f"data:image/jpeg;base64,{encoded}"
             quality -= 5
@@ -60,7 +62,7 @@ def encode_image_to_data_uri(image_path, max_size_mb=1):
 
 
 while True:
-    user_input, img_path = sys.argv
+    user_input, img_path = sys.argv[1:]
     # Append as a user message to chat history
     chat_prompt.append({
         "role": "user",
@@ -72,7 +74,7 @@ while True:
             {
                 "type": "image_url",
                 "image_url": {
-                    "url": img_path
+                    "url": encode_image_to_data_uri(img_path)
                 }
             }
         ]
