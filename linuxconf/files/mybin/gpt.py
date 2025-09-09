@@ -49,7 +49,12 @@ def get_multiline_input():
     print(T_BLUEB + ">> You >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + T_CLR) 
     text = ""
     while True:
-        line = input()
+        try:
+            line = input()
+        except Exception as e:
+            fname = save_to_tempfile(json.dumps(chat_prompt, indent=2), "json")
+            print(f"<< gpt.py << Saved history to {fname}")
+            raise
         if line == "..":
             break
         elif line == ".s":

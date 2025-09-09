@@ -202,7 +202,7 @@ while true; do
     fi
     [[ $bat -lt 7 ]] && _alarm soft "battery lower than 7"
     [[ $cloudalarm = 1 ]] && _alarm "soft 3" "river cloudalarm notification"
-    [[ "$_err" != "" ]] && _alarm "soft 9" "Script Error: $_err"
+    [[ "$_err" != "" ]] && _alarm soft "Script Error: $_err"
 
 
     while [[ $alarm_state != ack ]]; do
