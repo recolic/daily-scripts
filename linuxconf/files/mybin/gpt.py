@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import tempfile, json
+import tempfile, json, os, base64
 from openai import OpenAI, AzureOpenAI
 def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
 
@@ -26,6 +26,7 @@ def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, c
 ## Gemini
 impl = dict(
     model = "gemini-2.5-flash",
+    # model = "gemini-2.5-pro",
     client = OpenAI(
         api_key=rsec("Gemini_KEY"),
         base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
@@ -45,18 +46,17 @@ chat_prompt = [
     }
 ]
 
-# Create the tempdir only once, on first use
-_tempdir = None
+_prefix = None
 _counter = 1
 def save_to_tempfile(content, ext = "md"):
-    global _tempdir, _counter
-    if _tempdir is None:
-        _tempdir = tempfile.mkdtemp(prefix="gpt-", dir="/tmp")
-    fn = f"{_tempdir}/{_counter}.{ext}"
+    global _prefix, _counter
+    os.makedirs("/tmp/gpt", exist_ok=True)
+    if _prefix is None: _prefix = base64.b64encode(os.urandom(8)).decode()[:6]
+    fn = f"/tmp/gpt/{_prefix}-{_counter}.{ext}"
     _counter += 1
-    with open(fn, 'w') as f:
-        f.write(content)
+    with open(fn, 'w') as f: f.write(content)
     return fn
+
 
 T_BLUEB = '\033[44m'
 T_CLR = '\033[0m'
