@@ -3,6 +3,7 @@ import tempfile, json, os, base64
 from openai import OpenAI, AzureOpenAI
 def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
 
+#### Azure censorship too shitty. Don't use it.
 # ## Azure GPT 4.1
 # impl = dict(
 #     model = "gpt-4.1",
