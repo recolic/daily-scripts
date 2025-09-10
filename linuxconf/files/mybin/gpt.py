@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import tempfile, json, os, base64
+import tempfile, json, time, os
 from openai import OpenAI, AzureOpenAI
 def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
 
@@ -26,8 +26,8 @@ def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, c
 # )
 ## Gemini
 impl = dict(
-    model = "gemini-2.5-flash",
-    # model = "gemini-2.5-pro",
+    # model = "gemini-2.5-flash",
+    model = "gemini-2.5-pro",
     client = OpenAI(
         api_key=rsec("Gemini_KEY"),
         base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
@@ -52,7 +52,7 @@ _counter = 1
 def save_to_tempfile(content, ext = "md"):
     global _prefix, _counter
     os.makedirs("/tmp/gpt", exist_ok=True)
-    if _prefix is None: _prefix = base64.b64encode(os.urandom(8)).decode()[:6]
+    if _prefix is None: _prefix = time.strftime('%m%d%H%M%S')
     fn = f"/tmp/gpt/{_prefix}-{_counter}.{ext}"
     _counter += 1
     with open(fn, 'w') as f: f.write(content)
@@ -68,7 +68,7 @@ def get_multiline_input():
     while True:
         try:
             line = input()
-        except Exception as e:
+        except (Exception, KeyboardInterrupt) as e:
             fname = save_to_tempfile(json.dumps(chat_prompt, indent=2), "json")
             print(f"<< gpt.py << Saved history to {fname}")
             raise
