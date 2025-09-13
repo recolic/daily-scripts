@@ -12,6 +12,7 @@ WORKDIR /app
 RUN git clone https://github.com/Avenshy/MajsoulMax.git .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# optional. Recolic use the same cert for all hacks.
 RUN wget https://recolic.cc/res/mitmproxy-ca-recolic.tar.gz -O /tmp/certs.tar.gz
 RUN mkdir -p /root/.mitmproxy && tar -xzvf /tmp/certs.tar.gz -C /root/.mitmproxy && rm /tmp/certs.tar.gz
 
