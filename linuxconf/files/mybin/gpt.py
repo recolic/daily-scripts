@@ -49,11 +49,12 @@ chat_prompt = [
 
 _prefix = None
 _counter = 1
+_cache_dir = os.path.expanduser('~/.cache/gpt')
 def save_to_tempfile(content, ext = "md"):
-    global _prefix, _counter
-    os.makedirs("/tmp/gpt", exist_ok=True)
+    global _prefix, _counter, _cache_dir
+    os.makedirs(_cache_dir, exist_ok=True)
     if _prefix is None: _prefix = time.strftime('%m%d%H%M%S')
-    fn = f"/tmp/gpt/{_prefix}-{_counter}.{ext}"
+    fn = f"{_cache_dir}/{_prefix}-{_counter}.{ext}"
     _counter += 1
     with open(fn, 'w') as f: f.write(content)
     return fn
