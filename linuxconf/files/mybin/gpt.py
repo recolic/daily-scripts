@@ -26,7 +26,7 @@ def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, c
 # )
 ## Gemini
 impl = dict(
-    # model = "gemini-2.5-flash",
+#    model = "gemini-2.5-flash",
     model = "gemini-2.5-pro",
     client = OpenAI(
         api_key=rsec("Gemini_KEY"),
@@ -94,6 +94,7 @@ print("..                   (send your message)")
 print(".f path/to/file.txt  (import text file)")
 print(".s                   (save this chat)")
 print(".l path/to/chat.json (load previous chat)")
+print("model:", impl['model'])
 while True:
     user_input = get_multiline_input()
     if not user_input.strip():
