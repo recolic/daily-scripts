@@ -1,39 +1,50 @@
 #!/usr/bin/python3
-import tempfile, json, time, os
+import tempfile, json, time, os, sys
 from openai import OpenAI, AzureOpenAI
 def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
 
-#### Azure censorship too shitty. Don't use it.
-# ## Azure GPT 4.1
-# impl = dict(
-#     model = "gpt-4.1",
-#     client = AzureOpenAI(
-#         azure_endpoint=rsec("Az_OpenAI_API"),
-#         api_key=rsec("Az_OpenAI_KEY"),
-#         api_version="2025-01-01-preview"
-#     ),
-#     extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None)
-# )
-# ## Azure GPT 5
-# impl = dict(
-#     model = "gpt-5-chat",
-#     client = AzureOpenAI(
-#         azure_endpoint=rsec("Az_OpenAI_API5"),
-#         api_key=rsec("Az_OpenAI_KEY5"),
-#         api_version="2025-01-01-preview"
-#     ),
-#     extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None)
-# )
-## Gemini
-impl = dict(
-#    model = "gemini-2.5-flash",
-    model = "gemini-2.5-pro",
-    client = OpenAI(
-        api_key=rsec("Gemini_KEY"),
-        base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
-    ),
-    extra_args = dict()
-)
+alias = 'flash' if len(sys.argv) < 2 else sys.argv[1]
+# Azure censorship too shitty. Don't use it.
+if alias == 'gpt4.1':
+    impl = dict(
+        model = "gpt-4.1",
+        client = AzureOpenAI(
+            azure_endpoint=rsec("Az_OpenAI_API"),
+            api_key=rsec("Az_OpenAI_KEY"),
+            api_version="2025-01-01-preview"
+        ),
+        extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None)
+    )
+elif alias == 'gpt5':
+    impl = dict(
+        model = "gpt-5-chat",
+        client = AzureOpenAI(
+            azure_endpoint=rsec("Az_OpenAI_API5"),
+            api_key=rsec("Az_OpenAI_KEY5"),
+            api_version="2025-01-01-preview"
+        ),
+        extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None)
+    )
+elif alias == 'flash':
+    impl = dict(
+        model = "gemini-2.5-flash",
+        client = OpenAI(
+            api_key=rsec("Gemini_KEY"),
+            base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+        ),
+        extra_args = dict()
+    )
+elif alias == 'pro':
+    impl = dict(
+        model = "gemini-2.5-pro",
+        client = OpenAI(
+            api_key=rsec("Gemini_KEY"),
+            base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+        ),
+        extra_args = dict()
+    )
+else:
+    raise RuntimeError("make a choice, which model to use?")
 
 chat_prompt = [
     {
