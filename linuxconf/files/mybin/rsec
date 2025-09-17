@@ -1,9 +1,12 @@
 #!/bin/bash
 # recolic local secret management. Run this script to read a saved secret.
 # note: secret name should not contain ':' or ' '
+# guaranteed to print nothing to stdout on failure (required by rsec-php)
 #
 # Usage in python: 
 # def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
+# Usage in php:
+# function rsec($k) { return trim( ($o = shell_exec('rsec ' . escapeshellarg($k))) ? $o : die("rsec failed") ); }
 
 function die () { echo "RSEC error:" "$@" 1>&2 ; exit 1 ;  }
 
@@ -12,7 +15,7 @@ _key=$(echo "$1" | sed 's/^R_SEC_//')
 
 NEXTCLOUD_PREFIX=$HOME/$(ls $HOME | grep -i nextcloud)
 RSEC_ENC_DB="$NEXTCLOUD_PREFIX/RSEC.gpg"
-RSEC_ENC_DB_ALT="/etc/RSEC_alt"
+RSEC_ENC_DB_ALT=${RSEC_ENC_DB_ALT:-/etc/RSEC_alt}
 
 if [ -f "$RSEC_ENC_DB" ]; then
     RSEC_LINS="$(gpg -d "$RSEC_ENC_DB")" || die "gpg decrypt failure"

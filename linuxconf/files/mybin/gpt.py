@@ -3,10 +3,9 @@ import tempfile, json, time, os, sys
 from openai import OpenAI, AzureOpenAI
 def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
 
-alias = 'flash' if len(sys.argv) < 2 else sys.argv[1]
-# Azure censorship too shitty. Don't use it.
-if alias == 'gpt4.1':
-    impl = dict(
+all_impl = {
+    # Warning: Azure heavy censorship
+    'gpt4.1': lambda: dict(
         model = "gpt-4.1",
         client = AzureOpenAI(
             azure_endpoint=rsec("Az_OpenAI_API"),
@@ -14,9 +13,8 @@ if alias == 'gpt4.1':
             api_version="2025-01-01-preview"
         ),
         extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None)
-    )
-elif alias == 'gpt5':
-    impl = dict(
+    ),
+    'gpt5': lambda: dict(
         model = "gpt-5-chat",
         client = AzureOpenAI(
             azure_endpoint=rsec("Az_OpenAI_API5"),
@@ -24,18 +22,16 @@ elif alias == 'gpt5':
             api_version="2025-01-01-preview"
         ),
         extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None)
-    )
-elif alias == 'flash':
-    impl = dict(
+    ),
+    'flash': lambda: dict(
         model = "gemini-2.5-flash",
         client = OpenAI(
             api_key=rsec("Gemini_KEY"),
             base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
         ),
         extra_args = dict()
-    )
-elif alias == 'pro':
-    impl = dict(
+    ),
+    'pro': lambda: dict(
         model = "gemini-2.5-pro",
         client = OpenAI(
             api_key=rsec("Gemini_KEY"),
@@ -43,8 +39,14 @@ elif alias == 'pro':
         ),
         extra_args = dict()
     )
+}
+
+if len(sys.argv) < 2:
+    alias = 'flash'
+    print("Available config:", list(all_impl.keys()))
 else:
-    raise RuntimeError("make a choice, which model to use?")
+    alias = sys.argv[1]
+impl = all_impl[alias]()
 
 chat_prompt = [
     {
