@@ -10,6 +10,7 @@ function _secret_mount
         echo "Error: $encfsdir not exist"
         return 1
     end
+    mount | grep -F $mountdir ; and echo "Dangerous: $mountdir already mounted" ; and return 1
     mkdir -p $mountdir ; or return $status
     echo "++ Mount $encfsdir to $mountdir..."
     encfs --extpass="genpasswd $pswd_seed" $encfsdir $mountdir ; or return $status
@@ -22,20 +23,19 @@ function _secret_mount
 end
 
 function h
-    mount | grep hshell.mount ; and echo "Dangerous: hshell.mount already mounted" ; and return 1
-
     _secret_mount $HOME/nfs/.henc /tmp/hshell.mount .henc HSHELL_NFS
-
 end
 
 function rb
-    mount | grep C2_M ; and echo "Dangerous: C2_M already mounted" ; and return 1
-
-    rm -rf /tmp/.rbackup.mount ; mkdir -p /tmp/.rbackup.mount/C2_M
-    ln -s $HOME/nfs/backups/I2 /tmp/.rbackup.mount/
-    ln -s $HOME/nfs/backups/MX /tmp/.rbackup.mount/
+    mkdir -p /tmp/.rbackup.mount/C2_M
+    ln -sf $HOME/nfs/backups/I2 /tmp/.rbackup.mount/
+    ln -sf $HOME/nfs/backups/MX /tmp/.rbackup.mount/
 
     _secret_mount $HOME/nfs/backups/C2_M /tmp/.rbackup.mount/C2_M C2_M HSHELL_RB
+end
+
+function x
+    _secret_mount $HOME/.config/chromium/Default/GPUShader /tmp/.projx .projx PROJ_X
 end
 
 function ff2
@@ -61,5 +61,6 @@ if test -d $HOME/tmp/h
 end
 ' > /tmp/.hs.fish
 
+gpgconf --reload gpg-agent # Next PIN would be required.
 env RECOLIC_ENV_NAME=HSHELL fish --private -C 'source /tmp/.hs.fish'
 
