@@ -83,8 +83,9 @@ def get_multiline_input():
         try:
             line = input()
         except (Exception, KeyboardInterrupt) as e:
-            fname = save_to_tempfile(json.dumps(chat_prompt, indent=2), "json")
-            print(f"<< gpt.py << Saved history to {fname}")
+            if len(chat_prompt) > 1:
+                fname = save_to_tempfile(json.dumps(chat_prompt, indent=2), "json")
+                print(f"<< gpt.py << Saved history to {fname}")
             raise
         if line == "..":
             break
