@@ -1,10 +1,21 @@
-# Defined in - @ line 2
+function _is_gpg_vault
+    set fname $argv[1]
+    if file $fname | grep "PGP message Public-Key Encrypted" > /dev/null; then
+        return 0 # Yes
+    end 
+    if file $fname | grep 'data$' > /dev/null
+        if string match -q '*.gpg' -- $fname
+            return 0 # Yes
+        end
+    end 
+    return 1 # No
+end
 function svim
     set _origin_vim /usr/bin/vim
     if test -z "$argv"
         $_origin_vim
         return $status
-    end
+    end 
 
     set fname $argv[1]
     if not test -e $fname
@@ -15,15 +26,16 @@ function svim
             sudo $_origin_vim $argv
             return $status
         end
-    end
+    end 
     if test -w $fname ; and test -r $fname
-        if type -q rgpg-vim ; and file $fname | grep "PGP message Public-Key Encrypted" > /dev/null
+        if type -q rgpg-vim ; and _is_gpg_vault $fname
             rgpg-vim $fname
         else
             $_origin_vim $argv
         end
     else
         sudo $_origin_vim $argv
-    end
+    end 
     return $status
 end
+

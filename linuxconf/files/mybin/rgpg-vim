@@ -24,7 +24,7 @@ if [[ "$hash1" != "$hash2" ]]; then
     gpg --yes --encrypt -a -o "$fname.backupnew" -r root@recolic.net "$tmpfname" || die "failed to encrypt output file"
     mv "$fname.backupnew" "$fname" || die "failed to write output file. ref: $fname.backupnew"
 else
-    echo "file unchanged" 1>&2
+    echo "file not changed" 1>&2
 fi
 
 rm -f "$tmpfname"
