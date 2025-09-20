@@ -34,7 +34,7 @@ if test "$bal_valid" != 1
     mailr "balancemon.fish broken, balance '$bal'"
     exit 1
 end
-set alert (python -c "print(1 if $bal<5 else 0)")
+set alert (python -c "print(1 if $bal<2 else 0)")
 if test $alert = 1
     mailr "teffy cloud need recharge, balance $bal"
 end
