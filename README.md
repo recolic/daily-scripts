@@ -28,4 +28,13 @@ rsec... rgpg... : TODO WIP
 proxychains...
 
 ban-xunlei-d.sh: qbittorrent blacklist basing on regex. built-in rule for xunlei.
+
+## others
+convert-fq-to-cram.sh
+custom-html-price-modify.fish
+gopeed-to-aria2.py
+fuckwin.ps1
+show_gpg_file_receipt.sh
+ssd_benchmark.sh
+docker-**
 ```
