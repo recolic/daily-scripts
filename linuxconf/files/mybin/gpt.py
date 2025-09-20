@@ -1,77 +1,15 @@
 #!/usr/bin/python3
-import tempfile, json, time, os, sys
-from openai import OpenAI, AzureOpenAI
-def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
-
-all_impl = {
-    # Warning: Azure heavy censorship
-    'gpt4.1': lambda: dict(
-        model = "gpt-4.1",
-        client = AzureOpenAI(
-            azure_endpoint=rsec("Az_OpenAI_API"),
-            api_key=rsec("Az_OpenAI_KEY"),
-            api_version="2025-01-01-preview"
-        ),
-        extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None)
-    ),
-    'gpt5': lambda: dict(
-        model = "gpt-5-chat",
-        client = AzureOpenAI(
-            azure_endpoint=rsec("Az_OpenAI_API5"),
-            api_key=rsec("Az_OpenAI_KEY5"),
-            api_version="2025-01-01-preview"
-        ),
-        extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None)
-    ),
-    'flash': lambda: dict(
-        model = "gemini-2.5-flash",
-        client = OpenAI(
-            api_key=rsec("Gemini_KEY"),
-            base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
-        ),
-        extra_args = dict()
-    ),
-    'pro': lambda: dict(
-        model = "gemini-2.5-pro",
-        client = OpenAI(
-            api_key=rsec("Gemini_KEY"),
-            base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
-        ),
-        extra_args = dict()
-    )
-}
+import json, sys
+import lib.recogpt as recogpt
 
 if len(sys.argv) < 2:
     alias = 'flash'
-    print("Available config:", list(all_impl.keys()))
+    print("Available config:", recogpt.impl_list())
 else:
     alias = sys.argv[1]
-impl = all_impl[alias]()
 
-chat_prompt = [
-    {
-        "role": "system",
-        "content": [
-            {
-                "type": "text",
-                "text": "You are an AI assistant that helps people. Sometimes user want short daily conversation, sometimes user need detailed explain, sometimes you must think against user to give useful insights. For complex discussion, your context is limited. So please act like a human and don't unnecessarily say too much."
-            }
-        ]
-    }
-]
-
-_prefix = None
-_counter = 1
-_cache_dir = os.path.expanduser('~/.cache/gpt')
-def save_to_tempfile(content, ext = "md"):
-    global _prefix, _counter, _cache_dir
-    os.makedirs(_cache_dir, exist_ok=True)
-    if _prefix is None: _prefix = time.strftime('%m%d%H%M%S')
-    fn = f"{_cache_dir}/{_prefix}-{_counter}.{ext}"
-    _counter += 1
-    with open(fn, 'w') as f: f.write(content)
-    return fn
-
+impl = recogpt.impl_load(alias)
+chat_prompt = recogpt.prompt_init_default()
 
 T_BLUEB = '\033[44m'
 T_CLR = '\033[0m'
@@ -84,13 +22,13 @@ def get_multiline_input():
             line = input()
         except (Exception, KeyboardInterrupt) as e:
             if len(chat_prompt) > 1:
-                fname = save_to_tempfile(json.dumps(chat_prompt, indent=2), "json")
+                fname = recogpt.cache(json.dumps(chat_prompt, indent=2), "json")
                 print(f"<< gpt.py << Saved history to {fname}")
             raise
         if line == "..":
             break
         elif line == ".s":
-            fname = save_to_tempfile(json.dumps(chat_prompt, indent=2), "json")
+            fname = recogpt.cache(json.dumps(chat_prompt, indent=2), "json")
             print(f"<< gpt.py << Saved history to {fname}")
         elif line.startswith(".l "):
             chat_prompt = json.loads(open(line[3:].strip()).read())
@@ -114,55 +52,16 @@ while True:
     if not user_input.strip():
         continue  # Ignore empty user input
     # Append as a user message to chat history
-    chat_prompt.append({
-        "role": "user",
-        "content": [
-            {
-                "type": "text",
-                "text": user_input
-            }
-        ]
-    })
+    chat_prompt += recogpt.prompt_user(user_input)
 
-    # Query GPT
     try:
-        completion = impl['client'].chat.completions.create(
-            model=impl['model'],
-            messages=chat_prompt,
-            max_tokens=16000,
-            stream=False,
-            **impl['extra_args']
-        )
-        # Extract assistant reply (Azure format: a list, we just join)
-        assistant_text = ""
-        # Azure's completion structure: choices[0].message.content is a list of dicts with 'type':'text', 'text':...
-        # So we gather all text chunks together
-        if hasattr(completion.choices[0].message, "content"):
-            for chunk in completion.choices[0].message.content:
-                if isinstance(chunk, dict) and chunk.get("type") == "text":
-                    assistant_text += chunk.get("text", "")
-                elif isinstance(chunk, str):
-                    assistant_text += chunk
-        else:
-            # fallback for possible alternative return formats
-            assistant_text = str(completion)
+        resp = recogpt.complete(impl, chat_prompt)
 
-        # Print or save
-        num_lines = assistant_text.count('\n') + 1
-        if num_lines > 100:
-            filepath = save_to_tempfile(assistant_text)
-            print(f"(Response longer than 100 lines. Saved to {filepath})")
+        if resp.count('\n') > 100:
+            print(f"(Response longer than 100 lines. Saved to {recogpt.cache(resp)})")
         else:
-            print(assistant_text)
-        # Add assistant response to chat history
-        chat_prompt.append({
-            "role": "assistant",
-            "content": [
-                {
-                    "type": "text",
-                    "text": assistant_text
-                }
-            ]
-        })
+            print(resp)
+
+        chat_prompt += recogpt.prompt_bot(resp)
     except Exception as e:
         print(f"Error: {e}")

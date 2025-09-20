@@ -62,21 +62,21 @@ def _make_prompt_ele(role, ctype, content):
     return [ {"role": role, "content": [{"type": ctype, ctype: content}]} ]
 def prompt_init_default():
     return _make_prompt_ele("system", "text", "You are an AI assistant that helps people. Sometimes user want short daily conversation, sometimes user need detailed explain, sometimes you must think against user to give useful insights. For complex discussion, your context is limited. So please act like a human and don't unnecessarily say too much.")
-def prompt_append_user(prompt, text):
-    return prompt + _make_prompt_ele("user", "text", text)
-def prompt_append_bot(prompt, text):
-    return prompt + _make_prompt_ele("assistant", "text", text)
-def prompt_append_user_img(prompt, url):
+def prompt_user(text):
+    return _make_prompt_ele("user", "text", text)
+def prompt_bot(text):
+    return _make_prompt_ele("assistant", "text", text)
+def prompt_user_img(url):
     # Example url:
     # http://example.com/hello.jpg
     # https://google.com/meal.png
     # data:image/jpeg;base64,Ug4NDU4LzU5MjgyNV9wcmV2aWV3LmpwZxwA7J3QAAAACVBM...
-    return prompt + _make_prompt_ele2("user", "image_url", url)
+    return _make_prompt_ele("user", "image_url", url)
 
-def complete(prompt):
+def complete(impl, prompt):
     completion = impl['client'].chat.completions.create(
         model=impl['model'],
-        messages=chat_prompt,
+        messages=prompt,
         max_tokens=16000,
         stream=False,
         **impl['extra_args']
