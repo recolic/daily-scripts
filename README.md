@@ -23,11 +23,14 @@ rsec, rsec_export: simple, minimal but very reliable secret management. Allow ex
 rgpg-river: simple, minimal AES encrypt/decrypt tool for both PHP and shell. (PHP version here: TODO)
 rgpg-vim: edit gpg-encrypted file like normal text
 
+rrdp: all-in-one naive RDP conn manager, similar to .ssh/config
+
 proxy.fish: TODO WIP
 rsec... rgpg... : TODO WIP
 proxychains...
 
 ban-xunlei-d.sh: qbittorrent blacklist basing on regex. built-in rule for xunlei.
+virtualtype.py: simulate keyboard to type a string
 
 ## others
 convert-fq-to-cram.sh
