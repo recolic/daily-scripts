@@ -60,8 +60,8 @@ def cache(content, ext = "md"):
 
 def _make_prompt_ele(role, ctype, content):
     return [ {"role": role, "content": [{"type": ctype, ctype: content}]} ]
-def prompt_init_default():
-    return _make_prompt_ele("system", "text", "You are an AI assistant that helps people. Sometimes user want short daily conversation, sometimes user need detailed explain, sometimes you must think against user to give useful insights. For complex discussion, your context is limited. So please act like a human and don't unnecessarily say too much.")
+def prompt_system(text):
+    return _make_prompt_ele("system", "text", text)
 def prompt_user(text):
     return _make_prompt_ele("user", "text", text)
 def prompt_bot(text):
@@ -72,6 +72,9 @@ def prompt_user_img(url):
     # https://google.com/meal.png
     # data:image/jpeg;base64,Ug4NDU4LzU5MjgyNV9wcmV2aWV3LmpwZxwA7J3QAAAACVBM...
     return _make_prompt_ele("user", "image_url", url)
+def prompt_init_default():
+    return prompt_system("You are an AI assistant that helps people. Sometimes user want short daily conversation, sometimes user need detailed explain, sometimes you must think against user to give useful insights. For complex discussion, your context is limited. So please act like a human and don't unnecessarily say too much.")
+
 
 def complete(impl, prompt):
     completion = impl['client'].chat.completions.create(

@@ -1,72 +1,24 @@
 #!/usr/bin/python3 -u
 import sys, os, json, tempfile, time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from openai import AzureOpenAI
-def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
+import lib.recogpt as recogpt
 
-# Azure/OpenAI parameters
-# endpoint         = rsec("Az_OpenAI_API")
-# deployment       = "gpt-4.1"
-# subscription_key = rsec("Az_OpenAI_KEY")
-endpoint         = rsec("Az_OpenAI_API5")
-deployment       = "gpt-5-mini"
-subscription_key = rsec("Az_OpenAI_KEY5")
+impl = recogpt.impl_load("gpt5")
 COST_1M = 0.25
 
-client = AzureOpenAI(
-    azure_endpoint=endpoint,
-    api_key=subscription_key,
-    api_version="2025-01-01-preview",
-)
+def run_gpt(system_text, user_text):
+    chat_prompt = recogpt.prompt_system(system_text) + recogpt.prompt_user(user_text)
+    while True: # Retry loop
+        try:
+            return recogpt.complete(impl, chat_prompt)
+        except Exception as e:
+            print(f"sleep 30s before retry... ({e})")
+            time.sleep(30)
 
 # ===== CONSTANTS =====
 TXT_CHUNK_SIZE = 100000 # Bytes in every MAP chunk. Max ~400000 for GPT-5
 TMPDIR = "/tmp/gpt-map-reduce.stat"
 MAP_THREADS = 12
-
-def run_gpt(system_text, user_text):
-    chat_prompt = [
-        {
-            "role": "system",
-            "content": [
-                {"type": "text", "text": system_text}
-            ]
-        },
-        {
-            "role": "user",
-            "content": [
-                {"type": "text", "text": user_text}
-            ]
-        }
-    ]
-    while True: # Retry loop
-        try:
-            completion = client.chat.completions.create(
-                model=deployment,
-                messages=chat_prompt,
-                # max_tokens=16384,
-                max_completion_tokens=16000,
-                temperature=1,
-                top_p=1,
-                frequency_penalty=0,
-                presence_penalty=0,
-                stop=None,
-                stream=False
-            )
-            break  # success → exit loop
-        except Exception as e:
-            print(f"sleep 30s before retry... ({e})")
-            time.sleep(30)
-    assistant_text = ""
-    if hasattr(completion.choices[0].message, "content"):
-        for chunk in completion.choices[0].message.content:
-            if isinstance(chunk, dict) and chunk.get("type") == "text":
-                assistant_text += chunk.get("text", "")
-            elif isinstance(chunk, str):
-                assistant_text += chunk
-    else:
-        assistant_text = str(completion)
-    return assistant_text
 
 # ===== Main entry =====
 if len(sys.argv) != 4:
