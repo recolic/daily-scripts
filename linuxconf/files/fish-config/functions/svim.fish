@@ -1,6 +1,6 @@
 function _is_gpg_vault
     set fname $argv[1]
-    if file $fname | grep "PGP message Public-Key Encrypted" > /dev/null; then
+    if file $fname | grep "PGP message Public-Key Encrypted" > /dev/null
         return 0 # Yes
     end 
     if file $fname | grep 'data$' > /dev/null

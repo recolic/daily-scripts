@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import json, sys
+import json, sys, os
 import lib.recogpt as recogpt
 
 if len(sys.argv) < 2:
@@ -31,7 +31,7 @@ def get_multiline_input():
             fname = recogpt.cache(json.dumps(chat_prompt, indent=2), "json")
             print(f"<< gpt.py << Saved history to {fname}")
         elif line.startswith(".l "):
-            chat_prompt = json.loads(open(line[3:].strip()).read())
+            chat_prompt = json.loads(open(os.path.expanduser(line[3:].strip())).read())
             print("<< gpt.py << Replaced history with external save")
         elif line.startswith(".f "):
             text += open(line[3:].strip()).read() + '\n'
