@@ -19,3 +19,4 @@ lc_startup () {
     lc_bgrun /tmp/cron.log  every 1m  env svm_workdir=/extradisk/simple-vm-manager/data bash files/mspc-simple-vmm/cron-callback.sh
     lc_bgrun /tmp/cron.log  every 5m  curl "https://recolic.net/api/echo.php?mspc-keepalive"
 }
+# additional secrets: $(rsec MSID) $(rsec MSPASS)
