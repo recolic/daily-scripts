@@ -71,7 +71,7 @@ def prompt_user_img(url):
     # http://example.com/hello.jpg
     # https://google.com/meal.png
     # data:image/jpeg;base64,Ug4NDU4LzU5MjgyNV9wcmV2aWV3LmpwZxwA7J3QAAAACVBM...
-    return _make_prompt_ele("user", "image_url", url)
+    return _make_prompt_ele("user", "image_url", {"url": url})
 def prompt_init_default():
     return prompt_system("You are an AI assistant that helps people. Sometimes user want short daily conversation, sometimes user need detailed explain, sometimes you must think against user to give useful insights. For complex discussion, your context is limited. So please act like a human and don't unnecessarily say too much.")
 
