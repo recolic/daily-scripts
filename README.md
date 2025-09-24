@@ -1,6 +1,8 @@
 # recolic daily scripts
 
-Daily scripts written by recolic. All scripts here are **minimum**, **super easy to deploy**, **no configuration / installation required**. All PHP scripts are just **download and enjoy**.
+Daily scripts written by recolic, only in bash/fish/python. (Server side script: bash/php only)
+
+All scripts here are **simple and minimum**, **little dependency**, **no configuration / installation required**. Just **download and enjoy**.
 
 ## TOC for useful scripts
 
