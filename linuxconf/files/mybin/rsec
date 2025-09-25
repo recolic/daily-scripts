@@ -6,7 +6,7 @@
 # Usage in python: 
 # def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
 # Usage in php:
-# function rsec($k) { return trim( ($o = shell_exec('rsec ' . escapeshellarg($k))) ? $o : die("rsec failed") ); }
+# function rsec($k) { return trim( ($o = shell_exec("RSEC_ENC_DB_ALT=".$_SERVER['DOCUMENT_ROOT']."/.config/rsec.db rsec ".escapeshellarg($k))) ? $o : die("rsec failed") ); }
 
 function die () { echo "RSEC error:" "$@" 1>&2 ; exit 1 ;  }
 
