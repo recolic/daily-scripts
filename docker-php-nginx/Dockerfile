@@ -21,6 +21,10 @@ RUN sed -i 's/^post_max_size.*$/post_max_size = 16M/' /etc/php/7.4/fpm/php.ini
 RUN grep -q '^upload_max_filesize' /etc/php/7.4/fpm/php.ini
 RUN grep -q '^post_max_size' /etc/php/7.4/fpm/php.ini
 
+# optional: bake rsec into image for recolic.net
+COPY rsec_minimal.sh /usr/bin/rsec
+RUN chmod +x /usr/bin/rsec
+
 COPY entry.sh /
 VOLUME /var/www/html
 
