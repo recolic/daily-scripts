@@ -10,7 +10,7 @@ All scripts here are **simple and minimum**, **little dependency**, **no configu
 
 |Filename|Description|
 |--------|-----------|
-|=>|**linuxconf/files/mybin**|
+||**linuxconf/files/mybin**: [link](linuxconf/files/mybin)|
 |decomp\*|decompress any archive in one command|
 |pgkill\*|ps-grep-kill. Easiest way to kill linux process for vim user.|
 |qu\*|one-click upload file to HTTP server (PHP simple server side: http://TODO)|
