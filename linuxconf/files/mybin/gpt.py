@@ -36,10 +36,10 @@ def get_multiline_input():
         elif line.startswith(".f "):
             text += open(line[3:].strip()).read() + '\n'
         elif line.startswith(".i "):
-            if line[3:].strip().startswith("http") and "gpt" in impl["model"]:
-                chat_prompt += recogpt.prompt_user_img(line[3:].strip())
+            if line[3:].strip().startswith("http") and "gpt" not in impl["model"]:
+                print("<< gpt.py << Rejected. HTTP/HTTPS URL is only for OpenAI model")
             else:
-                print("<< gpt.py << Rejected. HTTP/HTTPS URL expected + only OpenAI model supported")
+                chat_prompt += recogpt.prompt_user_img(line[3:].strip())
         else:
             text += line + '\n'
     print(T_BLUEB + "<< Bot <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" + T_CLR) 
@@ -50,6 +50,7 @@ def get_multiline_input():
 print("..                   (send your message)")
 print(".f path/to/file.txt  (import text file)")
 print(".i http://com/x.jpg  (attach image url)")
+print(".i path/to/pic.png   (attach image file)")
 print(".s                   (save this chat)")
 print(".l path/to/chat.json (load previous chat)")
 print("model:", impl['model'])

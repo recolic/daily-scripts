@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import time, os
+import time, os, base64, warnings
 from openai import OpenAI, AzureOpenAI
 def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
 
@@ -58,8 +58,12 @@ def cache(content, ext = "md"):
     with open(fn, 'w') as f: f.write(content)
     return fn
 
+def _make_b64_image_url(localpath):
+    with open(localpath, "rb") as image_file:
+        return "data:image/jpeg;base64," + base64.b64encode(image_file.read()).decode('utf-8')
 def _make_prompt_ele(role, ctype, content):
     return [ {"role": role, "content": [{"type": ctype, ctype: content}]} ]
+
 def prompt_system(text):
     return _make_prompt_ele("system", "text", text)
 def prompt_user(text):
@@ -71,6 +75,11 @@ def prompt_user_img(url):
     # http://example.com/hello.jpg
     # https://google.com/meal.png
     # data:image/jpeg;base64,Ug4NDU4LzU5MjgyNV9wcmV2aWV3LmpwZxwA7J3QAAAACVBM...
+    # ./path/to/picture.png
+    if url.startswith("http"):
+        warnings.warn("http/https image url is not supported by Gemini.")
+    elif not url.startswith("data:"):
+        url = _make_b64_image_url(url)
     return _make_prompt_ele("user", "image_url", {"url": url})
 def prompt_init_default():
     return prompt_system("You are an AI assistant that helps people. Sometimes user want short daily conversation, sometimes user need detailed explain, sometimes you must think against user to give useful insights. For complex discussion, your context is limited. So please act like a human and don't unnecessarily say too much.")
