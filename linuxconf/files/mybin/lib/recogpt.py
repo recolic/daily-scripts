@@ -59,8 +59,10 @@ def cache(content, ext = "md"):
     return fn
 
 def _make_b64_image_url(localpath):
+    ext = os.path.splitext(localpath)[1:].lower()
+    ext = ext if ext in ['png', 'jpeg', 'webp', 'heic', 'heif'] else 'jpeg'
     with open(localpath, "rb") as image_file:
-        return "data:image/jpeg;base64," + base64.b64encode(image_file.read()).decode('utf-8')
+        return f"data:image/{ext};base64," + base64.b64encode(image_file.read()).decode('utf-8')
 def _make_prompt_ele(role, ctype, content):
     return [ {"role": role, "content": [{"type": ctype, ctype: content}]} ]
 
