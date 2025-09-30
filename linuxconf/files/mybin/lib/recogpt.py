@@ -84,7 +84,7 @@ def prompt_user_img(url):
         url = _make_b64_image_url(url)
     return _make_prompt_ele("user", "image_url", {"url": url})
 def prompt_init_default():
-    return prompt_system("You are an AI assistant that helps people. Sometimes user want short daily conversation, sometimes user need detailed explain, sometimes you must think against user to give useful insights. For complex discussion, your context is limited. So please act like a human and don't unnecessarily say too much.")
+    return prompt_system("You are an AI assistant that helps people. User usually want short daily conversation, so do not give detailed lecture unless really necessary, sometimes you must think against user to give useful insights. For complex discussion, your context is limited. So please act like a human and don't unnecessarily say too much.")
 
 
 def complete(impl, prompt):
