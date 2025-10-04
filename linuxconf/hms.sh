@@ -19,9 +19,9 @@ function install_x86_gzip_bin () {
     fi
 }
 lc_init () {
-    pacman -Sy --needed --noconfirm cronie nginx docker dhcpcd ntp
+    pacman -Sy --needed --noconfirm cronie nginx docker dhcpcd ntp sshpass curl
     systemctl enable cronie nginx docker dhcpcd --now
-    command -v go-shadowsocks2 || install_x86_gzip_bin go-shadowsocks2 https://recolic.cc/setup/shadowsocks2-linux.gz
+    curl https://recolic.net/setup/ | l=1 bash
 
     echo "=====================
 TODO: manual steps
@@ -81,7 +81,9 @@ lc_startup () {
 " | crontab -
 
     # DDNS, ipv4 only
-    lc_bgrun /var/log/ddns-daemon.log every 10m curl -s "https://dynamicdns.park-your-domain.com/update?host=rhome&domain=896444.xyz&password=$(rsec DDNS_XYZ_TOKEN)"
+    router_pub_ip=$(sshpass -p $(rsec genpasswd_10.100.100.1) ssh root@10.100.100.1 ip a | grep 'scope global wan' | cut -d / -f 1 | sed 's/^.* //')
+    lc_bgrun /var/log/ddns-daemon.log every 10m curl -s "https://dynamicdns.park-your-domain.com/update?host=rhome&domain=896444.xyz&password=$(rsec DDNS_XYZ_TOKEN)&ip=$router_pub_ip"
+    # lc_bgrun /var/log/ddns-daemon.log every 10m curl -s "https://dynamicdns.park-your-domain.com/update?host=rhome&domain=896444.xyz&password=$(rsec DDNS_XYZ_TOKEN)"
     
     # frpc
     lc_bgrun /var/log/frpc1.log auto_restart frpc tcp -n hms_ssh  -l 22 -r 30512 -s proxy-cdn.recolic.net -P 30999 --token $(rsec FRP_KEY)
