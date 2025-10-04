@@ -81,8 +81,7 @@ lc_startup () {
 " | crontab -
 
     # DDNS, ipv4 only
-    router_pub_ip=$(sshpass -p $(rsec genpasswd_10.100.100.1) ssh root@10.100.100.1 ip a | grep 'scope global wan' | cut -d / -f 1 | sed 's/^.* //')
-    lc_bgrun /var/log/ddns-daemon.log every 10m curl -s "https://dynamicdns.park-your-domain.com/update?host=rhome&domain=896444.xyz&password=$(rsec DDNS_XYZ_TOKEN)&ip=$router_pub_ip"
+    lc_bgrun /var/log/ddns-daemon.log every 10m bash hms/ddns_once.sh
     # lc_bgrun /var/log/ddns-daemon.log every 10m curl -s "https://dynamicdns.park-your-domain.com/update?host=rhome&domain=896444.xyz&password=$(rsec DDNS_XYZ_TOKEN)"
     
     # frpc
