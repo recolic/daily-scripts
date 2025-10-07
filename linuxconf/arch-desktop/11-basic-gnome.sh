@@ -15,7 +15,7 @@ lc_init () {
 
     pacman -Sy --needed --noconfirm gnome networkmanager power-profiles-daemon nextcloud-client firefox
     systemctl enable gdm NetworkManager power-profiles-daemon
-    pacman -Sy --needed --noconfirm base-devel telegram-desktop docker shadowsocks-rust dos2unix v2ray proxychains xclip adobe-source-han-sans-cn-fonts      pcsclite ccid     ttf-fira-code  nfs-utils python-pip gnome-tweaks fcitx5-im man-db man-pages  kolourpaint breeze
+    pacman -Sy --needed --noconfirm base-devel telegram-desktop docker shadowsocks-rust dos2unix v2ray proxychains xclip adobe-source-han-sans-cn-fonts      pcsclite ccid     ttf-fira-code  nfs-utils python-pip gnome-tweaks fcitx5-im man-db man-pages  kolourpaint breeze xorg-xrandr
     systemctl enable bluetooth pcscd
 
     #For GPG smartcard# sudo apt install pcscd scdaemon gnupg2 pcsc-tools -y

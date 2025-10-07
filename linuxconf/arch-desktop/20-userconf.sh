@@ -21,6 +21,7 @@ gpg-connect-agent reloadagent /bye
 #set -g GPG_TTY (tty)
 #gpg-connect-agent updatestartuptty /bye
 
+# TODO: this only works inside gnome
 echo "========= gnome desktop config"
 gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type nothing
 gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type nothing

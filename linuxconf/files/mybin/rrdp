@@ -113,6 +113,10 @@ else
     else
         # echo "EXEC: $rdp -disable-grab-keyboard -disable-toggle-fullscreen --auth-pkg-list !kerberos -w $w -h $h -drive htmp,$HOME/tmp $ext_opt -u $user -p $pass -v $host -timeout 100000"
         # $rdp -disable-grab-keyboard -disable-toggle-fullscreen --auth-pkg-list !kerberos -w $w -h $h -drive htmp,$HOME/tmp $ext_opt -u $user -p $pass -v $host -timeout 100000
+        if test -f /etc/krb5.conf
+            echo "ERROR: /etc/krb5.conf exists. Known bug: it will hang freerdp. You must delete this file!"
+            exit 1
+        end
         echo "EXEC: $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos /w:$w /h:$h /drive:htmp,$HOME/tmp $ext_opt /u:$user /p:$pass /v:$host /timeout:100000"
         $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos /w:$w /h:$h /drive:htmp,$HOME/tmp $ext_opt /u:$user /p:$pass /v:$host /timeout:100000
     end
