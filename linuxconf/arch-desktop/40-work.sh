@@ -52,7 +52,7 @@ MimeType=text/html;text/xml;application/xhtml_xml;image/webp;x-scheme-handler/ht
     sudo systemctl enable systemd-resolved # for azure-vpn
 
     echo "*** Manual steps
-    yay -S --noconfirm aur/microsoft-azure-vpn-client-bin aur/microsoft-edge-beta-bin aur/globalprotect-openconnect-git azure-cli clion clion-jre
+    yay -S --noconfirm aur/microsoft-azure-vpn-client-bin aur/microsoft-edge-stable-bin aur/globalprotect-openconnect-git azure-cli clion clion-jre
     # manual: setup microsoft intune
 "
 }
