@@ -1,5 +1,14 @@
 function mslab-tunnel
-    sshpass -p (rsec MSPASS) ssh -D 10809 -Nf (rsec MSID)@jb3.backup2.m.recolic
+    set start (date +%s)
+    while true
+        set now (date +%s)
+        if test (math "$now - $start") -gt 7200
+            break
+        end
+        echo (date) "reconnecting..."
+        sshpass -p (rsec MSPASS) ssh -D 10809 -Nn (rsec MSID)@jb3.backup2.m.recolic
+        sleep 1
+    end
 end
 # backup
 # function mslab-tunnel
