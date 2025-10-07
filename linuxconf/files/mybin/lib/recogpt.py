@@ -59,7 +59,7 @@ def cache(content, ext = "md"):
     return fn
 
 def _make_b64_image_url(localpath):
-    ext = os.path.splitext(localpath)[1:].lower()
+    ext = os.path.splitext(localpath)[1].lower()
     ext = ext if ext in ['png', 'jpeg', 'webp', 'heic', 'heif'] else 'jpeg'
     with open(localpath, "rb") as image_file:
         return f"data:image/{ext};base64," + base64.b64encode(image_file.read()).decode('utf-8')

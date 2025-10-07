@@ -69,7 +69,7 @@ else if test -f $possible_path
 else if string match -q "*.recolic" -- "$node"
     echo "Using ssh proxy $node..."
     while true
-        ssh -o ServerAliveInterval=1 -o ServerAliveCountMax=5 -D $port -N -C $node
+        ssh -o ServerAliveInterval=1 -o ServerAliveCountMax=3 -D $port -N -C $node
         sleep 0.5 ; or exit # Allow ctrl-C
     end
 else
