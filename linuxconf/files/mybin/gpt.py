@@ -3,7 +3,7 @@ import json, sys, os
 import lib.recogpt as recogpt
 
 if len(sys.argv) < 2:
-    alias = 'flash'
+    alias = 'gpt5'
     print("Available config:", recogpt.impl_list())
 else:
     alias = sys.argv[1]

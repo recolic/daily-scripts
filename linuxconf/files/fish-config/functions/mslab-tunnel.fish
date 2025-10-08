@@ -1,26 +1,9 @@
 function mslab-tunnel
-    set start (date +%s)
-    while true
-        set now (date +%s)
-        if test (math "$now - $start") -gt 7200
-            break
-        end
-        echo (date) "reconnecting..."
+    if test (count $argv) != 0 ; and test $argv[1] = of
+        echo "old fashioned tunnel..."
+        ssh -L 127.0.0.1:10803:127.0.0.1:30002 -Nn ms.recolic
+    else
+        echo "tunnel..."
         sshpass -p (rsec MSPASS) ssh -D 10809 -Nn (rsec MSID)@jb3.backup2.m.recolic
-        sleep 1
     end
 end
-# backup
-# function mslab-tunnel
-#     if test (count $argv) != 0 ; and test $argv[1] = b
-#         ssh -L 30627:127.0.0.1:30627 -Nf msbackup.recolic
-#     else
-#         ssh -L 30627:127.0.0.1:30627 -Nf ms.recolic
-#     end
-# 
-#     string match "*"(rsec LABJUMP_SS_KEY)"*" (ps aux)
-#     or begin
-#         # only shadowsocks-rust allowed
-#         nohup sslocal -s 127.0.0.1:30627 -k (rsec LABJUMP_SS_KEY) -b 127.0.0.1:10809 -m chacha20-ietf-poly1305 >/tmp/.ss.log 2>&1 & disown
-#     end
-# end
