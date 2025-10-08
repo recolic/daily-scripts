@@ -80,7 +80,7 @@ lc_startup () {
 8 0 * * *  $(pwd)/hms/cron_snapshot_zfs.fish daily
 " | crontab -
 
-    # DDNS, ipv4 only
+    # DDNS, ipv4 only. (rsec genpasswd_10.100.100.1)
     lc_bgrun /var/log/ddns-daemon.log every 10m bash hms/ddns_once.sh
     # lc_bgrun /var/log/ddns-daemon.log every 10m curl -s "https://dynamicdns.park-your-domain.com/update?host=rhome&domain=896444.xyz&password=$(rsec DDNS_XYZ_TOKEN)"
     
