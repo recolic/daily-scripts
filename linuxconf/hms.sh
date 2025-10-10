@@ -58,6 +58,8 @@ TODO: manual steps
 # recolic.net/s/notebook
 # with password: (genpasswd random.asd9vjd)
 
+## fancontrol: use saved config
+
 #######################
 # all service require the storage disk:
 # KVM and webvirtmgr; btsync; nfs; nginx
