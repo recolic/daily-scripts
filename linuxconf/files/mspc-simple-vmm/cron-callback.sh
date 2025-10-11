@@ -2,7 +2,7 @@
 
 # You may change this directory
 svm_workdir="${svm_workdir:-./data}"
-ver=1.0.62
+ver=1.0.63
 
 _self_bin_name="$0"
 function where_is_him () {
@@ -53,12 +53,23 @@ function download_cloud_img_if_not_exist () {
     [[ -f "base/$cloudimg" ]] && return
 
     declare -A knowledge
+    # old naming, deprecated
     knowledge["focal-server-cloudimg-amd64.img"]=https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
-    knowledge["ubuntu-18.04-server-cloudimg-amd64.img"]=https://cloud-images.ubuntu.com/releases/18.04/release/ubuntu-18.04-server-cloudimg-amd64.img
     knowledge["ubuntu-22.04-server-cloudimg-amd64.img"]=https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img
     knowledge["ubuntu-24.04-server-cloudimg-amd64.img"]=https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-amd64.img
-    knowledge["ubuntu-24.04-server-cloudimg-arm64.img"]=https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-arm64.img
     knowledge["Arch-Linux-x86_64-cloudimg.qcow2"]=https://geo.mirror.pkgbuild.com/images/latest/Arch-Linux-x86_64-cloudimg.qcow2
+    # new naming
+    knowledge["ubuntu-18.04-server.img"]=https://cloud-images.ubuntu.com/releases/18.04/release/ubuntu-18.04-server-cloudimg-amd64.img
+    knowledge["ubuntu-20.04-server.img"]=https://cloud-images.ubuntu.com/releases/20.04/release/ubuntu-20.04-server-cloudimg-amd64.img
+    knowledge["ubuntu-22.04-server.img"]=https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img
+    knowledge["ubuntu-24.04-server.img"]=https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-amd64.img
+    knowledge["ubuntu-24.04-server-arm64.img"]=https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-arm64.img
+    knowledge["debian-10.img"]=https://cloud.debian.org/images/cloud/buster/latest/debian-10-genericcloud-amd64.qcow2
+    knowledge["debian-11.img"]=https://cloud.debian.org/images/cloud/bullseye/latest/debian-11-genericcloud-amd64.qcow2
+    knowledge["debian-12.img"]=https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2
+    knowledge["debian-12-arm64.img"]=https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-arm64.qcow2
+    knowledge["archlinux.img"]=https://geo.mirror.pkgbuild.com/images/latest/Arch-Linux-x86_64-cloudimg.qcow2
+    # windows baseimg, username r, password 1
     knowledge["win10pro-22h2-virtio-uefi.qcow2"]=https://recolic.net/hms.php?/systems/win10pro-22h2-virtio-uefi.qcow2
     knowledge["win10-tiny10-virtio-uefi.qcow2"]=https://recolic.net/hms.php?/systems/win10-tiny10-virtio-uefi.qcow2
     [ ! "${knowledge[$cloudimg]+abc}" ] && echo2 "Unknown cloudimg $cloudimg. cannot download it." && return 1
@@ -83,8 +94,7 @@ function create_vm_if_not_exist () {
 
     # Check if disk img already exists.
     [[ -f "vm/$name/disk.img" ]] && return
-
-    rm -rf "vm/$name" ; mkdir -p "vm/$name"
+    [[ -e "vm/$name" ]] && mv "vm/$name" "vm/$name.backup_$RANDOM" ; mkdir -p "vm/$name"
 
     echo2 "+ Creating VM image $name with options $@..."
     if [ "$disk" != "" ]; then
