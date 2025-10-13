@@ -45,6 +45,8 @@ gsettings set org.gnome.desktop.wm.keybindings switch-windows-backward "['<Prima
 gsettings set org.gnome.desktop.wm.keybindings switch-applications "['<Super>Tab', '<Alt>Tab']"
 gsettings set org.gnome.desktop.wm.keybindings switch-applications-backward "['<Shift><Super>Tab', '<Shift><Alt>Tab']"
 gsettings set org.gnome.desktop.interface clock-format '24h'
+# gnome 49 bugfix
+gsettings set org.gnome.mutter locate-pointer-key Control_R
 # gsettings set org.gnome.settings-daemon.plugins.media-keys window-screenshot-clip "['disabled']"
 # gsettings set org.gnome.settings-daemon.plugins.media-keys area-screenshot-clip "['<Primary>Print']"
 # gsettings set org.gnome.settings-daemon.plugins.media-keys window-screenshot "['disabled']"
