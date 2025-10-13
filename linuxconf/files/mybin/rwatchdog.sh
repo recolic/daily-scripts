@@ -173,7 +173,7 @@ else
 fi
 
 if [[ "$op" != "daemon" ]]; then
-    ps aux | grep 'rwatchdog.sh [d]aemon' || ! echo "ERROR: rwatchdog daemon is not running."
+    ps aux | grep 'rwatchdog.sh [d]aemon' || ! echo -e "\033[1;31m ERROR\nERROR\nERROR: rwatchdog daemon is not running. \033[0m"
     exit $?
 fi
 
