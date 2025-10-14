@@ -22,6 +22,9 @@ Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Force -Scope   CurrentUser
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Force -Scope  LocalMachine
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Force
 
+# note: for win11
+reg add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f
+
 # Good. Now we can begin fucking windows. 
 Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
 netsh advfirewall set allprofiles state off
