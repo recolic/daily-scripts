@@ -17,6 +17,7 @@ end
 set targets "
 NAME        |USERNAME     |PASSWORD                   |HOSTNAME
 msdev       |recolic      |sh://rsec DEVBOX           |mspc.m.recolic:30474
+msdev2      |fareast\bensl|sh://rsec MSPASS           |mspc.m.recolic:30474
 msdev-backup|recolic      |sh://rsec DEVBOX           |mspc.wlo.m.recolic:30474
 msdev-rp    |recolic      |sh://rsec DEVBOX           |proxy-cdn.recolic.net:30623
 labjump     |fareast\bensl|sh://rsec MSPASS           |jb3.team1.m.recolic
@@ -95,14 +96,18 @@ else
     if string match '*win7*' $target
         set rdp rdesktop
     end
+
     set -l ext_opt
     if test -d $HOME/nfs/tmp
         if test $rdp = rdesktop
             set ext_opt -r disk:ntmp=$HOME/nfs/tmp
         else
-            # set ext_opt -drive ntmp,$HOME/nfs/tmp
             set ext_opt /drive:ntmp,$HOME/nfs/tmp
         end
+    end
+    if echo "$user" | grep -F \\ > /dev/null; and string match -q "*freerdp*" -- $rdp
+        # disable NLA to avoid bug
+        set ext_opt $ext_opt /sec:tls
     end
     
     if test $rdp = rdesktop
