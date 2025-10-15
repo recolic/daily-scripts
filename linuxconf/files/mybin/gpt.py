@@ -63,12 +63,19 @@ while True:
 
     try:
         resp = recogpt.complete(impl, chat_prompt)
-
-        if resp.count('\n') > 100:
-            print(f"(Response longer than 100 lines. Saved to {recogpt.cache(resp)})")
-        else:
-            print(resp)
-
-        chat_prompt += recogpt.prompt_bot(resp)
     except Exception as e:
         print(f"Error: {e}")
+        if "The response was filtered due to the prompt triggering Azure OpenAI" in str(e) and "gpt" in alias:
+            print("Triggered fucking azure filter. Loading backup model...")
+            impl2 = recogpt.impl_load("pro")
+            resp = recogpt.complete(impl2, chat_prompt)
+        else:
+            continue
+
+    if resp.count('\n') > 100:
+        print(f"(Response longer than 100 lines. Saved to {recogpt.cache(resp)})")
+    else:
+        print(resp)
+
+    chat_prompt += recogpt.prompt_bot(resp)
+

@@ -93,9 +93,9 @@ else
         die "Unknown XDG_SESSION_TYPE $XDG_SESSION_TYPE"
     end
     
-    if string match '*win7*' $target
-        set rdp rdesktop
-    end
+    # set rdp rdesktop
+    # set ext_opt $ext_opt /sec:tls
+    # set ext_opt $ext_opt /sec:ssl
 
     set -l ext_opt
     if test -d $HOME/nfs/tmp
@@ -107,7 +107,7 @@ else
     end
     if echo "$user" | grep -F \\ > /dev/null; and string match -q "*freerdp*" -- $rdp
         # disable NLA to avoid bug
-        set ext_opt $ext_opt /sec:tls
+        # set ext_opt $ext_opt /sec:tls
     end
     
     if test $rdp = rdesktop
