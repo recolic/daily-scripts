@@ -22,8 +22,10 @@ Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Force -Scope   CurrentUser
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Force -Scope  LocalMachine
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Force
 
-# note: for win11
+# note: for win11 right-click menu
 reg add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f
+# note: for devbox RDP
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" /v PortNumber /t REG_DWORD /d 3390 /f
 
 # Good. Now we can begin fucking windows. 
 Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False

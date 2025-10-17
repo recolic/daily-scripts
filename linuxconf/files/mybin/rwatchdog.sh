@@ -95,7 +95,16 @@ function low_battery_check_cron () {
 function time_check_cron () {
     echo $FUNCNAME
     
-    # TODO: check if timezone is PST, check if time is synced
+    # TODO: check if time is synced
+    if [[ $(date +%z) != -0700 ]] && [[ $(date +%z) != -0800 ]]; then
+        return 1 # invalid tz
+    fi
+
+    # auto sign off
+    if [[ $(date +%H) = 19 ]]; then
+        echo "++ auto signoff"
+        mode=nonwork
+    fi
     return 0 # good
 }
 
