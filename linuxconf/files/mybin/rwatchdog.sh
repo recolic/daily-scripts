@@ -97,7 +97,8 @@ function time_check_cron () {
     
     # TODO: check if time is synced
     if [[ $(date +%z) != -0700 ]] && [[ $(date +%z) != -0800 ]]; then
-        return 1 # invalid tz
+        _err="invalid tz"
+        return 1
     fi
 
     # auto sign off
@@ -199,17 +200,18 @@ while true; do
     check_ctl_msg
 
     pid_check_cron
+    time_check_cron
     river_cloudalarm_cron  ; cloudalarm=$?
     low_battery_check_cron ; bat=$?
-    time_check_cron        ; bad_time=$?
     conscious_check_cron   ; too_idle=$?
 
     ################# All Alarm Policy ###################
+    _sticky=1
     if [[ "$mode" = "work" ]]; then
-        [[ $bat -lt 30 ]] && _alarm soft "battery lower than 30"
+        [[ $bat -lt 30 ]] && _alarm soft "battery lower than 30" && _sticky=0
         [[ $too_idle = 1 ]] && _alarm "soft 7" "you have been idle for too long"
     fi
-    [[ $bat -lt 7 ]] && _alarm soft "battery lower than 7"
+    [[ $bat -lt 7 ]] && _alarm soft "battery lower than 7" && _sticky=0
     [[ $cloudalarm = 1 ]] && _alarm "soft 3" "river cloudalarm notification"
     [[ "$_err" != "" ]] && _alarm soft "Script Error: $_err"
 
@@ -220,6 +222,7 @@ while true; do
             alarm_state=office
         fi
         play_alarm_once
+        [ $_sticky = 0 ] && break
         sleep 8
         check_ctl_msg
     done
