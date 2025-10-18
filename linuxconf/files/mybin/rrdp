@@ -15,23 +15,23 @@ if test -z $target
 end
 
 set targets "
-NAME        |USERNAME     |PASSWORD                   |HOSTNAME
-msdev       |recolic      |sh://genpasswd devbox -S   |mspc.m.recolic:30474
-msdev2      |fareast\bensl|sh://rsec MSPASS           |mspc.m.recolic:30474
-msdev-backup|recolic      |sh://genpasswd devbox -S   |mspc.wlo.m.recolic:30474
-msdev-rp    |recolic      |sh://genpasswd devbox -S   |proxy-cdn.recolic.net:30623
-labjump     |fareast\bensl|sh://rsec MSPASS           |jb3.team1.m.recolic
-labjum2     |fareast\bensl|sh://rsec MSPASS           |jb1.team6.m.recolic
-lanbox      |recolic      |sh://genpasswd lanbox      |10.100.100.101:30473
-cnbox       |recolic      |sh://genpasswd cnbox       |mspc.m.recolic:30476
-host16      |Administrator|sh://rsec OVL_HOST_RDP     |host.blade16.m.recolic
-host18      |Administrator|sh://rsec OVL_HOST_RDP     |host.blade18.m.recolic
-host32      |Administrator|sh://rsec OVL_HOST_RDP     |host.blade32.m.recolic
-host33      |Administrator|sh://rsec OVL_HOST_RDP     |host.blade33.m.recolic
-hosto3t1    |Administrator|sh://rsec OVL_HOST_RDP     |host.o3r19s1.m.recolic
-hosto3t2    |Administrator|sh://rsec OVL_HOST_RDP     |host.o3r19s2.m.recolic
-tmpvsbox    |recolic      |sh://rsec WEAK10           |localhost:30477
-@openwrt    |root         |sh://genpasswd 10.100.100.1|10.100.100.1
+NAME        |USERNAME     |PASSWORD                |HOSTNAME
+msdev       |recolic      |(genpasswd devbox -S   )|mspc.m.recolic:30474
+msdev2      |(rsec MSIDw )|(rsec MSPASS           )|mspc.m.recolic:30474
+msdev-backup|recolic      |(genpasswd devbox -S   )|mspc.wlo.m.recolic:30474
+msdev-rp    |recolic      |(genpasswd devbox -S   )|proxy-cdn.recolic.net:30623
+labjump     |(rsec MSIDw )|(rsec MSPASS           )|jb3.team1.m.recolic
+labjum2     |(rsec MSIDw )|(rsec MSPASS           )|jb1.team6.m.recolic
+lanbox      |recolic      |(genpasswd lanbox      )|10.100.100.101:30473
+cnbox       |recolic      |(genpasswd cnbox       )|mspc.m.recolic:30476
+host16      |Administrator|(rsec OVL_HOST_RDP     )|host.blade16.m.recolic
+host18      |Administrator|(rsec OVL_HOST_RDP     )|host.blade18.m.recolic
+host32      |Administrator|(rsec OVL_HOST_RDP     )|host.blade32.m.recolic
+host33      |Administrator|(rsec OVL_HOST_RDP     )|host.blade33.m.recolic
+hosto3t1    |Administrator|(rsec OVL_HOST_RDP     )|host.o3r19s1.m.recolic
+hosto3t2    |Administrator|(rsec OVL_HOST_RDP     )|host.o3r19s2.m.recolic
+tmpvsbox    |recolic      |(rsec WEAK10           )|localhost:30477
+@openwrt    |root         |(genpasswd 10.100.100.1)|10.100.100.1
 "
 
 if test $target = help
@@ -42,24 +42,20 @@ if test $target = help
     exit 0
 end
 
+function maybe_eval
+    if string match -q '(*)*' $argv[1]
+        eval echo $argv[1] ; or exit 1
+    else
+        echo $argv[1]
+    end
+end
+
 test -n "$target_line"
 or set target_line (echo $targets | grep "^$target *|")
 or die "Target $target not found."
-set user (string trim (echo $target_line | cut -d '|' -f 2))
-set pass (string trim (echo $target_line | cut -d '|' -f 3))
-set host (string trim (echo $target_line | cut -d '|' -f 4))
-
-# expand secrets..
-if string match "sh://*" $pass > /dev/null
-    set _command (echo $pass | sed 's|sh://||')
-    set pass (bash -c "$_command")
-    or exit $status
-end
-if string match "sh://*" $host > /dev/null
-    set _command (echo $host | sed 's|sh://||')
-    set host (bash -c "$_command")
-    or exit $status
-end
+set user (maybe_eval (string trim (echo $target_line | cut -d '|' -f 2)))
+set pass (maybe_eval (string trim (echo $target_line | cut -d '|' -f 3)))
+set host (maybe_eval (string trim (echo $target_line | cut -d '|' -f 4)))
 
 if string match "@*" $target_line > /dev/null
     # SSH
