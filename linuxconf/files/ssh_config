@@ -172,7 +172,7 @@ host vm.blade33
 
 host soc.o3r19s1.m.recolic
     # Host: host.o3r19s1.m.recolic
-    #!rmssh: rm.o3r19sx.m.recolic;1;R_SEC_RM3233_PSWD // TODO: not tested
+    #!rmssh: rm.o3r19sx.m.recolic;1;R_SEC_RM3233_PSWD
     user root
     proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10803 $(getent hosts %h | cut -d ' ' -f 1) %p
 
