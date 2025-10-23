@@ -88,6 +88,9 @@ function low_battery_check_cron () {
     if [[ $(cat /sys/class/power_supply/AC/online) = 1 ]] ; then
         return 101 # AC pluged in, no need to check battery percentage at all.
     fi
+    if [ -d /sys/class/power_supply ] && [ -z "$(ls -A /sys/class/power_supply)" ]; then
+        return 101 # Not laptop.. no need to check
+    fi
 
     bat_percent=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep percentage: | grep '[0-9]*' -o) || _err="Failed to get battery percentage"
     return "$bat_percent"
