@@ -1,0 +1,17 @@
+{
+  "inbounds": [
+    {
+      "port": 3128,
+      "listen": "0.0.0.0",
+      "protocol": "http",
+      "settings": {}
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "settings": {}
+    }
+  ]
+}
+
