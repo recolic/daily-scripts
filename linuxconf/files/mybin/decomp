@@ -33,6 +33,9 @@ function _e () {
         *.tar )
             tar -xvf "$1"
             ;;
+        *.deb )
+            ar x "$1"
+            ;;
         * )
             echo 'Unknown format.'
             return 2
