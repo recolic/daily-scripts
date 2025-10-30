@@ -1,7 +1,5 @@
 lc_startup () {
     if [ "$(whoami)" = root ]; then
-        lc_bgrun /dev/null every 1h systemctl restart microsoft-identity-device-broker.service
-    
         # We need this fix if we are hacking /etc/os-release and pretending debian. 
         [[ -f /usr/bin/dkms ]] && sed -i 's/sign_file=[^ ]*$/sign_file=fuckyouidiot /g' /usr/bin/dkms
         
@@ -26,7 +24,6 @@ lc_startup () {
         # Both Azure-VPN and GlobalProtect use systemd-resolved. This one won't break NetworkManager.
         ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
     else
-        lc_bgrun /dev/null every 1h systemctl restart --user microsoft-identity-broker.service
         # lc_bgrun /dev/null every 30m /etc/ar2/ar2.sh
 
         # azure-cli login fix
