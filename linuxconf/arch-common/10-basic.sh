@@ -2,7 +2,7 @@ lc_assert_user_is root
 
 lc_init () {
     # basic pkg and config
-    pacman -Syu --noconfirm fish dhcpcd vim sudo openssh git inetutils wget htop tmux
+    pacman -Syu --noconfirm fish dhcpcd vim sudo openssh git inetutils wget htop tmux  base-devel
     pacman -S --noconfirm --asdeps openssl
 
     grep kernel.sysrq=1 /etc/sysctl.d/99-sysctl.conf > /dev/null || echo 'kernel.sysrq=1' >> /etc/sysctl.d/99-sysctl.conf

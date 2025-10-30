@@ -98,7 +98,7 @@ else
             set ext_opt /drive:ntmp,$HOME/nfs/tmp
         end
     end
-    if string match -q "msdev*" $target; and string match -q "*freerdp*" -- $rdp
+    if string match -q "msdev2*" $target; and string match -q "*freerdp*" -- $rdp
         # disable NLA to avoid a weird bug
         set ext_opt $ext_opt /sec:tls
     end
