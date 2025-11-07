@@ -34,7 +34,7 @@ def get_multiline_input():
             chat_prompt = json.loads(open(os.path.expanduser(line[3:].strip())).read())
             print("<< gpt.py << Replaced history with external save")
         elif line.startswith(".f "):
-            text += open(line[3:].strip()).read() + '\n'
+            text += open(os.path.expanduser(line[3:].strip())).read() + '\n'
         elif line.startswith(".i "):
             if line[3:].strip().startswith("http") and "gpt" not in impl["model"]:
                 print("<< gpt.py << Rejected. HTTP/HTTPS URL is only for OpenAI model")

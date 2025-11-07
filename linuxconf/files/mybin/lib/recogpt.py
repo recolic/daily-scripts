@@ -106,7 +106,6 @@ def complete(impl, prompt):
             elif isinstance(chunk, str):
                 assistant_text += chunk
     else:
-        # fallback for possible alternative return formats
-        assistant_text = str(completion)
+        raise RuntimeError(str(completion))
     return assistant_text
 

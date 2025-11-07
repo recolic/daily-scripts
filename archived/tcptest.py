@@ -23,4 +23,3 @@ else:  # client mode
     while True:
         data, addr = s.recvfrom(1024)
         print("Reply:", data.decode(), "from", addr)
-
