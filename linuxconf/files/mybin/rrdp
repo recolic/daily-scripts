@@ -104,7 +104,7 @@ else
     end
     
     if test $rdp = rdesktop
-        echo "EXEC: $rdp -K -g $w'x'$h -r disk:htmp=$HOME/tmp $ext_opt -u $user -p $pass -v $host"
+        echo "EXEC: $rdp -K -g $w'x'$h -r disk:htmp=$HOME/tmp $ext_opt -u $user -p #pass -v $host"
         $rdp -K -g $w'x'$h -r disk:htmp=$HOME/tmp $ext_opt -u $user -p $pass -v $host
     else
         # $rdp -disable-grab-keyboard -disable-toggle-fullscreen --auth-pkg-list !kerberos -w $w -h $h -drive htmp,$HOME/tmp $ext_opt -u $user -p $pass -v $host -timeout 100000
@@ -112,7 +112,7 @@ else
             echo "Removing malware... need root access"
             echo -e "[libdefaults]\\ndefault_realm = 192.168.191.191" | sudo tee /etc/krb5.conf
         end
-        echo "EXEC: $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:htmp,$HOME/tmp $ext_opt /u:$user /p:$pass /v:$host /timeout:100000"
+        echo "EXEC: $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:htmp,$HOME/tmp $ext_opt /u:$user /p:#pass /v:$host /timeout:100000"
         $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:htmp,$HOME/tmp $ext_opt /u:$user /p:$pass /v:$host /timeout:100000
     end
 end
