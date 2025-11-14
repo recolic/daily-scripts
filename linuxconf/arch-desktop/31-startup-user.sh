@@ -29,5 +29,5 @@ lc_login () {
     lc_bgrun /dev/null fish utils/tg-backend-autokill.fish
 
     # need smartcard interaction
-    [[ $(hostname) = RECOLICMPC ]] && lc_bgrun /dev/null env IMPL=sshfs bash utils/auto-nfs-mgr.sh
+    # [[ $(hostname) = RECOLICMPC ]] && lc_bgrun /dev/null env IMPL=sshfs bash utils/auto-nfs-mgr.sh
 }
