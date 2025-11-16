@@ -1,5 +1,11 @@
 #!/usr/bin/fish
 # v1.04.202508
+# naive proxy script supporting:
+#   shadowrocket-style subscription url:
+#     shadowsocks (basic parser)
+#     vless, vmess (basic v2ray config supported by vmess2json.py. Fancy config or xray not supported)
+#   ssh proxy:
+#     use .ssh/config
 
 function list_possible_nodename
     set nextcloud_root $HOME/(ls $HOME | grep -i nextcloud | head -n1)
@@ -16,9 +22,7 @@ if test (count $argv) != 2
     exit 1
 end
 
-type ss-local
-    and set ss ss-local
-    or set ss sslocal
+type ss-local ; and set ss ss-local ; or set ss sslocal
 
 function vconfig_is_ss
     test "$ss" != "" ; and grep 'protocol"[: ]*"shadowsocks' $argv[1]
