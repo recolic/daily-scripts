@@ -14,18 +14,38 @@ function list_possible_nodename
     ls $possible_path/*.json | sed 's|^.*/||g' | sed 's/.json//g'
 end
 
+function download_subs
+    set p (rsec ProxySub_API)
+    set API_URLS "$p?2" "$p?3a"
+    
+    for URL in $API_URLS
+        echo "DOWNLOAD SUBS : $URL"
+        curl -s "$URL" | base64 -d | dos2unix | while read -l line
+            echo "DECODE: $line"
+            echo "$line" | python vmess2json.py --inbounds socks:10808 -o output.json >/dev/null 2>&1
+    
+            if test -s output.json
+                set name (python proxy-url-to-name.py "$line")
+                mv output.json "$name.json"
+            else
+                echo "Skip invalid / unsupported URL"
+            end
+        end
+    end
+end
+
 if test (count $argv) != 2
     echo "Usage: ./proxy.fish <node_name> <listen_port>"
-    echo "Usage: ./proxy.fish <path/to/template.json> <listen_port>"
+    echo "Usage: ./proxy.fish <path/to/v2ray.json> <listen_port>"
     echo "Possible node name:"
     list_possible_nodename
     exit 1
 end
 
-type ss-local ; and set ss ss-local ; or set ss sslocal
-
-function vconfig_is_ss
-    test "$ss" != "" ; and grep 'protocol"[: ]*"shadowsocks' $argv[1]
+## Optional: prefer to run shadowsocks in native implementation
+type -q ss-local ; and set ss ss-local ; or set ss sslocal
+function vconfig_ss_available
+    type -q $ss ; and type -q json2table ; and grep 'protocol"[: ]*"shadowsocks' $argv[1]
     return $status
 end
 function vconfig_run_ss
@@ -81,7 +101,7 @@ else
     exit 2
 end
 
-if vconfig_is_ss $possible_path
+if vconfig_ss_available $possible_path
     vconfig_run_ss $possible_path $port
 else
     vconfig_run_v $possible_path $port
