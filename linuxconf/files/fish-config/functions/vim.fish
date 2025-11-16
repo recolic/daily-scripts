@@ -1,4 +1,16 @@
 # Defined in - @ line 2
+function _is_gpg_vault
+    set fname $argv[1]
+    if file $fname | grep "PGP message Public-Key Encrypted" > /dev/null
+        return 0 # Yes
+    end 
+    if file $fname | grep 'data$' > /dev/null
+        if string match -q '*.gpg' -- $fname
+            return 0 # Yes
+        end
+    end 
+    return 1 # No
+end
 function vim
     set _origin_vim /usr/bin/vim
     if test -z "$argv"

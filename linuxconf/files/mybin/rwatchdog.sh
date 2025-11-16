@@ -225,7 +225,7 @@ while true; do
             alarm_state=office
         fi
         play_alarm_once
-        [ $_sticky = 0 ] && break
+        [ $_sticky = 1 ] && alarm_state=ack
         sleep 8
         check_ctl_msg
     done
