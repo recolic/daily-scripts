@@ -22,7 +22,7 @@ All scripts here are **simple and minimum**, **little dependency**, **no configu
 |rsec\*, rsec_export|[rsec kit] simple, minimal, reliable secret management. Allow export specific secrets for remote machine. including python/php api.|
 |genpasswd|[rsec kit] Password generator (PHP equivalent online tool: http://TODO)|
 |rgpg-river|[rsec kit] simple, minimal AES encrypt/decrypt tool. (PHP equivalent online tool: http://TODO)|
-|rgpg-vim|edit gpg-encrypted file like normal text (TODO: usually used in smart-vim wrapper)|
+|rgpg-vim|edit gpg-encrypted file like normal text (Used as vim wrapper: search for vim.fish)|
 |||
 |rrdp\*|all-in-one naive RDP conn manager, similar to .ssh/config|
 |||
@@ -30,6 +30,8 @@ All scripts here are **simple and minimum**, **little dependency**, **no configu
 |virtualtype.py|simulate keyboard to type a string|
 |mount-imgzgpg.fish|one-click mount `imgzgpg`|
 |fix-naming.sh|one-click cleanup filename special characters in current dir|
+|||
+|rwatchdog.sh, alarm.fish||
 
 ### draft
 
