@@ -1,45 +1,28 @@
 #!/usr/bin/fish
-# v1.04.202508
-# naive proxy script supporting:
-#   shadowrocket-style subscription url:
-#     shadowsocks (basic parser)
-#     vless, vmess (basic v2ray config supported by vmess2json.py. Fancy config or xray not supported)
-#   ssh proxy:
-#     use .ssh/config
+# v1.05.202511
 
-function list_possible_nodename
-    set nextcloud_root $HOME/(ls $HOME | grep -i nextcloud | head -n1)
-    set possible_path $nextcloud_root/documents/proxy/comm100-nodes/
-    # echo ss
-    ls $possible_path/*.json | sed 's|^.*/||g' | sed 's/.json//g'
-end
-
+set script_dir (dirname (status --current-filename))
 function download_subs
+    ## Put your subscription url here, like this:
+    # set SUB_URLS "https://example.com/sub/api?key=12345" "https://backup.com/dumb?user=trump" ...
     set p (rsec ProxySub_API)
-    set API_URLS "$p?2" "$p?3a"
+    set SUB_URLS "$p?2" "$p?3a"
     
-    for URL in $API_URLS
+    for URL in $SUB_URLS
         echo "DOWNLOAD SUBS : $URL"
         curl -s "$URL" | base64 -d | dos2unix | while read -l line
-            echo "DECODE: $line"
-            echo "$line" | python vmess2json.py --inbounds socks:10808 -o output.json >/dev/null 2>&1
-    
-            if test -s output.json
-                set name (python proxy-url-to-name.py "$line")
-                mv output.json "$name.json"
-            else
-                echo "Skip invalid / unsupported URL"
-            end
+            set name (python $script_dir/lib/proxy-url-to-name.py "$line")
+            and echo "$name $line"
         end
     end
 end
-
-if test (count $argv) != 2
-    echo "Usage: ./proxy.fish <node_name> <listen_port>"
-    echo "Usage: ./proxy.fish <path/to/v2ray.json> <listen_port>"
-    echo "Possible node name:"
-    list_possible_nodename
-    exit 1
+function get_vconfig_from_subs
+    set node $argv[1]
+    set port $argv[2]
+    set in_cachefile $argv[3]
+    set out_vconfigfile $argv[4]
+    grep "^$node " $in_cachefile | sed "s|^$node ||" | python $script_dir/lib/vmess2json.py --inbounds "socks:$port" -o "$out_vconfigfile"
+        or return 1
 end
 
 ## Optional: prefer to run shadowsocks in native implementation
@@ -51,12 +34,10 @@ end
 function vconfig_run_ss
     set config $argv[1]
     set lport $argv[2]
-    set -l config_line (cat $config | json2table /outbounds/settings/servers -p)
-    # addr.example.com|NAME@ss|chacha20-ietf-poly1305|0|password|25551|
-    set -l addr (echo $config_line | string split '|')[1]
-    set -l algo (echo $config_line | string split '|')[3]
-    set -l pswd (echo $config_line | string split '|')[5]
-    set -l port (echo $config_line | string split '|')[6]
+    set -l addr (cat $config | jq -r .outbounds[0].settings.servers[0].address )
+    set -l algo (cat $config | jq -r .outbounds[0].settings.servers[0].method  )
+    set -l pswd (cat $config | jq -r .outbounds[0].settings.servers[0].password)
+    set -l port (cat $config | jq -r .outbounds[0].settings.servers[0].port    )
     if eval $ss --tcp-fast-open 2>&1 | grep missing..local_address > /dev/null
         # rust
         eval $ss -s $addr:$port -m $algo -k $pswd -b 0.0.0.0:$lport --tcp-fast-open
@@ -80,31 +61,57 @@ function vconfig_run_v
     return $status
 end
 
+#### main logic start ####
+
+set cache_file $HOME/.cache/proxy.fish-cache.txt
+if test (count $argv) != 2
+    echo "Naive proxy script by Recolic.
+Supports: 
+    shadowrocket-style subscription url:
+      shadowsocks (basic parser)
+      vless, vmess (basic v2ray config supported by vmess2json.py. Fancy config or xray not supported)
+    ssh proxy:
+      use .ssh/config
+Usage: ./proxy.fish <node_name> <listen_port>
+                    <node_name> must be basic-regex safe
+Usage: ./proxy.fish <path/to/v2ray.json> <listen_port>
+Usage: ./proxy.fish <ssh_config_host> <listen_port>
+Node list from subscription cache file:"
+    grep "^[^ ]* " $cache_file 2>/dev/null
+    exit 1
+end
+
 set node $argv[1]
 set port $argv[2]
 
-set nextcloud_root $HOME/(ls $HOME | grep -i nextcloud | head -n1)
-set possible_path $nextcloud_root/documents/proxy/comm100-nodes/$node.json
+if not test -e $cache_file || test (math (date +%s) - (stat -c %Y $cache_file)) -gt 604800
+    echo "cache file not exist or older than 7 days. downloading $cache_file..."
+    mkdir -p $HOME/.cache ; rm -f $cache_file
+    download_subs > $cache_file
+end
+
 if test -f $node
     echo "Using $node..."
-    set possible_path $node
-else if test -f $possible_path
-    echo "Using $possible_path..."
-else if string match -q "*.recolic" -- "$node"
+    set vconfig_path $node
+else if grep "^$node " $cache_file
+    echo "Using $node from subscription..."
+    set vconfig_path "/tmp/.proxy.fish.$port.json"
+    get_vconfig_from_subs $node $port $cache_file $vconfig_path ; or exit 1
+else if grep -i "^host $node" $HOME/.ssh/config
     echo "Using ssh proxy $node..."
     while true
         ssh -o ServerAliveInterval=1 -o ServerAliveCountMax=3 -D 0.0.0.0:$port -N -C $node
         sleep 0.5 ; or exit # Allow ctrl-C
     end
 else
-    echo "Invalid node name $node because ./$node and $possible_path does not exist"
+    echo "Invalid node name $node because ./$node doesnt exist as file, not in $cache_file, not in .ssh/config"
     exit 2
 end
 
-if vconfig_ss_available $possible_path
-    vconfig_run_ss $possible_path $port
+if vconfig_ss_available $vconfig_path
+    vconfig_run_ss $vconfig_path $port
 else
-    vconfig_run_v $possible_path $port
+    vconfig_run_v $vconfig_path $port
 end
 
 exit $status
