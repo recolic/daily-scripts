@@ -7,6 +7,7 @@ function download_subs
     # set SUB_URLS "https://example.com/sub/api?key=12345" "https://backup.com/dumb?user=trump" ...
     set p (rsec ProxySub_API)
     set SUB_URLS "$p?2" "$p?3a"
+    set SUB_URLS "$p?1"
     
     for URL in $SUB_URLS
         echo "DOWNLOAD SUBS : $URL" 1>&2
@@ -50,8 +51,8 @@ function vconfig_run_ss
 end
 function vconfig_run_v
     set config $argv[1]
-    set port $argv[2]
-    if v2ray version < /dev/null 2> /dev/null | grep 'Ray 5'
+    echo "Using config $config..."
+    if v2ray version </dev/null 2>/dev/null | grep 'Ray 5' >/dev/null
         v2ray run -c $config; and rm -f $config
     else
         v2ray -c $config; and rm -f $config
@@ -103,11 +104,11 @@ end
 if test -f $node
     echo "Using $node..."
     set vconfig_path $node
-else if grep "^$node " $cache_file
+else if grep "^$node " $cache_file > /dev/null 2>&1
     echo "Using $node from subscription..."
     set vconfig_path "/tmp/.proxy.fish.$port.json"
     get_vconfig_from_subs $node $port $cache_file $vconfig_path ; or exit 1
-else if grep -i "^host $node" $HOME/.ssh/config
+else if grep -i "^host $node" $HOME/.ssh/config > /dev/null 2>&1
     echo "Using ssh proxy $node..."
     while true
         ssh -o ServerAliveInterval=1 -o ServerAliveCountMax=3 -D 0.0.0.0:$port -N -C $node
@@ -122,7 +123,7 @@ end
 if vconfig_ss_available $vconfig_path
     vconfig_run_ss $vconfig_path $port
 else
-    vconfig_run_v $vconfig_path $port
+    vconfig_run_v $vconfig_path
 end
 
 exit $status
