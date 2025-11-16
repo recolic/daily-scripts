@@ -1,5 +1,5 @@
 #!/usr/bin/fish
-# v1.05.202511
+# v1.06.202511
 
 set script_dir (dirname (status --current-filename))
 function download_subs
