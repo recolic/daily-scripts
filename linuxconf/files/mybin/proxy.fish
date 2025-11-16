@@ -7,7 +7,7 @@ function download_subs
     # set SUB_URLS "https://example.com/sub/api?key=12345" "https://backup.com/dumb?user=trump" ...
     set p (rsec ProxySub_API)
     set SUB_URLS "$p?2" "$p?3a"
-    set SUB_URLS "$p?1"
+    set SUB_URLS "$p?3"
     
     for URL in $SUB_URLS
         echo "DOWNLOAD SUBS : $URL" 1>&2
@@ -23,8 +23,9 @@ function get_vconfig_from_subs
     set port $argv[2]
     set in_cachefile $argv[3]
     set out_vconfigfile $argv[4]
-    grep "^$node " $in_cachefile | sed "s|^$node ||" | python $script_dir/lib/vmess2json.py --inbounds "socks:$port" -o "$out_vconfigfile"
-        or return 1
+    # sed doesnt work with unicode
+    set url (grep "^$node " $in_cachefile | sed "s|^[^ ]* ||") ; or return 1
+    echo "$url" | python $script_dir/lib/vmess2json.py --inbounds "socks:$port" -o "$out_vconfigfile" ; or return 1
 end
 
 ## Optional: prefer to run shadowsocks in native implementation
