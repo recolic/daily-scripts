@@ -15,7 +15,7 @@ All scripts here are **simple and minimum**, **little dependency**, **no configu
 |pgkill\*|ps-grep-kill. Easiest way to kill linux process for vim user.|
 |qu\*|one-click upload file to HTTP server (PHP simple server side: http://TODO)|
 |||
-|gpt.py\*|minimal script to interact with GPT|
+|gpt.py\*|minimal script to interact with GPT (need lib folder)|
 |map-reduce-gpt.py|script for GPT task over big text file|
 |lib/recogpt.py|minimal naive library for gpt-related python script|
 |||
@@ -26,21 +26,18 @@ All scripts here are **simple and minimum**, **little dependency**, **no configu
 |||
 |rrdp\*|all-in-one naive RDP conn manager, similar to .ssh/config|
 |||
-|||
+|proxy.fish\*|Minimal v2ray/shadowsocks/ssh proxy script. Supports shadowrocket sub url / local json config (need lib folder)|
+|rwatchdog.sh\*, alarm.fish|watchdog for workday. Beep like alarm on morning, beep if you fall asleep again, safe against mute|
 |ban-xunlei-d.sh|qbittorrent blacklist basing on regex. built-in rule for xunlei.|
 |virtualtype.py|simulate keyboard to type a string|
 |mount-imgzgpg.fish|one-click mount `imgzgpg`|
 |fix-naming.sh|one-click cleanup filename special characters in current dir|
-|rwatchdog.sh\*, alarm.fish|watchdog for workday. Beep like alarm on morning, beep if you fall asleep again, safe against mute|
 
 ### draft
 
 > TODO: will finish later.
 
 ```
-## mybin
-proxy.fish: TODO WIP
-
 ## fish function
 rgpg...: TODO WIP
 vim wrapper
