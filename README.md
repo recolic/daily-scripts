@@ -26,12 +26,12 @@ All scripts here are **simple and minimum**, **little dependency**, **no configu
 |||
 |rrdp\*|all-in-one naive RDP conn manager, similar to .ssh/config|
 |||
+|||
 |ban-xunlei-d.sh|qbittorrent blacklist basing on regex. built-in rule for xunlei.|
 |virtualtype.py|simulate keyboard to type a string|
 |mount-imgzgpg.fish|one-click mount `imgzgpg`|
 |fix-naming.sh|one-click cleanup filename special characters in current dir|
-|||
-|rwatchdog.sh, alarm.fish|watchdog for workday. Beep like alarm on morning, beep if you fall asleep again, safe against mute|
+|rwatchdog.sh\*, alarm.fish|watchdog for workday. Beep like alarm on morning, beep if you fall asleep again, safe against mute|
 
 ### draft
 

@@ -67,10 +67,11 @@ Supports:
       vless, vmess (basic v2ray config supported by vmess2json.py. Fancy config or xray not supported)
     ssh proxy:
       use .ssh/config
-Usage: ./proxy.fish <node_name> <listen_port>
-                    <node_name> must be basic-regex safe
-Usage: ./proxy.fish <path/to/v2ray.json> <listen_port>
-Usage: ./proxy.fish <ssh_config_host> <listen_port>"""
+Usage:
+    ./proxy.fish <node_name> <listen_port>
+    ./proxy.fish <path/to/v2ray.json> <listen_port>
+    ./proxy.fish <ssh_config_host> <listen_port>
+                 <node_name> must be basic-regex safe"""
 end
 
 #### main logic start ####
