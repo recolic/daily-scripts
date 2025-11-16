@@ -7,7 +7,6 @@ function download_subs
     # set SUB_URLS "https://example.com/sub/api?key=12345" "https://backup.com/dumb?user=trump" ...
     set p (rsec ProxySub_API)
     set SUB_URLS "$p?2" "$p?3a"
-    set SUB_URLS "$p?3"
     
     for URL in $SUB_URLS
         echo "DOWNLOAD SUBS : $URL" 1>&2
