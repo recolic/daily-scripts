@@ -3,7 +3,7 @@
 
 set script_dir (dirname (status --current-filename))
 function download_subs
-    ## Put your subscription url here, like this:
+    ## Before first run: Put your subscription url here, like this:
     # set SUB_URLS "https://example.com/sub/api?key=12345" "https://backup.com/dumb?user=trump" ...
     set p (rsec ProxySub_API)
     set SUB_URLS "$p?2" "$p?3a"
@@ -50,13 +50,10 @@ end
 function vconfig_run_v
     set config $argv[1]
     set port $argv[2]
-    set tmpf "/tmp/.proxy.fish.$port.json"
-    cat $config | sed "s/10808/$port/g" > $tmpf
-    echo "Using config $tmpf"
     if v2ray version < /dev/null 2> /dev/null | grep 'Ray 5'
-        v2ray run -c $tmpf; and rm -f $tmpf
+        v2ray run -c $config; and rm -f $config
     else
-        v2ray -c $tmpf; and rm -f $tmpf
+        v2ray -c $config; and rm -f $config
     end
     return $status
 end
@@ -78,6 +75,7 @@ Usage: ./proxy.fish <path/to/v2ray.json> <listen_port>
 Usage: ./proxy.fish <ssh_config_host> <listen_port>
 Node list from subscription cache file:"
     grep "^[^ ]* " $cache_file 2>/dev/null
+    test -f $cache_file ; or echo "*** before first run: please modify this script, update SUB_URLS, and run 'proxy.fish dummy'"
     exit 1
 end
 
