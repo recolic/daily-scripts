@@ -31,7 +31,7 @@ All scripts here are **simple and minimum**, **little dependency**, **no configu
 |mount-imgzgpg.fish|one-click mount `imgzgpg`|
 |fix-naming.sh|one-click cleanup filename special characters in current dir|
 |||
-|rwatchdog.sh, alarm.fish||
+|rwatchdog.sh, alarm.fish|watchdog for workday. Beep like alarm on morning, beep if you fall asleep again, safe against mute|
 
 ### draft
 
@@ -40,17 +40,15 @@ All scripts here are **simple and minimum**, **little dependency**, **no configu
 ```
 ## mybin
 proxy.fish: TODO WIP
-rgpg...: TODO WIP
-proxychains with port (p ? ...)...
 
-rwatchdog
-alarm.fish
+## fish function
+rgpg...: TODO WIP
+vim wrapper
 
 ## others
 convert-fq-to-cram.sh
 custom-html-price-modify.fish
 gopeed-to-aria2.py
-fuckwin.ps1
 show_gpg_file_receipt.sh
 ssd_benchmark.sh
 docker-**
