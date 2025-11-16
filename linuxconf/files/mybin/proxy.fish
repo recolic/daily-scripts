@@ -9,10 +9,11 @@ function download_subs
     set SUB_URLS "$p?2" "$p?3a"
     
     for URL in $SUB_URLS
-        echo "DOWNLOAD SUBS : $URL"
+        echo "DOWNLOAD SUBS : $URL" 1>&2
         curl -s "$URL" | base64 -d | dos2unix | while read -l line
+            echo "$line" | grep "://" > /dev/null 2>&1 ; or continue
             set name (python $script_dir/lib/proxy-url-to-name.py "$line")
-            and echo "$name $line"
+                and echo "$name $line"
         end
     end
 end
@@ -58,11 +59,8 @@ function vconfig_run_v
     return $status
 end
 
-#### main logic start ####
-
-set cache_file $HOME/.cache/proxy.fish-cache.txt
-if test (count $argv) != 2
-    echo "Naive proxy script by Recolic.
+function help1
+    echo """Naive proxy script by Recolic.
 Supports: 
     shadowrocket-style subscription url:
       shadowsocks (basic parser)
@@ -72,10 +70,23 @@ Supports:
 Usage: ./proxy.fish <node_name> <listen_port>
                     <node_name> must be basic-regex safe
 Usage: ./proxy.fish <path/to/v2ray.json> <listen_port>
-Usage: ./proxy.fish <ssh_config_host> <listen_port>
-Node list from subscription cache file:"
-    grep "^[^ ]* " $cache_file 2>/dev/null
-    test -f $cache_file ; or echo "*** before first run: please modify this script, update SUB_URLS, and run 'proxy.fish dummy'"
+Usage: ./proxy.fish <ssh_config_host> <listen_port>"""
+end
+
+#### main logic start ####
+
+set cache_file $HOME/.cache/proxy.fish-cache.txt
+function help2
+    echo "Node list from subscription cache file:"
+    grep -o "^[^ ]* " $cache_file 2>/dev/null
+    if test -f $cache_file
+        echo "To flush cache, delete the cache_file $cache_file and run 'proxy.fish dummy 1'"
+    else
+        echo "*** before first run: please modify this script, update SUB_URLS, and run 'proxy.fish dummy 1'"
+    end
+end
+if test (count $argv) != 2
+    help1 ; help2
     exit 1
 end
 
@@ -103,6 +114,7 @@ else if grep -i "^host $node" $HOME/.ssh/config
     end
 else
     echo "Invalid node name $node because ./$node doesnt exist as file, not in $cache_file, not in .ssh/config"
+    help2
     exit 2
 end
 
