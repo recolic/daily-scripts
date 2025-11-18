@@ -20,15 +20,15 @@ host drive.recolic
     hostname git.recolic.net
     port 4022
     user root
-host drive.recolic-proxy
-    hostname git.recolic.net
-    port 2022
-    user root
 host drive.recolic-emerg
     hostname localhost
     port 30481
     user root
     proxyjump ms.recolic
+host proxy.recolic
+    hostname proxy.recolic.net
+    port 2022
+    user root
 
 host storage.recolic
     hostname storage.recolic.net
