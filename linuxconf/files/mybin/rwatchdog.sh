@@ -21,7 +21,7 @@
 
 
 # const variables
-MORNING_ALARM="08:18"
+MORNING_ALARM="10:28"
 [[ $1 = daemon ]] && cloudalarm_token=$(rsec WEAK10)
 TMP_CTL_FILE=/tmp/.rwatchdog.cmd
 TMP_INFO_FILE=/tmp/.rwatchdog.alarm-info
@@ -221,8 +221,8 @@ while true; do
 
     while [[ $alarm_state != ack ]]; do
         if nmcli d | grep MSFTGUEST > /dev/null ; then
-            echo "Patch: alarm_state=office if connected to MSFTGUEST" 1>&2
-            alarm_state=office
+            echo "Patch: alarm_state=ack if connected to MSFTGUEST" 1>&2
+            alarm_state=ack
         fi
         play_alarm_once
         [ $_sticky = 1 ] || alarm_state=ack
