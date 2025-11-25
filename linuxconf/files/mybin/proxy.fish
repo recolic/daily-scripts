@@ -1,5 +1,6 @@
 #!/usr/bin/fish
 # v1.06.202511
+# Enjoy with linuxconf/files/fish-config/completions/proxy.fish.fish
 
 set script_dir (dirname (status --current-filename))
 function download_subs
