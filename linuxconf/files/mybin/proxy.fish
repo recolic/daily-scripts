@@ -73,7 +73,8 @@ Usage:
     ./proxy.fish <node_name> <listen_port>
     ./proxy.fish <path/to/v2ray.json> <listen_port>
     ./proxy.fish <ssh_config_host> <listen_port>
-                 <node_name> must be basic-regex safe"""
+                 <node_name> must be basic-regex safe
+Completion file available at linuxconf/files/fish-config/completions/proxy.fish.fish"""
 end
 
 #### main logic start ####
