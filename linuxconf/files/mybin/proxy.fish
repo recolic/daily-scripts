@@ -104,7 +104,7 @@ end
 if test -f $node
     echo "Using $node..."
     set vconfig_path $node
-else if grep "^$node " $cache_file > /dev/null 2>&1
+else if grep -i "^$node " $cache_file > /dev/null 2>&1
     echo "Using $node from subscription..."
     set vconfig_path "/tmp/.proxy.fish.$port.json"
     get_vconfig_from_subs $node $port $cache_file $vconfig_path ; or exit 1
