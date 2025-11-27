@@ -12,7 +12,7 @@ all_impl = {
             api_key=rsec("Az_OpenAI_KEY"),
             api_version="2025-01-01-preview"
         ),
-        extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None)
+        extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None, max_tokens=16000)
     ),
     'gpt5': lambda: dict(
         model = "gpt-5-chat",
@@ -21,7 +21,16 @@ all_impl = {
             api_key=rsec("Az_OpenAI_KEY5"),
             api_version="2025-01-01-preview"
         ),
-        extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None)
+        extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None, max_tokens=16000)
+    ),
+    'gpt5.1': lambda: dict(
+        model = "gpt-5.1-chat",
+        client = AzureOpenAI(
+            azure_endpoint=rsec("Az_OpenAI_API5"),
+            api_key=rsec("Az_OpenAI_KEY5"),
+            api_version="2025-01-01-preview"
+        ),
+        extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None, max_completion_tokens=16000)
     ),
     'flash': lambda: dict(
         model = "gemini-2.5-flash",
@@ -29,7 +38,7 @@ all_impl = {
             api_key=rsec("Gemini_KEY"),
             base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
         ),
-        extra_args = dict()
+        extra_args = dict(max_tokens=16000)
     ),
     'pro': lambda: dict(
         model = "gemini-2.5-pro",
@@ -37,7 +46,7 @@ all_impl = {
             api_key=rsec("Gemini_KEY"),
             base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
         ),
-        extra_args = dict()
+        extra_args = dict(max_tokens=16000)
     )
 }
 
@@ -91,7 +100,6 @@ def complete(impl, prompt):
     completion = impl['client'].chat.completions.create(
         model=impl['model'],
         messages=prompt,
-        max_tokens=16000,
         stream=False,
         **impl['extra_args']
     )
