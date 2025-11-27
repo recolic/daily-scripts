@@ -27,3 +27,5 @@
 	path = ~/.cache/git-work-config.inc
 [includeIf "hasconfig:remote.*.url:https://msazure.visualstudio.com/**"]
 	path = ~/.cache/git-work-config.inc
+[protocol "file"]
+	allow = always
