@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<body>
+<p>Note: you need https otherwise camera won't work</p>
+<video id="cam" autoplay playsinline style="width:100%;"></video>
+<pre id="out"></pre>
+<script>
+const video = document.getElementById("cam");
+const out = document.getElementById("out");
+
+async function startCam() {
+  const stream = await navigator.mediaDevices.getUserMedia({ video:{facingMode:"environment"} });
+  video.srcObject = stream;
+}
+
+async function scan() {
+  if (!window.BarcodeDetector) {
+    out.textContent = "BarcodeDetector not supported";
+    return;
+  }
+  const detector = new BarcodeDetector({ formats:["qr_code"] });
+
+  async function loop() {
+    try {
+      const codes = await detector.detect(video);
+      if (codes.length > 0) {
+        const text = codes[0].rawValue;
+        out.textContent = "QR: " + text + "\nSending...";
+        const res = await fetch("/api", {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ qr:text })
+        });
+        out.textContent = await res.text();
+        return; // stop scanning after success
+      }
+    } catch(e) {}
+    requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+startCam().then(scan);
+</script>
+</body>
+</html>
+
