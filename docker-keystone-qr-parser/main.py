@@ -93,8 +93,8 @@ Type: {tx_type_name(tx_type)}
 Max total fee: {format((tf * gl) / 1e18, '.8f')} ETH
 To: {hx(tx_to)}
 Amount: {amt}
-Data: {hx(tx_data)}
-Data Detail: {parse_tx_data(hx(tx_data))}
+Data (Raw): {hx(tx_data)}
+Data (Parsed): {parse_tx_data(hx(tx_data))}
 """
     return info
 
