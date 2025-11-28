@@ -4,6 +4,27 @@ from ur.ur_decoder import URDecoder
 from ur.ur import UR
 import cbor2
 
+def parse_tx_data(data, token="USDC"):
+    KNOWN_FUNCS = { 
+        "a9059cbb": "TRANSFER",
+        "095ea7b3": "APPROVE"
+    }
+    DECIMALS = {"USDC": 6, "USDT": 6}
+
+    data = data.lower().removeprefix("0x")
+    sel = data[:8]
+    op = KNOWN_FUNCS.get(sel)
+    if not op: 
+        return f"Op: UNKNOWN {sel}"
+
+    addr = "0x" + data[32:72]
+    raw_amt = int(data[72:136], 16) 
+    dec = DECIMALS.get(token, 18) 
+
+    amt = "Infinite" if op == "APPROVE" and raw_amt > 2**255 else f"{raw_amt/(10**dec):,.{dec}f} {token}"
+
+    return f"Op: {op}\nDest: {addr}\nAmount: {amt}"
+
 def decode_ur(ur_string):
     dec = URDecoder()
     dec.receive_part(ur_string)
@@ -73,8 +94,9 @@ Max total fee: {format((tf * gl) / 1e18, '.8f')} ETH
 To: {hx(tx_to)}
 Amount: {amt}
 Data: {hx(tx_data)}
+Data Detail: {parse_tx_data(hx(tx_data))}
 """
-    print(info)
+    return info
 
 def decode_tx(raw_bytes, data_type):
     # Ref: https://ethereum.stackexchange.com/questions/83802/how-to-decode-a-raw-transaction-in-python
@@ -110,16 +132,11 @@ def decode_tx(raw_bytes, data_type):
 
 def parse_eth_sign_request(ur_string):
     sign_data, t, chain_id = decode_eth_sign_request(ur_string)
-    tx = decode_tx(sign_data, t)
-    return {
-        "chain_id": chain_id,
-        "tx": tx,
-    }
-
+    return decode_tx(sign_data, t)
 
 ## test and print
-# qr = "ur:eth-sign-request/oladtpdagdpyjzbsveemamfpfllnsogydrolcssocmaohdjpaoyajllyldaolpbkkneclfaelpbtwngtvyaolfwyjpmwfngansghdwwshyetbyvycfdwvdbtlkrtfshheohklarofyptahnsrkaeaeaeaeaeaeaeaeaeaeaeaehehgwemthgaewmlnmusewpwtqdisclbzmundpazeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaebsfwfzrtaxaaaacsldahtaaddyoeadlecsdwykcsfnykaeykaewkaewkaocybnmdbbsnamghhehgwemthgaewmlnmusewpwtqdisclbzmundpazebkhytyjs"
-# print(parse_eth_sign_request(qr))
+qr = "ur:eth-sign-request/oladtpdagdpyjzbsveemamfpfllnsogydrolcssocmaohdjpaoyajllyldaolpbkkneclfaelpbtwngtvyaolfwyjpmwfngansghdwwshyetbyvycfdwvdbtlkrtfshheohklarofyptahnsrkaeaeaeaeaeaeaeaeaeaeaeaehehgwemthgaewmlnmusewpwtqdisclbzmundpazeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaebsfwfzrtaxaaaacsldahtaaddyoeadlecsdwykcsfnykaeykaewkaewkaocybnmdbbsnamghhehgwemthgaewmlnmusewpwtqdisclbzmundpazebkhytyjs"
+print("Test functionality:", parse_eth_sign_request(qr))
 
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import os

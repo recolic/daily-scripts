@@ -26,18 +26,18 @@ def parse_tx(data, token="USDC"):
     print(f"Dest: {addr}")
     print(f"Amount: {amt}")
 
-def decode_ur_eth_sign_request(ur_string):
-    from ur_registry import URDecoder
-    from ur_registry.ETHSignRequest import ETHSignRequest
-    if ur_string.startswith("ur:eth-sign-request/"):
-        part = ur_string[len("ur:eth-sign-request/"):]
-        dec = URDecoder()
-        dec.receive_part(f"ur:eth-sign-request/{part}")  # full string
-        ur_obj = dec.result_ur()
-        req = ETHSignRequest.from_cbor(ur_obj.cbor)
-        payload = req.get_sign_data()
-        return "0x" + payload.hex()
-    return ur_string
+#def decode_ur_eth_sign_request(ur_string):
+#    from ur_registry import URDecoder
+#    from ur_registry.ETHSignRequest import ETHSignRequest
+#    if ur_string.startswith("ur:eth-sign-request/"):
+#        part = ur_string[len("ur:eth-sign-request/"):]
+#        dec = URDecoder()
+#        dec.receive_part(f"ur:eth-sign-request/{part}")  # full string
+#        ur_obj = dec.result_ur()
+#        req = ETHSignRequest.from_cbor(ur_obj.cbor)
+#        payload = req.get_sign_data()
+#        return "0x" + payload.hex()
+#    return ur_string
 
 
 if __name__ == "__main__":
