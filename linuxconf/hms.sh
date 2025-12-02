@@ -23,7 +23,7 @@ lc_init () {
     systemctl enable cronie nginx docker dhcpcd --now
     curl https://recolic.net/setup/ | l=1 bash
 
-    echo "=====================
+    lc_todo "=====================
 TODO: manual steps
 
 #######################################################
