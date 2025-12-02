@@ -3,7 +3,7 @@
 lc_include arch-common/* arch-desktop/*
 
 lc_init () {
-    echo "
+    lc_todo "
 ============================================
 Next Steps: 
   set password for new user 'recolic';
