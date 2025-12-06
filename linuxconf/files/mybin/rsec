@@ -25,9 +25,7 @@ else
     die "ENC_DB missing"
 fi
 
-function key_get () {
-    grep -i "^$1 *:" | sed 's/^[^:]*://' | head -n1
-}
+function key_get () { grep -i "^$1 *:" | sed 's/^[^:]*://' | head -n1 ; }
 
 if [[ "$_key" = "" ]]; then
     echo "$RSEC_LINS" | cut -d : -f 1 | tr -d ' ' | grep -v '^#' | grep .
