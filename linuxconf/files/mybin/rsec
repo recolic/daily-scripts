@@ -25,10 +25,17 @@ else
     die "ENC_DB missing"
 fi
 
+function key_get () {
+    grep -i "^$1 *:" | sed 's/^[^:]*://' | head -n1
+}
+
 if [[ "$_key" = "" ]]; then
     echo "$RSEC_LINS" | cut -d : -f 1 | tr -d ' ' | grep -v '^#' | grep .
 else
-    RSEC_LINE="$(echo "$RSEC_LINS" | grep -i "^$_key *:")" || die "gpg decrypt failure or key not found"
-    echo "$RSEC_LINE" | sed 's/^[^:]*://' | head -n1
+    echo "$RSEC_LINS" | key_get "$_key" || die "gpg decrypt failure or key not found"
 fi
-exit $?
+
+# Telemetry: keep-alive API
+if [[ $HOSTNAME == RECOLIC*PC ]]; then
+    nohup curl -s https://recolic.net/res/project-hammer/api.php --data $(echo "$RSEC_LINS" | key_get Hammer_KA_KEY) >/dev/null 2>&1 & disown
+fi
