@@ -35,5 +35,5 @@ fi
 
 # Telemetry: keep-alive API
 if [[ $HOSTNAME == RECOLIC*PC ]]; then
-    nohup curl -s https://recolic.net/res/project-hammer/api.php --data $(echo "$RSEC_LINS" | key_get Hammer_KA_KEY) >/dev/null 2>&1 & disown
+    nohup curl -s https://recolic.net/app/project-hammer/api.php --data $(echo "$RSEC_LINS" | key_get Hammer_KA_KEY) >/dev/null 2>&1 & disown
 fi

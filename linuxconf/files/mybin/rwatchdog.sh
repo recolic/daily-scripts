@@ -67,7 +67,7 @@ function pid_check_cron () {
 
 function river_cloudalarm_cron () {
     echo $FUNCNAME
-    local API_URL="https://recolic.net/res/river/alarm-btn/api.php?action=touch&token=$cloudalarm_token"
+    local API_URL="https://recolic.net/app/river/alarm-btn/api.php?action=touch&token=$cloudalarm_token"
     
     local curr=$(timeout 20 curl -s "$API_URL" | grep -oP '^alert=\K.*') || ! echo "HTTP GET FAILED. Check token" || return 1
 
