@@ -67,7 +67,7 @@ while True:
         print(f"Error: {e}")
         if "The response was filtered due to the prompt triggering Azure OpenAI" in str(e) and "gpt" in alias:
             print("Triggered fucking azure filter. Loading backup model...")
-            impl2 = recogpt.impl_load("pro")
+            impl2 = recogpt.impl_load("grok")
             resp = recogpt.complete(impl2, chat_prompt)
         else:
             continue

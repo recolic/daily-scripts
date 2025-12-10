@@ -47,7 +47,23 @@ all_impl = {
             base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
         ),
         extra_args = dict(max_tokens=16000)
-    )
+    ),
+    'grok': lambda: dict(
+        model = "grok-4-1-fast-non-reasoning",
+        client = OpenAI(
+            api_key=rsec("Grok_KEY"),
+            base_url="https://api.x.ai/v1"
+        ),
+        extra_args = dict(extra_body={
+            "search_enabled": True,
+            "real_time_data": True,
+            "search_parameters": {
+                "max_search_results": 15,
+                "mode": "auto",
+                "include_citations": False
+            }
+        })
+    ),
 }
 
 def impl_list():
