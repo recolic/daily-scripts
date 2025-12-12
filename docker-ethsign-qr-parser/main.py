@@ -9,6 +9,7 @@ def decode_ur(ur_string):
     dec = URDecoder()
     dec.receive_part(ur_string)
     if not dec.is_complete() or not dec.is_success():
+        print(ur_string, dec)
         raise ValueError("UR not decoded")
     return dec.result.cbor
 
@@ -67,13 +68,13 @@ def decode_alt(txn_bytes):
     amt = int.from_bytes(tx_amount,'big') if tx_amount else 0
     
     info = f"""
-Chain: {cid} {chain_name(chain_id)}
+Chain: {chain_name(chain_id)} ({cid})
 Type: {tx_type_name(tx_type)}
 Max total fee: {format((tf * gl) / 1e18, '.8f')} ETH
 To: {hx(tx_to)}
 Amount: {amt}
 Data (Raw): {hx(tx_data)}
-Data (Parsed): {tx_data_parse.parse(hx(tx_data))}
+{tx_data_parse.parse(hx(tx_data), hx(tx_to))}
 """
     return info
 

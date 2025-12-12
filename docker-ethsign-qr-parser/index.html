@@ -42,8 +42,7 @@ submitTxt.onclick = async () => {
   out.textContent = "Sending...";
   const r = await fetch("/api", {
     method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify({ qr:v })
+    body: v
   });
   out.textContent = await r.text();
 };
