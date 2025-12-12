@@ -1,11 +1,13 @@
-# ETH sign QR parser, POC
+# EVM sign QR parser
 
-airgap-vault doesn't support ERC20 transaction data parse... Run this tool before signing unknown transation.
+## Why this tool?
 
-No more blind signing.
+Are you using offline signer with a high value wallet? How do you know your transaction is safe? Because your desktop wallet told you it's uniswap contract.
 
-## Current status
+What if desktop wallet got hacked? You need a double-check, and offline signer (like airgap-valut) cannot fully parse smart contract data.
 
-only supports USDC / USDT , transfer / approve
+## Currently supporting
 
-POC. Not for PROD
+1. Transfer USDC / USDT to others
+2. Approve USDC / USDT
+

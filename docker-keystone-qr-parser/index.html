@@ -1,47 +1,95 @@
 <!DOCTYPE html>
 <html>
+<head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+</head>
 <body>
-<p>Note: you need https otherwise camera won't work</p>
-<video id="cam" autoplay playsinline style="width:100%;"></video>
-<pre id="out"></pre>
+
+<section class="section">
+<div class="container">
+
+<div id="textMode">
+  <div class="field">
+    <div class="control">
+      <input id="txt" class="input" placeholder="Paste QR string here">
+    </div>
+  </div>
+
+  <div class="field is-grouped is-grouped-multiline">
+    <p class="control"><button id="submitTxt" class="button is-primary">Submit</button></p>
+    <p class="control"><button id="openCam" class="button is-link">Camera scan (chrome only)</button></p>
+  </div>
+
+  <pre id="out"></pre>
+</div>
+
+<div id="camMode" style="display:none;">
+  <video id="cam" autoplay playsinline style="width:100%;"></video>
+  <pre id="out2"></pre>
+</div>
+
+</div>
+</section>
+
 <script>
-const video = document.getElementById("cam");
+const txt = document.getElementById("txt");
 const out = document.getElementById("out");
+const out2 = document.getElementById("out2");
+
+submitTxt.onclick = async () => {
+  const v = txt.value.trim();
+  if (!v) return;
+  out.textContent = "Sending...";
+  const r = await fetch("/api", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ qr:v })
+  });
+  out.textContent = await r.text();
+};
+
+openCam.onclick = () => {
+  textMode.style.display = "none";
+  camMode.style.display = "block";
+  startCam().then(scan);
+};
 
 async function startCam() {
-  const stream = await navigator.mediaDevices.getUserMedia({ video:{facingMode:"environment"} });
-  video.srcObject = stream;
+  const stream = await navigator.mediaDevices.getUserMedia({
+    video:{ facingMode:"environment" }
+  });
+  cam.srcObject = stream;
 }
 
 async function scan() {
   if (!window.BarcodeDetector) {
-    out.textContent = "BarcodeDetector not supported";
+    out2.textContent = "BarcodeDetector not supported";
     return;
   }
+
   const detector = new BarcodeDetector({ formats:["qr_code"] });
 
   async function loop() {
     try {
-      const codes = await detector.detect(video);
+      const codes = await detector.detect(cam);
       if (codes.length > 0) {
         const text = codes[0].rawValue;
-        out.textContent = "QR: " + text + "\nSending...";
+        out2.textContent = "QR: " + text + "\nSending...";
         const res = await fetch("/api", {
           method:"POST",
           headers:{ "Content-Type":"application/json" },
           body: JSON.stringify({ qr:text })
         });
-        out.textContent = await res.text();
-        return; // stop scanning after success
+        out2.textContent = await res.text();
+        return;
       }
     } catch(e) {}
     requestAnimationFrame(loop);
   }
   loop();
 }
-
-startCam().then(scan);
 </script>
+
 </body>
 </html>
 
