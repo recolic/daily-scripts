@@ -1,21 +1,40 @@
 # Parse the magical tx data string and tell if it's safe.
 
-def parse(data, token="USDC"):
-    KNOWN_FUNCS = { 
-        "a9059cbb": "TRANSFER",
-        "095ea7b3": "APPROVE"
-    }
-    DECIMALS = {"USDC": 6, "USDT": 6}
+KNOWN_INNER_DEST = {
+    "e592427a0aece92de3edee1f18e0157c05861564": "Uniswap V3 Router",
+    "7a250d5630b4cf539739df2c5dacb4c659f2488d": "Uniswap V2 Router",
+    "d9e1ce17f2641f24ae83637ab66a2cca9c378b9f": "Uniswap V3 Quoter",
+    "3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad": "Balancer Vault",
+}
+KNOWN_FUNCS = { 
+    "a9059cbb": "TRANSFER",
+    "095ea7b3": "APPROVE"
+}
+KNOWN_ETH_DEST = {
+    "a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": ["USDC", 6],
+    "dac17f958d2ee523a2206206994597c13d831ec7": ["USDT", 6],
+    "c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": ["WETH", 18],
+}
 
+def pprint_op(op_hex):
+    return KNOWN_FUNCS.get(op_hex, op_hex)
+def pprint_dest(dest_hex):
+    return KNOWN_ETH_DEST.get(dest_hex, [dest_hex, None])
+def pprint_dest2(dest_hex):
+    return KNOWN_INNER_DEST.get(dest_hex, dest_hex)
+
+def parse(data, dest="a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"):
     data = data.lower().removeprefix("0x")
-    sel = data[:8]
-    op = KNOWN_FUNCS.get(sel)
-    if not op: 
-        return f"Op: UNKNOWN {sel}"
+    dest = dest.lower().removeprefix("0x")
 
-    addr = "0x" + data[32:72]
+    token, dec = pprint_dest(dest)
+
+    op = pprint_op(data[:8])
+    if op not in KNOWN_FUNCS.values():
+        return f"Op: UNKNOWN {op}"
+
+    addr = pprint_dest2(data[32:72])
     raw_amt = int(data[72:136], 16) 
-    dec = DECIMALS.get(token, 18) 
 
     amt = "Infinite" if op == "APPROVE" and raw_amt > 2**255 else f"{raw_amt/(10**dec):,.{dec}f} {token}"
 
