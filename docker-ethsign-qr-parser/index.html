@@ -2,6 +2,7 @@
 <html>
 <head>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 
@@ -11,26 +12,25 @@
 <div id="textMode">
   <div class="field">
     <div class="control">
-      <input id="txt" class="input" placeholder="Paste QR string here">
+      <textarea id="txt" class="textarea" placeholder="Paste QR string here"></textarea>
     </div>
   </div>
 
-  <div class="field is-grouped is-grouped-multiline">
-    <p class="control"><button id="submitTxt" class="button is-primary">Submit</button></p>
-    <p class="control"><button id="openCam" class="button is-link">Camera scan (chrome only)</button></p>
+  <div class="buttons is-fullwidth">
+    <button id="submitTxt" class="button is-primary">Submit</button>
+    <button id="openCam" class="button is-link">Camera scan</button>
   </div>
 
   <pre id="out"></pre>
 </div>
 
 <div id="camMode" style="display:none;">
-  <video id="cam" autoplay playsinline style="width:100%;"></video>
+  <video id="cam" autoplay playsinline class="is-fullwidth"></video>
   <pre id="out2"></pre>
 </div>
 
 </div>
 </section>
-
 <script>
 const txt = document.getElementById("txt");
 const out = document.getElementById("out");
