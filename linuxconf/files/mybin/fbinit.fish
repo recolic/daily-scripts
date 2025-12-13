@@ -1,10 +1,16 @@
 #!/bin/fish
-# Use bash env setup script for fish (assuming the bash script is named ./scripts/init-dev-env.sh)
+# fish-bash-init.fish. Use bash or python-venv env script for fish.
+# Auto-detect:
+#   ./scripts/init-dev-env.sh
+#   ./venv/bin/activate.fish
 
 set workdir .
-set script ./scripts/init-dev-env.sh
-if not test -f $script
-    echo "bash $script doesn't exist"
+set sh_candidates ./scripts/init-dev-env.sh ./venv/bin/activate ./bin/activate
+for f in $sh_candidates
+    test -e $f; and set script $f
+end
+if test -z $script
+    echo "$sh_candidates doesn't exist"
     exit 1
 end
 echo "Loading bash env $script for fish..."
