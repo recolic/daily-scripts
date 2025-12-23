@@ -37,3 +37,9 @@ Expand-Archive shit.zip
 cd shit/OpenSSH-Win64
 ./install-sshd.ps1
 
+## win11 only, VM RDP performance improv. But not so effective??
+## the last one is effective... but GPT said might break something? works fine for me
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" /v fDisableWdp /t REG_DWORD /d 1 /f
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" /v VisualFXSetting /t REG_DWORD /d 2 /f
+reg add "HKLM\SOFTWARE\Microsoft\Windows\DWM" /v CompositionPolicy /t REG_DWORD /d 2 /f
+
