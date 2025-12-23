@@ -6,7 +6,6 @@ devbox     ;-m 14G -smp 16 -vnc :13 -net user,hostfwd=tcp::30474-:3390 -machine 
 gitlab-ci-ms;-m 4G -smp 3 -vnc :12 -net user,hostfwd=tcp::30473-:22 -bios /usr/share/edk2-ovmf/x64/OVMF.4m.fd
 drive-reco  ;-m 8G -smp 2 -vnc :14 -net user,hostfwd=tcp::30480-:22,hostfwd=tcp::30481-:4022 -bios /usr/share/edk2-ovmf/x64/OVMF.4m.fd
 # TEST
-ndpa-build  ;-m 8G -smp 4 -vnc :11 -net user,hostfwd=tcp::30472-:22 -bios /usr/share/edk2-ovmf/x64/OVMF.4m.fd
 chinabox    ;-m 4G -smp 2 -vnc :16 -net user,hostfwd=tcp::30476-:3389 -bios /usr/share/edk2-ovmf/x64/OVMF.4m.fd
 #vsbox      ;-m 8G -smp 8 -vnc :17 -net user,hostfwd=tcp::30477-:3389 -bios /usr/share/edk2-ovmf/x64/OVMF.4m.fd -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time
-sharedbox   ;-m 4G -smp 2 -vnc :19 -net user,hostfwd=tcp::30479-:22 -bios /usr/share/edk2-ovmf/x64/OVMF.4m.fd
+sharedbox   ;-m 2G -smp 2 -vnc :19 -net user,hostfwd=tcp::30479-:22 -bios /usr/share/edk2-ovmf/x64/OVMF.4m.fd
