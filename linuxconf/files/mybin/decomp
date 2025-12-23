@@ -1,5 +1,5 @@
 #!/bin/bash
-# version 1.07
+# version 1.08
 # update log:
 # 1.06: allow decompress nupkg
 # 1.07: allow decompress tar.zst
@@ -9,7 +9,7 @@
 function _e () {
     fname=`basename "$1"`
     case "$fname" in
-        *.7z )
+        *.7z | *.iso )
             7z x "$1"
             ;;
         *.zip | *.nupkg )
