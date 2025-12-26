@@ -18,8 +18,7 @@ set targets "
 NAME        |USERNAME     |PASSWORD                |HOSTNAME
 msdev       |recolic      |(genpasswd devbox -S   )|mspc.m.recolic:30474
 msdev2      |(rsec MSIDw )|(rsec MSPASS           )|mspc.m.recolic:30474
-msdev-backup|recolic      |(genpasswd devbox -S   )|mspc.wlo.m.recolic:30474
-msdev-rp    |recolic      |(genpasswd devbox -S   )|proxy-cdn.recolic.net:30623
+msdevlan    |recolic      |(genpasswd devbox -S   )|mspc.wlo.m.recolic:30474
 labjump     |(rsec MSIDw )|(rsec MSPASS           )|jb3.team1.m.recolic
 labjum2     |(rsec MSIDw )|(rsec MSPASS           )|jb1.team6.m.recolic
 lanbox      |recolic      |(genpasswd lanbox      )|10.100.100.101:30473
