@@ -28,10 +28,10 @@ def new_message_handler(update):
         message_text = message_content.get('text', {}).get('text', '')
 
         if message_content['@type'] == 'messageText':
-            print("Extract: text=", message_text, file=open(prefix+'/debug.log.gi', 'a'))
+            # print("Extract: text=", message_text, file=open(prefix+'/debug.log.gi', 'a'))
             handler_impl.handle(chat_id, is_outgoing, sender_id, msg_id, message_text)
         else:
-            print("ignore non-text msg", msg_id)
+            print("ignore non-text msg", msg_id, file=open(prefix+'/debug.log.gi', 'a'))
     except Exception as e:
         print(update, file=open(prefix+'/debug.log.gi', 'a'))
         print(type(e).__name__, e, file=open(prefix+'/debug.log.gi', 'a'))

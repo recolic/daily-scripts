@@ -25,6 +25,41 @@ def dump():
     return read_b64_jsonlines(dbpath)
 
 if __name__ == "__main__":
-    dbpath = '/mnt/fsdisk/tmp/tg-transcript-workdir/' + dbpath
-    for d in dump():
-        print(d)
+    # # Debug tool. supported op: eq, ne, gt, lt
+    # ./dump.py
+    # ./dump.py ts gt 1766800000
+    # ./dump.py ts gt 1766800000 ts lt 1766811111
+    # ./dump.py ts gt 1766800000 is_outgoing eq True sender_id eq 5911111111
+    import sys
+    
+    def is_not_int(x):
+        return isinstance(x, str) and not x.lstrip("-").isdigit()
+    def assert_(l, op, r):
+        #print("DEBUG: ", l, op, r)
+        if l is None or r is None: return op == "ne"
+        if op == "eq":
+            if type(l) is type(r): return l == r
+            else: return str(l) == str(r)
+        if op == "ne":
+            if type(l) is type(r): return l != r
+            else: return str(l) != str(r)
+        if is_not_int(l) or is_not_int(r): return False
+        if op == "gt":
+            return int(l) > int(r)
+        if op == "lt":
+            return int(l) < int(r)
+
+    args = sys.argv[1:]
+
+    try:
+        for d in dump():
+            ok = True
+            for i in range(0, len(args), 3):
+                if not assert_(d.get(args[i]), args[i+1], args[i+2]):
+                    ok = False
+                    break
+            if ok:
+                print(d)
+    except Exception as e:
+        print("E " + str(e))
+
