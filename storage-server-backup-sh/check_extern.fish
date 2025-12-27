@@ -1,5 +1,7 @@
 #!/bin/fish
 # check if necessary service for external users are running, and start them if not.
+# TODO: use recolic.net/setup
+#
 # note: tested 4.2GB (4404019200B) & 15GB file upload, webdav server works.
 
 if ps aux | grep [w]ebdav

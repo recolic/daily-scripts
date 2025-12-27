@@ -1,9 +1,10 @@
 from collections import defaultdict, deque
 import simpledb
+import time
 
 buffers = defaultdict(lambda: deque())  # chat_id -> deque (acts as a queue)
 BUFFER_SIZE = 16
-SAVE_FUTURE_CONTEXT = False
+SAVE_FUTURE_CONTEXT = True
 
 def evacuate_buffer(buf):
     while buf:
@@ -12,6 +13,7 @@ def evacuate_buffer(buf):
 def handle(chat_id, is_outgoing, sender_id, msg_id, message_text):
     buf = buffers[chat_id]
     msg = { 
+        "ts": int(time.time()),
         "chat_id": chat_id,
         "is_outgoing": is_outgoing,
         "sender_id": sender_id,
