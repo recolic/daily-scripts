@@ -86,9 +86,10 @@ lc_startup () {
     lc_bgrun /var/log/ddns-daemon.log every 10m bash hms/ddns_once.sh
     # lc_bgrun /var/log/ddns-daemon.log every 10m curl -s "https://dynamicdns.park-your-domain.com/update?host=rhome&domain=896444.xyz&password=$(rsec DDNS_XYZ_TOKEN)"
     
-    # frpc
-    lc_bgrun /var/log/frpc1.log auto_restart frpc tcp -n hms_ssh  -l 22 -r 30512 -s proxy-cdn.recolic.net -P 30999 --token $(rsec FRP_KEY)
-    lc_bgrun /var/log/frpc2.log auto_restart frpc tcp -n hms_http -l 80 -r 30513 -s proxy-cdn.recolic.net -P 30999 --token $(rsec FRP_KEY)
+    # frpc. recolichms : 30510-30519
+    lc_bgrun /var/log/frpc2.log auto_restart frpc tcp -n hms_audit -l 30510 -r 30510 -s proxy.recolic.net -P 30999 --token $(rsec FRP_KEY)
+    lc_bgrun /var/log/frpc1.log auto_restart frpc tcp -n hms_ssh  -l 22 -r 30512 -s proxy.recolic.net -P 30999 --token $(rsec FRP_KEY)
+    lc_bgrun /var/log/frpc2.log auto_restart frpc tcp -n hms_http -l 80 -r 30513 -s proxy.recolic.net -P 30999 --token $(rsec FRP_KEY)
     
     # aria2 rpc
     lc_bgrun /var/log/aria2-rpcd.log bash -c "cd /mnt/fsdisk/nfs/pub/ && aria2c --enable-rpc --rpc-listen-all --rpc-allow-origin-all"
@@ -130,7 +131,7 @@ lc_startup () {
     lc_bgrun /var/log/cron.log every 1d docker run --rm recolic/mailbox-cleaner imap.recolic.net tmp@recolic.net "$(rsec genpasswd_tmp@recolic.net)" -d 15
     # Using (rsec Telegram_API_HASH) (rsec Telegram_API_ID) (rsec PHONE)
     lc_bgrun /var/log/cron.log every 1d bash hms/telegram-public-msg-auto-cleanup/daily.sh
-    lc_bgrun /var/log/cron.log bash hms/telegram-transcript/daemon.sh
+    lc_bgrun /var/log/cron.log env audit_port=30510 audit_token="$(rsec genpasswd_tgaudit@dummy)" bash hms/telegram-transcript/daemon.sh
     lc_bgrun /var/log/cron.log every 1d env suburl="$(rsec ProxySub_API)?1" fish hms/balancemon.fish
     lc_bgrun /var/log/cron.log every 1d ntpdate -u 1.pool.ntp.org
     lc_bgrun /var/log/cron.log every 1m env svm_workdir=/mnt/fsdisk/svm hms/vmm/cron-callback.sh

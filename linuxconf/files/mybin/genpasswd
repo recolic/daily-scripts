@@ -9,6 +9,7 @@ Named Host:    $0 hms.recolic
                $0 pc.recolic
                $0 drive.recolic
 Unnamed Host:  $0 10.100.100.1
+Other use:     $0 toy1@dummy
 "
 
 [[ "$_dom" = "" ]] && echo "$_help" && exit 19
