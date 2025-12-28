@@ -24,7 +24,7 @@ def append(data_dict):
 def dump():
     return read_b64_jsonlines(dbpath)
 
-if __name__ == "__main__":
+def naive_query(args):
     # # Debug tool. supported op: eq, ne, gt, lt
     # ./dump.py
     # ./dump.py ts gt 1766800000
@@ -32,8 +32,7 @@ if __name__ == "__main__":
     # ./dump.py ts gt 1766800000 ts lt 1766811111
     # ./dump.py ts gt 1766800000 ts lt 1766811111 count
     # ./dump.py ts gt 1766800000 ts lt 1766811111 countby chat_id
-    import sys
-    
+
     def is_not_int(x):
         return isinstance(x, str) and not x.lstrip("-").isdigit()
     def assert_(l, op, r):
@@ -51,9 +50,8 @@ if __name__ == "__main__":
         if op == "lt":
             return int(l) < int(r)
 
-    args = sys.argv[1:]
+    output_kvs, output_str = dict(), ""
     countby = None
-    output_kvs = dict()
     if "count" in args:
         countby = ""
         args = args[:args.index("count")]
@@ -71,15 +69,16 @@ if __name__ == "__main__":
                     break
             if ok: ## output
                 if countby is None:
-                    print(d)
+                    output_str += str(d) + "\n"
                 elif countby == "":
                     tap_output_k("count")
                 elif countby in d:
                     tap_output_k(d[countby])
     except Exception as e:
-        print("E " + repr(e))
+        output_str = "E " + repr(e)
 
     for k, v in output_kvs.items():
-        print(f"{{'{k}': {v}}}")
+        output_str += f"{{'{k}': {v}}}\n"
+    return output_str
 
 
