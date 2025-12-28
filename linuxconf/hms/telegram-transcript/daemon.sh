@@ -8,13 +8,14 @@ function email_notify () {
     return $?
 }
 
-mkdir -p /mnt/fsdisk/tmp/tg-transcript-workdir &&
+mkdir -p /mnt/fsdisk/tmp/tg-transcript-workdir
+wd="$(pwd)"
 cd /mnt/fsdisk/tmp/tg-transcript-workdir || email_notify "telegram-transcript daemon failed"
 
 export mode=http
-nohup python $(dirname $0)/tools_simpledb_dump.py $audit_port $audit_token & disown
+nohup python $wd/$(dirname $0)/tools_simpledb_dump.py $audit_port $audit_token & disown
 
-python $(dirname $0)/tg-transcript.py /mnt/fsdisk/tmp/tg-transcript-workdir || email_notify "telegram-transcript daemon failed"
+python $wd/$(dirname $0)/tg-transcript.py || email_notify "telegram-transcript daemon failed"
 
 
 

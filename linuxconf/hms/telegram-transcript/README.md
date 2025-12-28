@@ -8,4 +8,4 @@ simpledb.py has a naive built-in query tool, to pull or count some db records
 
 run tg-transcript.py
 
-please read `handler_impl.py` before use
+please read `daemon.sh` for example usage

@@ -4,7 +4,7 @@ from telegram.client import Telegram
 import subprocess, sys
 import handler_impl, simpledb
 def rsec(k): return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
-prefix = sys.argv[1] if len(sys.argv) > 1 else '.'
+prefix = '.'
 
 tg = Telegram(
     api_id=rsec("Telegram_API_ID"),
