@@ -28,8 +28,10 @@ if __name__ == "__main__":
     # # Debug tool. supported op: eq, ne, gt, lt
     # ./dump.py
     # ./dump.py ts gt 1766800000
-    # ./dump.py ts gt 1766800000 ts lt 1766811111
     # ./dump.py ts gt 1766800000 is_outgoing eq True sender_id eq 5911111111
+    # ./dump.py ts gt 1766800000 ts lt 1766811111
+    # ./dump.py ts gt 1766800000 ts lt 1766811111 count
+    # ./dump.py ts gt 1766800000 ts lt 1766811111 countby chat_id
     import sys
     
     def is_not_int(x):
@@ -50,6 +52,15 @@ if __name__ == "__main__":
             return int(l) < int(r)
 
     args = sys.argv[1:]
+    countby = None
+    output_kvs = dict()
+    if "count" in args:
+        countby = ""
+        args = args[:args.index("count")]
+    if "countby" in args:
+        countby = args[args.index("countby") + 1]
+        args = args[:args.index("countby")]
+    tap_output_k = lambda k: output_kvs.__setitem__(k, output_kvs.get(k, 0) + 1)
 
     try:
         for d in dump():
@@ -58,8 +69,17 @@ if __name__ == "__main__":
                 if not assert_(d.get(args[i]), args[i+1], args[i+2]):
                     ok = False
                     break
-            if ok:
-                print(d)
+            if ok: ## output
+                if countby is None:
+                    print(d)
+                elif countby == "":
+                    tap_output_k("count")
+                elif countby in d:
+                    tap_output_k(d[countby])
     except Exception as e:
-        print("E " + str(e))
+        print("E " + repr(e))
+
+    for k, v in output_kvs.items():
+        print(f"{{'{k}': {v}}}")
+
 
