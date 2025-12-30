@@ -3,10 +3,13 @@
 
 set script_dir (dirname (status --current-filename))
 function download_subs
-    ## Before first run: Put your subscription url here, like this:
-    # set SUB_URLS "https://example.com/sub/api?key=12345" "https://backup.com/dumb?user=trump" ...
-    set p (rsec ProxySub_API)
-    set SUB_URLS "$p?2" "$p?3a"
+    if not set -q SUB_URLS
+        echo "Note: set env 'SUB_URLS' to use shadowrocket subscription. Example:" 1>&2
+        echo "export SUB_URLS='https://example.com/sub/api?key=12345 https://backup.com/dumb?user=trump' # bash" 1>&2
+        echo "set -gx SUB_URLS 'https://example.com/sub/api?key=12345' 'https://backup.com/dumb?user=trump' # fish" 1>&2
+        set p (rsec ProxySub_API)
+        set SUB_URLS "$p?2" "$p?3a"
+    end
     
     for URL in $SUB_URLS
         echo "DOWNLOAD SUBS : $URL" 1>&2
