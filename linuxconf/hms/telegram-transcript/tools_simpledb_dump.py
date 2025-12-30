@@ -26,7 +26,7 @@ if os.environ.get("mode") == "http":
                 super().do_GET()
 
     server = HTTPServer(("0.0.0.0", int(port)), SimpleHandler)
-    print(f"serving http://0.0.0.0:{port}/tools_res/test.html")
+    print(f"listen 0.0.0.0:{port}")
     server.serve_forever()
 else:
     print(simpledb.naive_query(sys.argv[1:]))

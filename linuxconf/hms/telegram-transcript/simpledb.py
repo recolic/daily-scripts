@@ -88,7 +88,7 @@ def naive_query(args):
         output_str = "E " + repr(e)
 
     for k, v in output_kvs.items():
-        output_str.append(json.dumps({"countby": k, "count": v}, ensure_ascii=False))
+        output_str.append(json.dumps({countby: k, "msg_count": v}, ensure_ascii=False))
     return "\n".join(output_str[last_idx:None][None:first_idx])
 
 

@@ -8,12 +8,24 @@
 </head>
 <body class="section">
   <div class="container">
+    <!-- Row 1: input + button -->
     <div class="field has-addons">
       <div class="control is-expanded">
         <input id="queryInput" class="input" type="text" placeholder="Enter query">
       </div>
       <div class="control">
         <button id="submitBtn" class="button is-primary">Submit</button>
+      </div>
+    </div>
+
+    <!-- Row 2: dropdown -->
+    <div class="field">
+      <div class="control">
+        <div class="select is-fullwidth">
+          <select id="exampleSelect">
+            <option value="">-- Select example query --</option>
+          </select>
+        </div>
       </div>
     </div>
 
@@ -26,6 +38,41 @@ const GET_ENDPOINT = "/api";
 const input = document.getElementById("queryInput");
 const btn = document.getElementById("submitBtn");
 const output = document.getElementById("output");
+const select = document.getElementById("exampleSelect");
+
+// naive timestamp helper (seconds)
+function tsMinusDays(days) {
+  return Math.floor(Date.now() / 1000) - days * 86400;
+}
+
+// hardcoded examples
+const examples = [
+  { label: "last 1 day", value: () => `ts gt ${tsMinusDays(1)}` },
+  { label: "last 7 day", value: () => `ts gt ${tsMinusDays(7)}` },
+  { label: "last 10 msg", value: () => `last 10` },
+  { label: "2 day ago to 3 day ago", value: () => `ts gt ${tsMinusDays(3)} ts lt ${tsMinusDays(2)}` },
+  { label: "list all chats", value: () => `countby chat_id` },
+  { label: "list all chats in last 1 day", value: () => `ts gt ${tsMinusDays(1)} countby chat_id` },
+  { label: "outgoing msg in last 1 day", value: () => `ts gt ${tsMinusDays(1)} is_outgoing eq true` },
+  { label: "last 20 msg in specific chat", value: () => `chat_id eq <Put_Chat_Id_Here> last 20` },
+  { label: "all msg from specific user", value: () => `sender_id eq <Put_Sender_Id_Here>` },
+  { label: "count all msgs from all user", value: () => `countby sender_id` }
+];
+
+// populate dropdown
+examples.forEach((ex, i) => {
+  const opt = document.createElement("option");
+  opt.value = i;
+  opt.textContent = ex.label;
+  select.appendChild(opt);
+});
+
+// on select → fill textbox
+select.onchange = () => {
+  const idx = select.value;
+  if (idx === "") return;
+  input.value = examples[idx].value();
+};
 
 btn.onclick = async () => {
   const q = input.value.trim();
