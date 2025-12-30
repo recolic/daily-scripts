@@ -25,13 +25,16 @@ def dump():
     return read_b64_jsonlines(dbpath)
 
 def naive_query(args):
-    # # Debug tool. supported op: eq, ne, gt, lt
+    # # Debug tool. supported filter: eq, ne, gt, lt; supported summarize: count, countby, first, last
+    # ./dump.py [<filter_l filter_op filter_r>, ...] [summarize_op, [summarize_arg]]
     # ./dump.py
     # ./dump.py ts gt 1766800000
     # ./dump.py ts gt 1766800000 is_outgoing eq True sender_id eq 5911111111
     # ./dump.py ts gt 1766800000 ts lt 1766811111
     # ./dump.py ts gt 1766800000 ts lt 1766811111 count
     # ./dump.py ts gt 1766800000 ts lt 1766811111 countby chat_id
+    # ./dump.py ts gt 1766800000 ts lt 1766811111 first 10
+    # ./dump.py ts gt 1766800000 ts lt 1766811111 last 10
 
     def is_not_int(x):
         return isinstance(x, str) and not x.lstrip("-").isdigit()
@@ -50,14 +53,21 @@ def naive_query(args):
         if op == "lt":
             return int(l) < int(r)
 
-    output_kvs, output_str = dict(), ""
-    countby = None
+    output_kvs, output_str = dict(), []
+    countby, first_idx, last_idx = None, None, None
     if "count" in args:
         countby = ""
         args = args[:args.index("count")]
     if "countby" in args:
         countby = args[args.index("countby") + 1]
         args = args[:args.index("countby")]
+    if "first" in args:
+        first_idx = int(args[args.index("first") + 1])
+        args = args[:args.index("first")]
+    if "last" in args:
+        last_idx = - int(args[args.index("last") + 1])
+        args = args[:args.index("last")]
+
     tap_output_k = lambda k: output_kvs.__setitem__(k, output_kvs.get(k, 0) + 1)
 
     try:
@@ -69,7 +79,7 @@ def naive_query(args):
                     break
             if ok: ## output
                 if countby is None:
-                    output_str += json.dumps(d, ensure_ascii=False) + "\n"
+                    output_str.append(json.dumps(d, ensure_ascii=False))
                 elif countby == "":
                     tap_output_k("count")
                 elif countby in d:
@@ -78,7 +88,7 @@ def naive_query(args):
         output_str = "E " + repr(e)
 
     for k, v in output_kvs.items():
-        output_str += json.dumps({"countby": k, "count": v}, ensure_ascii=False) + "\n"
-    return output_str
+        output_str.append(json.dumps({"countby": k, "count": v}, ensure_ascii=False))
+    return "\n".join(output_str[last_idx:None][None:first_idx])
 
 
