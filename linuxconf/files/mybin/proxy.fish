@@ -30,7 +30,7 @@ end
 ## Optional: prefer to run shadowsocks in native implementation
 type -q ss-local ; and set ss ss-local ; or set ss sslocal
 function vconfig_ss_available
-    type -q $ss ; and type -q json2table ; and grep 'protocol"[: ]*"shadowsocks' $argv[1]
+    type -q $ss ; and type -q jq; and grep 'protocol"[: ]*"shadowsocks' $argv[1]
     return $status
 end
 function vconfig_run_ss
