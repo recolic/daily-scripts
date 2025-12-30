@@ -40,10 +40,10 @@ def naive_query(args):
         if l is None or r is None: return op == "ne"
         if op == "eq":
             if type(l) is type(r): return l == r
-            else: return str(l) == str(r)
+            else:     return str(l).lower() == str(r).lower()
         if op == "ne":
             if type(l) is type(r): return l != r
-            else: return str(l) != str(r)
+            else:     return str(l).lower() != str(r).lower()
         if is_not_int(l) or is_not_int(r): return False
         if op == "gt":
             return int(l) > int(r)
@@ -69,7 +69,7 @@ def naive_query(args):
                     break
             if ok: ## output
                 if countby is None:
-                    output_str += str(d) + "\n"
+                    output_str += json.dumps(d, ensure_ascii=False) + "\n"
                 elif countby == "":
                     tap_output_k("count")
                 elif countby in d:
@@ -78,7 +78,7 @@ def naive_query(args):
         output_str = "E " + repr(e)
 
     for k, v in output_kvs.items():
-        output_str += f"{{'{k}': {v}}}\n"
+        output_str += json.dumps({"countby": k, "count": v}, ensure_ascii=False) + "\n"
     return output_str
 
 

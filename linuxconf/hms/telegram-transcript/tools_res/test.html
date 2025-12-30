@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<!-- GPT 5.2 -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Minimal Query Page</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+</head>
+<body class="section">
+  <div class="container">
+    <div class="field has-addons">
+      <div class="control is-expanded">
+        <input id="queryInput" class="input" type="text" placeholder="Enter query">
+      </div>
+      <div class="control">
+        <button id="submitBtn" class="button is-primary">Submit</button>
+      </div>
+    </div>
+
+    <div id="output"></div>
+  </div>
+
+<script>
+const GET_ENDPOINT = "/api";
+
+const input = document.getElementById("queryInput");
+const btn = document.getElementById("submitBtn");
+const output = document.getElementById("output");
+
+btn.onclick = async () => {
+  const q = input.value.trim();
+  if (!q) return;
+
+  output.innerHTML = "";
+  btn.classList.add("is-loading");
+  btn.disabled = true;
+
+  try {
+    const resp = await fetch(
+      GET_ENDPOINT + "?token=test&expr=" + encodeURIComponent(q)
+    );
+    const text = (await resp.text()).trim();
+
+    // non-JSON response (e.g. "E xxx")
+    if (!text.startsWith("{")) {
+      output.textContent = text;
+      return;
+    }
+
+    const lines = text.split("\n").filter(Boolean);
+    let rows;
+
+    try {
+      rows = lines.map(l => JSON.parse(l));
+    } catch (e) {
+      output.textContent = "Invalid JSON response:\n" + text;
+      return;
+    }
+
+    const keys = Array.from(new Set(rows.flatMap(r => Object.keys(r))));
+
+    const table = document.createElement("table");
+    table.className = "table is-bordered is-narrow is-fullwidth";
+
+    table.innerHTML =
+      "<thead><tr>" +
+        keys.map(k => `<th>${k}</th>`).join("") +
+      "</tr></thead>";
+
+    const tbody = document.createElement("tbody");
+    rows.forEach(r => {
+      const tr = document.createElement("tr");
+      keys.forEach(k => {
+        const td = document.createElement("td");
+        td.textContent = r[k] !== undefined ? String(r[k]) : "";
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+
+    output.appendChild(table);
+  } catch (e) {
+    output.textContent = "Error: " + e.message;
+  } finally {
+    btn.classList.remove("is-loading");
+    btn.disabled = false;
+  }
+};
+</script>
+</body>
+</html>
+
