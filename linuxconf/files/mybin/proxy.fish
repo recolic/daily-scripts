@@ -86,8 +86,8 @@ function help2
         echo "To flush cache, delete the cache_file $cache_file and run 'proxy.fish dummy 1'"
     else
         echo "*** before first run: set env SUB_URLS, and flush cache with 'proxy.fish dummy 1'. Example:"
-        echo "  export SUB_URLS='https://example.com/sub/api?key=12345 https://backup.com/dumb?user=trump' # bash"
-        echo "  set -x SUB_URLS 'https://example.com/sub/api?key=12345 https://backup.com/dumb?user=trump' # fish"
+        echo "    export SUB_URLS='https://example.com/sub/api?key=12345 https://backup.com/dumb?user=trump' # bash"
+        echo "    set -x SUB_URLS 'https://example.com/sub/api?key=12345 https://backup.com/dumb?user=trump' # fish"
     end
 end
 if test (count $argv) != 2
