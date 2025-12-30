@@ -1,17 +1,14 @@
 #!/usr/bin/fish
-# v1.06.202511
+# v1.07.202512
 
 set script_dir (dirname (status --current-filename))
 function download_subs
     if not set -q SUB_URLS
-        echo "Note: set env 'SUB_URLS' to use shadowrocket subscription. Example:" 1>&2
-        echo "export SUB_URLS='https://example.com/sub/api?key=12345 https://backup.com/dumb?user=trump' # bash" 1>&2
-        echo "set -gx SUB_URLS 'https://example.com/sub/api?key=12345' 'https://backup.com/dumb?user=trump' # fish" 1>&2
         set p (rsec ProxySub_API)
-        set SUB_URLS "$p?2" "$p?3a"
+        set SUB_URLS "$p?3 $p?3a"
     end
     
-    for URL in $SUB_URLS
+    for URL in (string split " " -- $SUB_URLS)
         echo "DOWNLOAD SUBS : $URL" 1>&2
         curl -s "$URL" | base64 -d | dos2unix | while read -l line
             echo "$line" | grep "://" > /dev/null 2>&1 ; or continue
@@ -88,7 +85,9 @@ function help2
     if test -f $cache_file
         echo "To flush cache, delete the cache_file $cache_file and run 'proxy.fish dummy 1'"
     else
-        echo "*** before first run: please modify this script, update SUB_URLS, and run 'proxy.fish dummy 1'"
+        echo "*** before first run: set env SUB_URLS, and flush cache with 'proxy.fish dummy 1'. Example:"
+        echo "  export SUB_URLS='https://example.com/sub/api?key=12345 https://backup.com/dumb?user=trump' # bash"
+        echo "  set -x SUB_URLS 'https://example.com/sub/api?key=12345 https://backup.com/dumb?user=trump' # fish"
     end
 end
 if test (count $argv) != 2
@@ -103,6 +102,7 @@ if not test -e $cache_file || test (math (date +%s) - (stat -c %Y $cache_file)) 
     echo "cache file not exist or older than 7 days. downloading $cache_file..."
     mkdir -p $HOME/.cache ; rm -f $cache_file
     download_subs > $cache_file
+    grep . $cache_file > /dev/null ; or rm -f $cache_file
 end
 
 if test -f $node
