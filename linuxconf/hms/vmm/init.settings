@@ -2,6 +2,7 @@
 # name;cloudimg;disk;username;password (space will be trimmed)
 Tyran_devbox;ubuntu-24.04-server-cloudimg-amd64.img;150G;tyran;__censored__
 playg;ubuntu-24.04-server-cloudimg-amd64.img;50G;r;1
+gitrunner;ubuntu-24.04-server-cloudimg-amd64.img;100G;r;1
 
 ## or init VM from pre-deployed backing image (please put it into data/base/)
 # name;existing_img_fname
