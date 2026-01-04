@@ -120,8 +120,9 @@ function c1_csv_filter () {
     if [ "$lastmonth_only" = 1 ]; then
         local cur_m=`date +%-m`
         local cur_y=`date +%Y`
-        local prev_m=`auto_get_month | cut -d : -f 1`
-        cat "$l_fname" | grep ",$what," | grep ",$cur_y-$prev_m-"
+        [ "$cur_m" = 1 ] && local prev_m=12 || local prev_m=$(($cur_m-1))
+        [ "$cur_m" = 1 ] && local prev_y=$(($cur_y-1)) || local prev_y=$cur_y
+        cat "$l_fname" | grep ",$what," | grep ",$prev_y-$prev_m-"
     else
         cat "$l_fname" | grep ",$what," 
     fi
@@ -203,9 +204,13 @@ Usage (C1, by Post date):
         alliant_csv_filter other "$fname" > /tmp/.alliant-other.csv || return $?
         alliant_csv_calc /tmp/.alliant-1.csv > /tmp/.alliant-tx.txt || return $?
     elif [[ $CSV = c1 ]]; then
+        echo c1_csv_filter 1
         c1_csv_filter 1852 "$fname" > /tmp/.alliant-1.csv || return $?
+        echo c1_csv_filter 2
         c1_csv_filter 3662 "$fname" > /tmp/.alliant-other.csv || return $?
+        echo c1_csv_calc
         c1_csv_calc /tmp/.alliant-1.csv > /tmp/.alliant-tx.txt || return $?
+        echo c1_csv_calc done
     else
         echo "ERROR invalid $CSV" && exit 1
     fi
