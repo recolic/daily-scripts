@@ -23,6 +23,9 @@ lc_startup () {
 
         # Both Azure-VPN and GlobalProtect use systemd-resolved. This one won't break NetworkManager.
         ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+
+        # Don't pollute my app search
+        [ -f /usr/share/applications/firefox-developer-edition.desktop ] && sed -i 's/Edition//g' /usr/share/applications/firefox-developer-edition.desktop
     else
         # lc_bgrun /dev/null every 30m /etc/ar2/ar2.sh
 
