@@ -1,6 +1,8 @@
 # Better GetIdleTime for gnome.
 # This script runs as a daemon, constantly reporting GetIdleTime.
 # Safe against sudden notification event. It won't be reset even if gnome GetIdleTime went back to zero.
+#
+# Must run as normal user on login, otherwise dbus won't work.
 
 import subprocess
 import time
