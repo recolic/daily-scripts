@@ -74,16 +74,16 @@ host remote.hms.recolic
     #port 30512
     user root
 
-host pc.re
+host pc.recolic
     port 25566
     user recolic
 
-host remote.pc.re
+host remote.pc.recolic
     hostname base.ddns1.recolic.cc
     port 25566
     user recolic
 
-host mpc.re
+host mpc.recolic
     hostname RECOLICMPC
     port 22
     user recolic
