@@ -57,8 +57,7 @@ MimeType=text/html;text/xml;application/xhtml_xml;image/webp;x-scheme-handler/ht
 
 lc_login () {
     if ! grep -F .m.recolic /etc/hosts > /dev/null; then
-        gpg -d -o /tmp/.hosts.tmp secrets/work-hosts.gpg &&
-            sudo mv /tmp/.hosts.tmp /etc/hosts
+        gpg -d -o /tmp/.hosts.tmp secrets/work-hosts.gpg && sudo mv /tmp/.hosts.tmp /etc/hosts
     fi
 
     if [ ! -f "$HOME/.cache/git-work-config.inc" ]; then
