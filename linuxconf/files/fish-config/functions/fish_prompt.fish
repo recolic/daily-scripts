@@ -89,7 +89,7 @@ if set -q VIRTUAL_ENV
 end
 
     ### recolic customize begin
-    set -l hostname_short "$arrow_color"(echo $hostname | string replace RECOLIC '')
+    set -l hostname_short "$arrow_color"(echo $hostname | string replace -i RECOLIC '')
     if set -q RECOLIC_ENV_NAME
         if set -q PROXYCHAINS_CONF_FILE
             set envname "$yellow!P_$RECOLIC_ENV_NAME!$green"
