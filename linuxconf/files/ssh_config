@@ -68,7 +68,7 @@ host hms.recolic
     user root
 
 host remote.hms.recolic
-    hostname base.ddns1.recolic.cc
+    hostname base.ddns1.recolic.net
     port 25567
     #hostname proxy-cdn.recolic.net
     #port 30512
@@ -79,7 +79,7 @@ host pc.recolic
     user recolic
 
 host remote.pc.recolic
-    hostname base.ddns1.recolic.cc
+    hostname base.ddns1.recolic.net
     port 25566
     user recolic
 
