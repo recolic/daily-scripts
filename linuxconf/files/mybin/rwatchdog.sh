@@ -114,7 +114,8 @@ function time_check_cron () {
 
 function conscious_check_cron () {
     echo $FUNCNAME
-    local idle_time=$(gdbus call --session --dest org.gnome.Mutter.IdleMonitor --object-path /org/gnome/Mutter/IdleMonitor/Core --method org.gnome.Mutter.IdleMonitor.GetIdletime | grep uint64 | cut -d , -f 1 | cut -d ' ' -f 2)
+    ##unreliable## local idle_time=$(gdbus call --session --dest org.gnome.Mutter.IdleMonitor --object-path /org/gnome/Mutter/IdleMonitor/Core --method org.gnome.Mutter.IdleMonitor.GetIdletime | grep uint64 | cut -d , -f 1 | cut -d ' ' -f 2)
+    local idle_time=$(cat /tmp/.idled-py-out)
     if [[ "$idle_time" = "" ]]; then
         _err="idle check FAILED. gnome is not available?"
         return 0
@@ -185,9 +186,15 @@ else
     echo "ERROR: Supported operation: leave +1hour ; night ; ack ; work ; nonwork ; daemon"
 fi
 
+## extra safety checks
+if [[ "$op" = "leave" ]] || [[ "$op" = "night" ]]; then
+    if [ ! -f /tmp/.idled-py-out ] || [ $(( $(date +%s) - $(stat -c %Y /tmp/.idled-py-out) )) -gt 10 ]; then
+        echo -e "\033[1;31m ERROR\nERROR\nERROR: GetIdleTime-daemon.py is not running. \033[0m"
+    fi
+fi
 if [[ "$op" != "daemon" ]]; then
     ps aux | grep 'rwatchdog.sh [d]aemon' || ! echo -e "\033[1;31m ERROR\nERROR\nERROR: rwatchdog daemon is not running. \033[0m"
-    exit $?
+    exit $? ########### all non-daemon call exits here
 fi
 
 ######### daemon mode # code BEGINS ########

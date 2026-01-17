@@ -22,11 +22,12 @@ done
 }
 
 lc_login () {
-    if [[ $(hostname) = RECOLICPC ]]; then
+    if [[ $(hostname) = RECOLICPC ]] || [[ $(hostname) = RECOLICMPC ]]; then
         echo _:1 | bash utils/unlock_keyrings
         # nohup fcitx5 &
     fi
     lc_bgrun /dev/null fish utils/tg-backend-autokill.fish
+    lc_bgrun /dev/null python files/mybin/lib/GetIdleTime-daemon.py
 
     # need smartcard interaction
     # [[ $(hostname) = RECOLICMPC ]] && lc_bgrun /dev/null env IMPL=sshfs bash utils/auto-nfs-mgr.sh

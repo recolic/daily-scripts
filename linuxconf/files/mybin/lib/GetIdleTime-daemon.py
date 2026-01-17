@@ -75,7 +75,7 @@ def adjustedIdleTime(datapoints):
     print(f"DEBUG: Na={Na} Ni={Ni} last_idx={last_idx} adjustedIdleTime={res}")
     return res
 
-
+print("Writing status file: /tmp/.idled-py-out ...")
 while True:
     datapoints.append(fetch_idle_time())
 
