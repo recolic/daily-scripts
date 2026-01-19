@@ -116,6 +116,7 @@ function conscious_check_cron () {
     echo $FUNCNAME
     ##unreliable## local idle_time=$(gdbus call --session --dest org.gnome.Mutter.IdleMonitor --object-path /org/gnome/Mutter/IdleMonitor/Core --method org.gnome.Mutter.IdleMonitor.GetIdletime | grep uint64 | cut -d , -f 1 | cut -d ' ' -f 2)
     local idle_time=$(cat /tmp/.idled-py-out)
+    [[ "$idle_time" = "" ]] && sleep 0.5 && local idle_time=$(cat /tmp/.idled-py-out)
     if [[ "$idle_time" = "" ]]; then
         _err="idle check FAILED. gnome is not available?"
         return 0
