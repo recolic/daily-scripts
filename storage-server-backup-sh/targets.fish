@@ -54,11 +54,9 @@ end
 ########################### Targets begin #############################
 
 function target_nas_data
+    # replica only, skip history version packing. sync directly into /backups/
     run_until_success rsync -avz --partial --delete --no-links \
-        root@remote.nfs.recolic:/mnt/fsdisk/nfs/backups /storage/cache/target_nas_data
-
-    # replica only, skip history version packing.
-    # and pack_backup_dir /storage/cache/target_nas_data
+        root@remote.nfs.recolic:/mnt/fsdisk/nfs/backups /storage/backups/target_nas_data
     return $status
 end
 
