@@ -1,10 +1,10 @@
 #!/usr/bin/fish
-# v1.07.202512
+# v1.08.202512
 
 set script_dir (dirname (status --current-filename))
 function download_subs
     if not set -q SUB_URLS
-        set p (rsec ProxySub_API)
+        set p (rsec ProxySub_API) ; or echo " !! Cannot download from subscription: SUB_URLS not set."
         set SUB_URLS "$p?3 $p?3a"
     end
     
@@ -83,20 +83,20 @@ function help2
     echo "Node list from subscription cache file:"
     grep -o "^[^ ]* " $cache_file 2>/dev/null
     if test -f $cache_file
-        echo "To flush cache, delete the cache_file $cache_file and run 'proxy.fish dummy 1'"
+        echo "To flush cache, delete the cache_file $cache_file and run 'proxy.fish dummy'"
     else
-        echo "*** before first run: set env SUB_URLS, and flush cache with 'proxy.fish dummy 1'. Example:"
+        echo "*** before first run: set env SUB_URLS, and flush cache with 'proxy.fish dummy'. Example:"
         echo "    export SUB_URLS='https://example.com/sub/api?key=12345 https://backup.com/dumb?user=trump' # bash"
         echo "    set -x SUB_URLS 'https://example.com/sub/api?key=12345 https://backup.com/dumb?user=trump' # fish"
     end
 end
-if test (count $argv) != 2
+if test (count $argv) != 2 ; and test (count $argv) != 1
     help1 ; help2
     exit 1
 end
 
 set node $argv[1]
-set port $argv[2]
+set -q argv[2]; and set port $argv[2]; or set port 1080
 
 if not test -e $cache_file || test (math (date +%s) - (stat -c %Y $cache_file)) -gt 604800
     echo "cache file not exist or older than 7 days. downloading $cache_file..."
