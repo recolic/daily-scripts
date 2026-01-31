@@ -9,8 +9,8 @@ if os.environ.get("mode") == "http":
     class SimpleHandler(SimpleHTTPRequestHandler):
         def do_GET(self):
             parsed = urlparse(self.path)
-            if self.path.startswith("/api"):
-                try:
+            try:
+                if self.path.startswith("/api"):
                     params = parse_qs(urlparse(self.path).query)
                     assert params["token"][0] == token
                     resp = simpledb.naive_query(params["expr"][0].split(" "))
@@ -18,12 +18,13 @@ if os.environ.get("mode") == "http":
                     self.send_response(200)
                     self.end_headers()
                     self.wfile.write(resp.encode())
-                except Exception as e:
-                    self.send_response(400)
-                    self.end_headers()
-                    self.wfile.write(f"server err:{e}".encode())
-            else:
-                super().do_GET()
+                else:
+                    self.path = "/tools_simpledb_dump.py.html"
+                    super().do_GET()
+            except Exception as e:
+                self.send_response(400)
+                self.end_headers()
+                self.wfile.write(f"server err:{e}".encode())
 
     server = HTTPServer(("0.0.0.0", int(port)), SimpleHandler)
     print(f"listen 0.0.0.0:{port}")

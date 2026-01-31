@@ -9,13 +9,11 @@ function email_notify () {
 }
 
 mkdir -p /mnt/fsdisk/tmp/tg-transcript-workdir
-wd="$(pwd)"
-cd /mnt/fsdisk/tmp/tg-transcript-workdir || email_notify "telegram-transcript daemon failed"
+script_dir="$(pwd)"
+cd /mnt/fsdisk/tmp/tg-transcript-workdir &&
+cp $script_dir/tools_simpledb_dump.py.html ./ || email_notify "telegram-transcript daemon failed"
 
 export mode=http
-nohup python $wd/$(dirname $0)/tools_simpledb_dump.py $audit_port $audit_token & disown
+nohup python $script_dir/$(dirname $0)/tools_simpledb_dump.py $audit_port $audit_token & disown
 
-python $wd/$(dirname $0)/tg-transcript.py || email_notify "telegram-transcript daemon failed"
-
-
-
+python $script_dir/$(dirname $0)/tg-transcript.py || email_notify "telegram-transcript daemon failed"
