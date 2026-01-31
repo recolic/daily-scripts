@@ -87,7 +87,7 @@ lc_startup () {
     # lc_bgrun /var/log/ddns-daemon.log every 10m curl -s "https://dynamicdns.park-your-domain.com/update?host=rhome&domain=896444.xyz&password=$(rsec DDNS_XYZ_TOKEN)"
     
     # frpc. recolichms : 30510-30519
-    lc_bgrun /var/log/frpc2.log auto_restart frpc tcp -n hms_audit -l 30510 -r 30510 -s proxy.recolic.net -P 30999 --token $(rsec FRP_KEY)
+    # lc_bgrun /var/log/frpc2.log auto_restart frpc tcp -n hms_audit -l 30510 -r 30510 -s proxy.recolic.net -P 30999 --token $(rsec FRP_KEY)
     lc_bgrun /var/log/frpc1.log auto_restart frpc tcp -n hms_ssh  -l 22 -r 30512 -s proxy.recolic.net -P 30999 --token $(rsec FRP_KEY)
     lc_bgrun /var/log/frpc2.log auto_restart frpc tcp -n hms_http -l 80 -r 30513 -s proxy.recolic.net -P 30999 --token $(rsec FRP_KEY)
     
