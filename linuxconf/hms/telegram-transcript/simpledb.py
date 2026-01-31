@@ -26,7 +26,7 @@ def dump():
 
 def naive_query(args):
     # # Debug tool. supported filter: eq, ne, gt, lt; supported summarize: count, countby, first, last
-    # ./dump.py [<filter_l filter_op filter_r>, ...] [summarize_op, [summarize_arg]]
+    # ./dump.py [op ...]; op = <filter_l filter_op filter_r> | <summarize_op [summarize_arg]>
     # ./dump.py
     # ./dump.py ts gt 1766800000
     # ./dump.py ts gt 1766800000 is_outgoing eq True sender_id eq 5911111111
@@ -55,18 +55,23 @@ def naive_query(args):
 
     output_kvs, output_str = dict(), []
     countby, first_idx, last_idx = None, None, None
-    if "count" in args:
-        countby = ""
-        args = args[:args.index("count")]
-    if "countby" in args:
-        countby = args[args.index("countby") + 1]
-        args = args[:args.index("countby")]
-    if "first" in args:
-        first_idx = int(args[args.index("first") + 1])
-        args = args[:args.index("first")]
-    if "last" in args:
-        last_idx = - int(args[args.index("last") + 1])
-        args = args[:args.index("last")]
+    i, args_filter = 0, []
+    while i < len(args):
+        if args[i] == "count":
+            countby = ""
+            i += 1
+        elif args[i] == "countby":
+            countby = args[i+1]
+            i += 2
+        elif args[i] == "first":
+            first_idx = int(args[i+1])
+            i += 2
+        elif args[i] == "last":
+            last_idx = - int(args[i+1])
+            i += 2
+        else:
+            args_filter.append(args[i])
+            i += 1
 
     tap_output_k = lambda k: output_kvs.__setitem__(k, output_kvs.get(k, 0) + 1)
 

@@ -59,6 +59,9 @@ const examples = [
   { label: "count all msgs from all user", value: () => `countby sender_id` }
 ];
 
+const g_token = new URLSearchParams(location.search).get("token");
+if (!g_token) alert("missing HTTP GET arg: token");
+
 // populate dropdown
 examples.forEach((ex, i) => {
   const opt = document.createElement("option");
@@ -84,7 +87,7 @@ btn.onclick = async () => {
 
   try {
     const resp = await fetch(
-      GET_ENDPOINT + "?token=test&expr=" + encodeURIComponent(q)
+      GET_ENDPOINT + "?token=" + g_token + "&expr=" + encodeURIComponent(q)
     );
     const text = (await resp.text()).trim();
 
