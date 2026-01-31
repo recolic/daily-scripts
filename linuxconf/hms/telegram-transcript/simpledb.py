@@ -35,6 +35,7 @@ def naive_query(args):
     # ./dump.py ts gt 1766800000 ts lt 1766811111 countby chat_id
     # ./dump.py ts gt 1766800000 ts lt 1766811111 first 10
     # ./dump.py ts gt 1766800000 ts lt 1766811111 last 10
+    # ./dump.py message_text has hello
 
     def is_not_int(x):
         return isinstance(x, str) and not x.lstrip("-").isdigit()
@@ -47,6 +48,8 @@ def naive_query(args):
         if op == "ne":
             if type(l) is type(r): return l != r
             else:     return str(l).lower() != str(r).lower()
+        if op == "has":
+            return str(r).lower() in str(l).lower()
         if is_not_int(l) or is_not_int(r): return False
         if op == "gt":
             return int(l) > int(r)

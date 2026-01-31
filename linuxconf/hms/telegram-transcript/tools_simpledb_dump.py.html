@@ -56,6 +56,7 @@ const examples = [
   { label: "outgoing msg in last 1 day", value: () => `ts gt ${tsMinusDays(1)} is_outgoing eq true` },
   { label: "last 20 msg in specific chat", value: () => `chat_id eq <Put_Chat_Id_Here> last 20` },
   { label: "all msg from specific user", value: () => `sender_id eq <Put_Sender_Id_Here>` },
+  { label: "all msg containing 'hello'", value: () => `message_text has hello` },
   { label: "count all msgs from all user", value: () => `countby sender_id` }
 ];
 
