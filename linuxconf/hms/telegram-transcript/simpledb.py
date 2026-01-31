@@ -81,8 +81,8 @@ def naive_query(args):
     try:
         for d in dump():
             ok = True
-            for i in range(0, len(args), 3):
-                if not assert_(d.get(args[i]), args[i+1], args[i+2]):
+            for i in range(0, len(args_filter), 3):
+                if not assert_(d.get(args_filter[i]), args_filter[i+1], args_filter[i+2]):
                     ok = False
                     break
             if ok: ## output
@@ -93,7 +93,7 @@ def naive_query(args):
                 elif countby in d:
                     tap_output_k(d[countby])
     except Exception as e:
-        output_str = "E " + repr(e)
+        output_str = ["E " + repr(e)]
 
     for k, v in output_kvs.items():
         output_str.append(json.dumps({countby: k, "msg_count": v}, ensure_ascii=False))
