@@ -39,14 +39,8 @@ def handle(chat_id, is_outgoing, sender_id, msg_id, message_text):
             buf.popleft()
 
 def flush_on_exit():
-    for buf in buffers:
+    for k in buffers:
+        buf = buffers[k]
         if buf and buf[0]['is_outgoing']:
             evacuate_buffer(buf)
-
-#    for i in range(22):
-#        message_handler("c1", False, i, f"incoming-{i}")
-#    # send outgoing, should cause log of previous 16
-#    message_handler("c1", True, 22, "OUTGOING!")
-#    for i in range(22):
-#        message_handler("c1", False, i, f"incoming-{i}")
 
