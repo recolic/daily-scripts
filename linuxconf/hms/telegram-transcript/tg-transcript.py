@@ -31,7 +31,7 @@ def new_message_handler(update):
             # print("Extract: text=", message_text, file=open(prefix+'/debug.log.gi', 'a'))
             handler_impl.handle(chat_id, is_outgoing, sender_id, msg_id, message_text)
         else:
-            print("ignore non-text msg", msg_id, file=open(prefix+'/debug.log.gi', 'a'))
+            print("ignore non-text msg:" + str(message_content), msg_id, file=open(prefix+'/debug.log.gi', 'a'))
     except Exception as e:
         print(update, file=open(prefix+'/debug.log.gi', 'a'))
         print(type(e).__name__, e, file=open(prefix+'/debug.log.gi', 'a'))
@@ -47,5 +47,6 @@ if __name__ == "__main__":
 
     tg.add_message_handler(new_message_handler)
     tg.idle()  # blocking waiting for CTRL+C
+    handler_impl.flush_on_exit()
     tg.stop()  # you must call `stop` at the end of the script
 

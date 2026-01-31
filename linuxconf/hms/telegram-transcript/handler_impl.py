@@ -38,6 +38,10 @@ def handle(chat_id, is_outgoing, sender_id, msg_id, message_text):
         elif len(buf) > BUFFER_SIZE:
             buf.popleft()
 
+def flush_on_exit():
+    for buf in buffers:
+        if buf and buf[0]['is_outgoing']:
+            evacuate_buffer(buf)
 
 #    for i in range(22):
 #        message_handler("c1", False, i, f"incoming-{i}")
