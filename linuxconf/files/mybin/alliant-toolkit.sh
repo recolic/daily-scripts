@@ -122,7 +122,7 @@ function c1_csv_filter () {
         local cur_y=`date +%Y`
         [ "$cur_m" = 1 ] && local prev_m=12 || local prev_m=$(($cur_m-1))
         [ "$cur_m" = 1 ] && local prev_y=$(($cur_y-1)) || local prev_y=$cur_y
-        cat "$l_fname" | grep ",$what," | grep ",$prev_y-$prev_m-"
+        cat "$l_fname" | grep ",$what," | grep ",$prev_y-0\?$prev_m-"
     else
         cat "$l_fname" | grep ",$what," 
     fi
