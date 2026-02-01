@@ -33,20 +33,20 @@ all_impl = {
         extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None, max_completion_tokens=16000)
     ),
     'flash': lambda: dict(
-        model = "gemini-2.5-flash",
+        model = "gemini-3-flash-preview",
         client = OpenAI(
             api_key=rsec("Gemini_KEY"),
             base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
         ),
-        extra_args = dict(max_tokens=16000)
+        extra_args = dict(max_tokens=16000, reasoning_effort="low")
     ),
     'pro': lambda: dict(
-        model = "gemini-2.5-pro",
+        model = "gemini-3-pro-preview",
         client = OpenAI(
             api_key=rsec("Gemini_KEY"),
             base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
         ),
-        extra_args = dict(max_tokens=16000)
+        extra_args = dict(max_tokens=16000, reasoning_effort="high")
     ),
     'grok': lambda: dict(
         model = "grok-4-1-fast-non-reasoning",
@@ -54,15 +54,7 @@ all_impl = {
             api_key=rsec("Grok_KEY"),
             base_url="https://api.x.ai/v1"
         ),
-        extra_args = dict(extra_body={
-            "search_enabled": True,
-            "real_time_data": True,
-            "search_parameters": {
-                "max_search_results": 15,
-                "mode": "auto",
-                "include_citations": False
-            }
-        })
+        extra_args = dict()
     ),
     'grokr': lambda: dict(
         model = "grok-4-1-fast-reasoning",
@@ -70,15 +62,7 @@ all_impl = {
             api_key=rsec("Grok_KEY"),
             base_url="https://api.x.ai/v1"
         ),
-        extra_args = dict(extra_body={
-            "search_enabled": True,
-            "real_time_data": True,
-            "search_parameters": {
-                "max_search_results": 15,
-                "mode": "auto",
-                "include_citations": False
-            }
-        })
+        extra_args = dict()
     ),
 }
 
