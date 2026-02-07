@@ -5,12 +5,12 @@ set script_dir (dirname (status --current-filename))
 function download_subs
     if not set -q SUB_URLS
         set p (rsec ProxySub_API) ; or echo " !! Cannot download from subscription: SUB_URLS not set."
-        set SUB_URLS "$p?3 $p?3a"
+        set SUB_URLS "$p?3 $p?3a $p?2"
     end
     
     for URL in (string split " " -- $SUB_URLS)
         echo "DOWNLOAD SUBS : $URL" 1>&2
-        curl -s "$URL" | base64 -d | dos2unix | while read -l line
+        curl -s --user-agent "Shadowrocket/2701 CFNetwork/3826.600.41 Darwin/24.6.0 iPhone16,1" "$URL" | base64 -d | dos2unix | while read -l line
             echo "$line" | grep "://" > /dev/null 2>&1 ; or continue
             set name (python $script_dir/lib/proxy-url-to-name.py "$line")
                 and echo "$name $line"
