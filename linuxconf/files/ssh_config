@@ -53,9 +53,11 @@ host vm.ndpa-build.recolic
     user r
     proxyjump ms.recolic
 
-host intpyf.com
-    user root
-    port 4022
+host vm.shared-box.recolic
+    hostname 127.0.0.1
+    port 30479
+    user r
+    proxyjump ms.recolic
 
 host remote.river-mac.recolic
     hostname proxy.recolic.net
