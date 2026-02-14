@@ -2,14 +2,23 @@
 import json, sys, os
 import lib.recogpt as recogpt
 
-if len(sys.argv) < 2:
-    alias = 'gpt52'
-    print("Available config:", recogpt.impl_list())
-else:
-    alias = sys.argv[1]
+alias = 'gpt52'
+single_file_mode = ""
+if len(sys.argv) == 1: print("Available config:", recogpt.impl_list())
+
+for arg in sys.argv[1:]:
+    if arg in recogpt.impl_list():
+        alias = arg
+    elif os.path.exists(arg):
+        single_file_mode = arg
 
 impl = recogpt.impl_load(alias)
 chat_prompt = recogpt.prompt_init_default()
+
+if single_file_mode:
+    chat_prompt += recogpt.prompt_user(open(os.path.expanduser(arg)).read())
+    print(recogpt.complete(impl, chat_prompt))
+    exit(0)
 
 T_BLUEB = '\033[44m'
 T_CLR = '\033[0m'
