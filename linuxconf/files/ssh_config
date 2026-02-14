@@ -94,7 +94,7 @@ host playg.re
     hostname hms.recolic
     port 30474
     user root
-    #proxyjump remote.hms.recolic
+    proxyjump remote.hms.recolic
 
 host rpi.recolic
     user root
