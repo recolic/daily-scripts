@@ -21,6 +21,7 @@ msdev2      |(rsec MSIDw )|(rsec MSPASS           )|mspc.m.recolic:30474
 msdevlan    |recolic      |(genpasswd devbox -S   )|mspc.wlo.m.recolic:30474
 labjump     |(rsec MSIDw )|(rsec MSPASS           )|jb3.team1.m.recolic
 labjum2     |(rsec MSIDw )|(rsec MSPASS           )|jb1.team6.m.recolic
+labjump2b   |(rsec MSIDw )|(rsec MSPASS           )|jb1.backup6.m.recolic
 lanbox      |recolic      |(genpasswd lanbox      )|10.100.100.101:30473
 cnbox       |recolic      |(genpasswd cnbox       )|mspc.m.recolic:30476
 host16      |Administrator|(rsec OVL_HOST_RDP     )|host.blade16.m.recolic
