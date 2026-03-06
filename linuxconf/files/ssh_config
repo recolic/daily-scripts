@@ -103,6 +103,10 @@ host remote.rpi.recolic
     hostname rpi.recolic
     user root
     proxyjump remote.hms.recolic
+host remote.rpi.recolic.backup
+    hostname proxy.recolic.net
+    user root
+    port 30654
 
 ### Work machine. IP must be protected.
 
