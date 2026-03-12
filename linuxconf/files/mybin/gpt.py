@@ -2,7 +2,7 @@
 import json, sys, os
 import lib.recogpt as recogpt
 
-alias = 'gpt52'
+alias = 'gpt53'
 single_file_mode = ""
 if len(sys.argv) == 1: print("Available config:", recogpt.impl_list())
 

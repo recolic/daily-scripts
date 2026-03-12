@@ -5,29 +5,20 @@ def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, c
 
 all_impl = {
     # Warning: Azure heavy censorship
-    'gpt5': lambda: dict(
-        model = "gpt-5-chat",
+    'gpt52': lambda: dict(
+        model = "gpt-5.2-chat",
         client = AzureOpenAI(
-            azure_endpoint=rsec("Az_OpenAI_API5"),
-            api_key=rsec("Az_OpenAI_KEY5"),
-            api_version="2025-01-01-preview"
-        ),
-        extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None, max_tokens=16000)
-    ),
-    'gpt51': lambda: dict(
-        model = "gpt-5.1-chat",
-        client = AzureOpenAI(
-            azure_endpoint=rsec("Az_OpenAI_API5"),
-            api_key=rsec("Az_OpenAI_KEY5"),
+            azure_endpoint=rsec("Az_OpenAI_API"),
+            api_key=rsec("Az_OpenAI_KEY"),
             api_version="2025-01-01-preview"
         ),
         extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None, max_completion_tokens=16000)
     ),
-    'gpt52': lambda: dict(
-        model = "gpt-5.2-chat",
+    'gpt53': lambda: dict(
+        model = "gpt-5.3-chat",
         client = AzureOpenAI(
-            azure_endpoint=rsec("Az_OpenAI_API5"),
-            api_key=rsec("Az_OpenAI_KEY5"),
+            azure_endpoint=rsec("Az_OpenAI_API"),
+            api_key=rsec("Az_OpenAI_KEY"),
             api_version="2025-01-01-preview"
         ),
         extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None, max_completion_tokens=16000)
