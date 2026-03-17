@@ -112,8 +112,8 @@ else
             echo "Removing malware... need root access"
             echo -e "[libdefaults]\\ndefault_realm = 192.168.191.191" | sudo tee /etc/krb5.conf
         end
-        echo "EXEC: $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:loctmp,$HOME/tmp $ext_opt /u:$user /p:#pass /v:$host /timeout:100000"
-        $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:loctmp,$HOME/tmp $ext_opt /u:$user /p:$pass /v:$host /timeout:100000
+        echo "EXEC: $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:loctmp,$HOME/tmp $ext_opt /u:$user /p:#pass /v:$host /timeout:100000" $argv[2..-1]
+        $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:loctmp,$HOME/tmp $ext_opt /u:$user /p:$pass /v:$host /timeout:100000 $argv[2..-1]
     end
 end
 
