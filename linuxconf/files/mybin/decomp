@@ -9,7 +9,7 @@
 function _e () {
     fname=`basename "$1"`
     case "$fname" in
-        *.7z | *.iso )
+        *.7z | *.iso | *.squashfs )
             7z x "$1"
             ;;
         *.zip | *.nupkg )
