@@ -95,7 +95,7 @@ lc_startup () {
     lc_bgrun /var/log/aria2-rpcd.log bash -c "cd /mnt/fsdisk/nfs/pub/ && aria2c --enable-rpc --rpc-listen-all --rpc-allow-origin-all"
     
     # minecraft server
-    lc_bgrun /var/log/launch-mcserver.log hms/launch-mcserver.fish
+    #lc_bgrun /var/log/launch-mcserver.log hms/launch-mcserver.fish
     
     # ZFS monitor
     lc_bgrun /var/log/recolic-zfs-monitor.log hms/zfs-monitor-failure-daemon.fish
@@ -126,7 +126,7 @@ lc_startup () {
     subline=$(curl "$(rsec ProxySub_API)?3a" | base64 -d | grep C100.JP2LW)
     lc_bgrun /var/log/v10808.log go-shadowsocks2 -c "$subline" -socks :10808
 
-    lc_bgrun /dev/null fish hms/tfc-repomon.fish
+    # lc_bgrun /dev/null fish hms/tfc-repomon.fish
 
     lc_bgrun /var/log/cron.log every 1d docker run --rm recolic/mailbox-cleaner imap.recolic.net tmp@recolic.net "$(rsec genpasswd_tmp@recolic.net)" -d 15
     # Using (rsec Telegram_API_HASH) (rsec Telegram_API_ID) (rsec PHONE)
