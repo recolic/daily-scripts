@@ -3,7 +3,7 @@
 set -euo pipefail
 
 NAME="${RSANDBOX_NAME:-rsandbox}"
-IMAGE="${RSANDBOX_IMAGE:-ubuntu:22.04}"
+IMAGE="${RSANDBOX_IMAGE:-archlinux:base-devel}"
 WD="$(pwd)"
 
 usage() {
@@ -61,7 +61,7 @@ fi
 
 # validate and print warning
 [[ "${1:-}" == "sudo" ]] && binname="${2:-}" || binname="${1:-}"
-[[ "$(realpath -m "$binname" 2>/dev/null)" == "$(realpath -m "$WD")"* ]] || echo "warning: sandbox only have access to current workdir. use shell for full access" 1>&2
+[[ "$(realpath -m "$binname" 2>/dev/null)" == "$(realpath -m "$WD")"* ]] || echo "warning: sandbox only have access to current workdir, not '$binname'. use shell for full access" 1>&2
 
 # If command begins with literal "sudo", eat it and run as root inside container.
 if [[ "${1:-}" == "sudo" ]]; then
