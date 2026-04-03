@@ -259,12 +259,13 @@ Thanks for using Recolic Payment Service.
     
     cat /tmp/.alliant-h1.html /tmp/.alliant-h2.html /tmp/.alliant-h3.html /tmp/.alliant-h4.html > /tmp/.alliant-all.html
     cp /tmp/.alliant-1.csv /tmp/river-statement-$prev_month.csv
+    cp /tmp/.alliant-1.csv $HOME/tmp/river-statement-$prev_month.csv
 
     echo ">>>
 EMAIL DONE! (Use Thunderbird -> Insert -> HTML)
   Title:  Your $prev_month Statement and $next_month Budget
   Content:    /tmp/.alliant-all.html
-  Attachment: /tmp/river-statement-$prev_month.csv
+  Attachment: ~/tmp/river-statement-$prev_month.csv
 >>>
 Also check non-CNY cost: /tmp/.alliant-other.csv"
 }
