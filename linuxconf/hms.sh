@@ -6,7 +6,7 @@ lc_include arch-common/* utils/arch-virt.sh
 lc_assert_user_is root
 lc_fsmap hms/nginx.conf /etc/nginx/nginx.conf
 lc_fsmap hms/exports /etc/exports
-export PATH="$PATH:files/mybin"
+export PATH="$PATH:$(pwd)/files/mybin"
 
 function install_x86_gzip_bin () {
     binname="$1"
