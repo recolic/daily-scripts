@@ -53,12 +53,7 @@ function download_cloud_img_if_not_exist () {
     [[ -f "base/$cloudimg" ]] && return
 
     declare -A knowledge
-    # old naming, deprecated
-    knowledge["focal-server-cloudimg-amd64.img"]=https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
-    knowledge["ubuntu-22.04-server-cloudimg-amd64.img"]=https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img
-    knowledge["ubuntu-24.04-server-cloudimg-amd64.img"]=https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-amd64.img
-    knowledge["Arch-Linux-x86_64-cloudimg.qcow2"]=https://geo.mirror.pkgbuild.com/images/latest/Arch-Linux-x86_64-cloudimg.qcow2
-    # new naming
+    # linux cloudimg
     knowledge["ubuntu-18.04-server.img"]=https://cloud-images.ubuntu.com/releases/18.04/release/ubuntu-18.04-server-cloudimg-amd64.img
     knowledge["ubuntu-20.04-server.img"]=https://cloud-images.ubuntu.com/releases/20.04/release/ubuntu-20.04-server-cloudimg-amd64.img
     knowledge["ubuntu-22.04-server.img"]=https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img
@@ -69,9 +64,17 @@ function download_cloud_img_if_not_exist () {
     knowledge["debian-12.img"]=https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2
     knowledge["debian-12-arm64.img"]=https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-arm64.qcow2
     knowledge["archlinux.img"]=https://geo.mirror.pkgbuild.com/images/latest/Arch-Linux-x86_64-cloudimg.qcow2
+    knowledge["alpine-23-bios.img"]=https://dl-cdn.alpinelinux.org/alpine/v3.23/releases/cloud/generic_alpine-3.23.2-x86_64-bios-cloudinit-r0.qcow2
+    knowledge["alpine-23-uefi.img"]=https://dl-cdn.alpinelinux.org/alpine/v3.23/releases/cloud/generic_alpine-3.23.2-x86_64-uefi-cloudinit-r0.qcow2
     # windows baseimg, username r, password 1
     knowledge["win10pro-22h2-virtio-uefi.qcow2"]=https://recolic.net/hms.php?/systems/win10pro-22h2-virtio-uefi.qcow2
     knowledge["win10-tiny10-virtio-uefi.qcow2"]=https://recolic.net/hms.php?/systems/win10-tiny10-virtio-uefi.qcow2
+    knowledge["win10ltsc-2021-virtio-uefi.qcow2"]=https://recolic.net/hms.php?/systems/win10ltsc-2021-virtio-uefi.qcow2
+    # old naming, deprecated
+    knowledge["focal-server-cloudimg-amd64.img"]=${knowledge[ubuntu-20.04-server.img]}
+    knowledge["ubuntu-22.04-server-cloudimg-amd64.img"]=${knowledge[ubuntu-22.04-server.img]}
+    knowledge["ubuntu-24.04-server-cloudimg-amd64.img"]=${knowledge[ubuntu-24.04-server.img]}
+    knowledge["Arch-Linux-x86_64-cloudimg.qcow2"]=${knowledge[archlinux.img]}
     [ ! "${knowledge[$cloudimg]+abc}" ] && echo2 "Unknown cloudimg $cloudimg. cannot download it." && return 1
 
     echo2 "+ Downloading cloudimg $cloudimg..."
@@ -186,6 +189,8 @@ for pid in $(pidof -x "$0"); do
         exit 1
     fi
 done
+
+[ -f /tmp/.disable-simple-vmm ] && echo "/tmp/.disable-simple-vmm exists. exiting..." && exit 0
 
 mkdir -p "$svm_workdir"
 cd "$svm_workdir" || exit $?
