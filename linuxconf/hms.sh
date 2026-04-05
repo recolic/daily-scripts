@@ -95,7 +95,7 @@ lc_startup () {
     lc_bgrun /var/log/aria2-rpcd.log bash -c "cd /mnt/fsdisk/nfs/pub/ && aria2c --enable-rpc --rpc-listen-all --rpc-allow-origin-all"
     
     # minecraft server
-    #lc_bgrun /var/log/launch-mcserver.log hms/launch-mcserver.fish
+    lc_bgrun /var/log/launch-mcserver.log hms/launch-mcserver.fish
     
     # ZFS monitor
     lc_bgrun /var/log/recolic-zfs-monitor.log hms/zfs-monitor-failure-daemon.fish
@@ -121,9 +121,9 @@ lc_startup () {
     done                                          #
     ######## Barrier END: Wait for network up #####
 
-    subline=$(curl "$(rsec ProxySub_API)?3a" | base64 -d | grep C100.US1LW)
+    subline=$(curl "$(rsec ProxySub_API)?3a" | base64 -d | grep us1lw)
     lc_bgrun /var/log/v1080.log  go-shadowsocks2 -c "$subline" -socks :1080
-    subline=$(curl "$(rsec ProxySub_API)?3a" | base64 -d | grep C100.JP2LW)
+    subline=$(curl "$(rsec ProxySub_API)?3a" | base64 -d | grep jp3lw)
     lc_bgrun /var/log/v10808.log go-shadowsocks2 -c "$subline" -socks :10808
 
     # lc_bgrun /dev/null fish hms/tfc-repomon.fish

@@ -5,7 +5,7 @@ set script_dir (dirname (status --current-filename))
 function download_subs
     if not set -q SUB_URLS
         set p (rsec ProxySub_API) ; or echo " !! Cannot download from subscription: SUB_URLS not set."
-        set SUB_URLS "$p?3 $p?3a $p?2"
+        set SUB_URLS "$p?3 $p?3a"
     end
     
     for URL in (string split " " -- $SUB_URLS)

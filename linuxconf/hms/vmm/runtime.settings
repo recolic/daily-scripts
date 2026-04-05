@@ -9,4 +9,5 @@ gitrunner   ;-m 4G -smp 3 -vnc :20 -net user,hostfwd=tcp::30475-:22 -bios /usr/s
 # service until 2026.05.27, 1month notify
 Tyran_devbox;-m 8G -smp 6 -vnc :18 -net user,hostfwd=tcp::30800-:22   -bios /usr/share/edk2/x64/OVMF.4m.fd
 
-# total 16G
+# VM total 16G
+# minecraft server 4G
