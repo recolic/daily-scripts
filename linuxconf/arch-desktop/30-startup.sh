@@ -17,5 +17,6 @@ lc_startup () {
         # Use laptop-power-save.sh as needed
     
         # lc_bgrun /dev/null bash utils/auto-nfs-mgr.sh
+        lc_bgrun /dev/null every 10s bash -c "ping -c 1 hms.recolic || umount -f -l /home/recolic/nfs"
     fi
 }
