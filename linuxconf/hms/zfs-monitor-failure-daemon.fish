@@ -13,7 +13,7 @@ while true
         set email_title (echo "[hms.recolic] ALERT: Zpool failure" | base64 -w 0)
         curl "https://recolic.net/api/email-notify.php?recvaddr=root@recolic.net&b64Title=$email_title&b64Content=$email_content" 1>&2
     end
-    if not zpool status | grep 'errors: No known data errors'
+    if not zpool status nas-data-raid | grep 'errors: No known data errors'
         set output (zpool status)
         echo "Detected zpool fail: $output"
 
@@ -21,6 +21,15 @@ while true
         set email_title (echo "[hms.recolic] ALERT: Zpool failure" | base64 -w 0)
         curl "https://recolic.net/api/email-notify.php?recvaddr=root@recolic.net&b64Title=$email_title&b64Content=$email_content" 1>&2
     end
+    if not zpool status nas-data-hdd | grep 'errors: No known data errors'
+        set output (zpool status)
+        echo "Detected zpool fail: $output"
+
+        set email_content (echo "Detected zpool fail: $output" | base64 -w 0)
+        set email_title (echo "[hms.recolic] ALERT: Zpool failure" | base64 -w 0)
+        curl "https://recolic.net/api/email-notify.php?recvaddr=root@recolic.net&b64Title=$email_title&b64Content=$email_content" 1>&2
+    end
+
     sleep 1h
 end
 
