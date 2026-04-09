@@ -90,6 +90,8 @@ lc_startup () {
     # lc_bgrun /var/log/frpc2.log auto_restart frpc tcp -n hms_audit -l 30510 -r 30510 -s proxy.recolic.net -P 30999 --token $(rsec FRP_KEY)
     lc_bgrun /var/log/frpc1.log auto_restart frpc tcp -n hms_ssh  -l 22 -r 30512 -s proxy.recolic.net -P 30999 --token $(rsec FRP_KEY)
     lc_bgrun /var/log/frpc2.log auto_restart frpc tcp -n hms_http -l 80 -r 30513 -s proxy.recolic.net -P 30999 --token $(rsec FRP_KEY)
+
+    [ -d /mnt/fsdisk/nfs ] && mount --bind /mnt/hdd/nfs /mnt/fsdisk/nfs
     
     # aria2 rpc
     lc_bgrun /var/log/aria2-rpcd.log bash -c "cd /mnt/fsdisk/nfs/pub/ && aria2c --enable-rpc --rpc-listen-all --rpc-allow-origin-all"
