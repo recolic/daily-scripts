@@ -4,10 +4,11 @@ lanbox-win  ;-m 4G -smp 4 -vnc :17 -net user,hostfwd=tcp::30473-:3389,hostfwd=tc
 #wintest     ;-m 4G -smp 4 -vnc :19 -net user,hostfwd=tcp::30474-:3389 -bios /usr/share/edk2/x64/OVMF.4m.fd -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time
 #playg       ;-m 4G -smp 4 -vnc :19 -net user,hostfwd=tcp::30474-:22 -bios /usr/share/edk2/x64/OVMF.4m.fd
 gitrunner   ;-m 4G -smp 3 -vnc :20 -net user,hostfwd=tcp::30475-:22 -bios /usr/share/edk2/x64/OVMF.4m.fd
+drive-reco26;-m 8G -smp 2 -vnc :21 -net user,hostfwd=tcp::30480-:22,hostfwd=tcp::30481-:4022 -bios /usr/share/edk2-ovmf/x64/OVMF.4m.fd
 
 # ioit2024@outlook.com, assigned port 30800-30810
 # service until 2026.05.27, 1month notify
 Tyran_devbox;-m 8G -smp 6 -vnc :18 -net user,hostfwd=tcp::30800-:22   -bios /usr/share/edk2/x64/OVMF.4m.fd
 
-# VM total 16G
+# VM total 24G
 # minecraft server 4G
