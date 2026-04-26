@@ -24,7 +24,7 @@ host drive.recolic-emerg
     hostname localhost
     port 30481
     user root
-    proxyjump ms.recolic
+    proxyjump remote.hms.recolic
 host proxy.recolic
     hostname proxy.recolic.net
     port 2022
