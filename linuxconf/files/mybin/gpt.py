@@ -2,7 +2,7 @@
 import json, sys, os
 import lib.recogpt as recogpt
 
-alias = default_impl
+alias = recogpt.default_impl
 single_file_mode = ""
 if len(sys.argv) == 1: print("Available config:", recogpt.impl_list())
 
