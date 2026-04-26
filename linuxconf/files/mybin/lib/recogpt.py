@@ -56,6 +56,7 @@ all_impl = {
         extra_args = dict()
     ),
 }
+default_impl = 'gpt53'
 
 def impl_list():
     return list(all_impl.keys())
@@ -103,7 +104,7 @@ def prompt_init_default():
     return prompt_system("You are an AI assistant that helps people. User usually want short daily conversation, so do not give detailed lecture unless really necessary, sometimes you must think against user to give useful insights. For complex discussion, your context is limited. So please act like a human and don't unnecessarily say too much.")
 
 
-def complete(impl, prompt):
+def complete(prompt, impl = default_impl):
     completion = impl['client'].chat.completions.create(
         model=impl['model'],
         messages=prompt,
