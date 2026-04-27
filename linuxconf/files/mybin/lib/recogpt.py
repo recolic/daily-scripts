@@ -5,8 +5,8 @@ def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, c
 
 all_impl = {
     # Warning: Azure heavy censorship
-    'gpt52': lambda: dict(
-        model = "gpt-5.2-chat",
+    'gpt54m': lambda: dict(
+        model = "gpt-5.4-mini",
         client = AzureOpenAI(
             azure_endpoint=rsec("Az_OpenAI_API"),
             api_key=rsec("Az_OpenAI_KEY"),
