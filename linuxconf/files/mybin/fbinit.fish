@@ -15,12 +15,13 @@ if test -z $script
 end
 echo "Loading bash env $script for fish..."
 
-if test (count $argv) != 0
-    # All operations except init don't have any side effect. Simply forward it. 
-    set real_script_path $script_dir/init-dev-env.sh
-    bash $real_script_path $argv
-    exit $status
-else
+#### v2: use args as command
+##if test (count $argv) != 0
+##    # All operations except init don't have any side effect. Simply forward it. 
+##    set real_script_path $script_dir/init-dev-env.sh
+##    bash $real_script_path $argv
+##    exit $status
+##else
     # Init operation has side effects. Carefully eval & launch a new shell.
 
     # We must do the init within a specific CWD. Warning: The path MUST NOT contain single-quote character. 
@@ -39,7 +40,12 @@ else
     end
 
     rm -f $tmp_fname
+#### v2: use args as command
+if test (count $argv) != 0
+    exec $argv
+else
     echo "Environment initialized. Enjoy."
     env RECOLIC_ENV_NAME=ARM64 fish
-    exit $status
 end
+
+exit $status
