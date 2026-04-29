@@ -16,6 +16,8 @@ tg = Telegram(
 # Load all modules from ./modules/
 modules = []
 modules_dir = os.path.join(os.path.dirname(__file__), 'modules')
+if modules_dir not in sys.path:
+    sys.path.insert(0, modules_dir)
 for fname in sorted(os.listdir(modules_dir)):
     if fname.endswith('.py') and fname.startswith('mod_'):
         fpath = os.path.join(modules_dir, fname)
