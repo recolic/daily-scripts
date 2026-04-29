@@ -20,7 +20,7 @@ simpledb.dbpath = prefix+'/data.db.gi'
 modules = []
 modules_dir = os.path.join(os.path.dirname(__file__), 'modules')
 for fname in sorted(os.listdir(modules_dir)):
-    if fname.endswith('.py') and not fname.startswith('_'):
+    if fname.endswith('.py') and fname.startswith('mod_'):
         fpath = os.path.join(modules_dir, fname)
         spec = importlib.util.spec_from_file_location(fname[:-3], fpath)
         mod = importlib.util.module_from_spec(spec)
@@ -41,15 +41,16 @@ def dispatch(update):
         sender_id = sender['user_id'] if sender['@type'] == 'messageSenderUser' else sender['chat_id']
         is_text = content['@type'] == 'messageText'
         message_text = content.get('text', {}).get('text', '') if is_text else None
+        is_outgoing = msg['is_outgoing']
 
     for mod in modules:
         stop = False
         if hasattr(mod, 'handle_update'):
             stop = mod.handle_update(tg, update)
         elif msg and hasattr(mod, 'handle_msg'):
-            stop = mod.handle_msg(tg, chat_id, sender_id, msg_id, content)
+            stop = mod.handle_msg(tg, chat_id, sender_id, msg_id, is_outgoing, content)
         elif msg and is_text and hasattr(mod, 'handle_msg_txt'):
-            stop = mod.handle_msg_txt(tg, chat_id, sender_id, msg_id, message_text)
+            stop = mod.handle_msg_txt(tg, chat_id, sender_id, msg_id, is_outgoing, message_text)
         if stop:
             break
 
@@ -87,5 +88,8 @@ if __name__ == "__main__":
     tg.add_message_handler(new_message_handler)
     tg.idle()  # blocking waiting for CTRL+C
     handler_impl.flush_on_exit()
+    for mod in modules:
+        if hasattr(mod, 'flush_on_exit'):
+            mod.flush_on_exit()
     tg.stop()  # you must call `stop` at the end of the script
 

@@ -14,12 +14,12 @@ def handle_update(tg, update):
 
 
 # OPTIONAL: called only when the update contains a message (any content type)
-def handle_msg(tg, chat_id, sender_id, msg_id, message_content):
-    print(f"[example_mod] handle_msg: chat={chat_id} sender={sender_id} msg={msg_id} type={message_content.get('@type')}")
+def handle_msg(tg, chat_id, sender_id, msg_id, is_outgoing, message_content):
+    print(f"[example_mod] handle_msg: chat={chat_id} sender={sender_id} msg={msg_id} is_outgoing={is_outgoing} type={message_content.get('@type')}")
     return False  # don't stop
 
 
 # OPTIONAL: called only for plain-text messages
-def handle_msg_txt(tg, chat_id, sender_id, msg_id, message_text):
-    print(f"[example_mod] handle_msg_txt: chat={chat_id} sender={sender_id} msg={msg_id} text={message_text!r}")
+def handle_msg_txt(tg, chat_id, sender_id, msg_id, is_outgoing, message_text):
+    print(f"[example_mod] handle_msg_txt: chat={chat_id} sender={sender_id} msg={msg_id} is_outgoing={is_outgoing} text={message_text!r}")
     return False  # don't stop
