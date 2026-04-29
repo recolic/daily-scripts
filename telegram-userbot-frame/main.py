@@ -25,36 +25,33 @@ for fname in sorted(os.listdir(modules_dir)):
         modules.append(mod)
         print(f"Loaded module: {fname}")
 
-def dispatch(update):
-    msg = update.get('message')
-    chat_id = sender_id = msg_id = content = message_text = None
-    is_text = False
-
-    if msg:
-        content = msg['content']
-        sender = msg['sender_id']
-        chat_id = msg['chat_id']
-        msg_id = msg['id']
-        sender_id = sender['user_id'] if sender['@type'] == 'messageSenderUser' else sender['chat_id']
-        is_outgoing = msg['is_outgoing']
-        is_text = content['@type'] == 'messageText'
-        if is_text:
-            message_text = content.get('text', {}).get('text', '')
-
-    for mod in modules:
-        stop = False
-        if hasattr(mod, 'handle_update'):
-            stop = mod.handle_update(tg, update)
-        elif msg and hasattr(mod, 'handle_msg'):
-            stop = mod.handle_msg(tg, chat_id, sender_id, msg_id, is_outgoing, content)
-        elif msg and is_text and hasattr(mod, 'handle_msg_txt'):
-            stop = mod.handle_msg_txt(tg, chat_id, sender_id, msg_id, is_outgoing, message_text)
-        if stop:
-            break
-
 def new_message_handler(update):
     try:
-        dispatch(update)
+        msg = update.get('message')
+        chat_id = sender_id = msg_id = content = message_text = None
+        is_text = False
+
+        if msg:
+            content = msg['content']
+            sender = msg['sender_id']
+            chat_id = msg['chat_id']
+            msg_id = msg['id']
+            sender_id = sender['user_id'] if sender['@type'] == 'messageSenderUser' else sender['chat_id']
+            is_outgoing = msg['is_outgoing']
+            is_text = content['@type'] == 'messageText'
+            if is_text:
+                message_text = content.get('text', {}).get('text', '')
+
+        for mod in modules:
+            stop = False
+            if hasattr(mod, 'handle_update'):
+                stop = mod.handle_update(tg, update)
+            elif msg and hasattr(mod, 'handle_msg'):
+                stop = mod.handle_msg(tg, chat_id, sender_id, msg_id, is_outgoing, content)
+            elif msg and is_text and hasattr(mod, 'handle_msg_txt'):
+                stop = mod.handle_msg_txt(tg, chat_id, sender_id, msg_id, is_outgoing, message_text)
+            if stop:
+                break
     except Exception as e:
         print(update, file=open(prefix+'/debug.log.gi', 'a'))
         print(type(e).__name__, e, file=open(prefix+'/debug.log.gi', 'a'))
@@ -68,10 +65,10 @@ if __name__ == "__main__":
     result.wait()
     print("Started Telegram Antispam Watchdog. API test by listing your chats: ", result.update)
 
-    tg.add_message_handler(new_message_handler)
     for mod in modules:
         if hasattr(mod, 'handle_telegram_startup'):
             mod.handle_telegram_startup()
+    tg.add_message_handler(new_message_handler)
     tg.idle()  # blocking waiting for CTRL+C
     for mod in modules:
         if hasattr(mod, 'handle_telegram_exit'):
