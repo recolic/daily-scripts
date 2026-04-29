@@ -10,7 +10,6 @@ def evacuate_buffer(buf):
     while buf:
         simpledb.append(buf.popleft())
 
-# Implements handle_msg_txt — records outgoing messages and their surrounding context to simpledb.
 def handle_msg_txt(tg, chat_id, sender_id, msg_id, is_outgoing, message_text):
     buf = buffers[chat_id]
     msg = {
@@ -40,8 +39,7 @@ def handle_msg_txt(tg, chat_id, sender_id, msg_id, is_outgoing, message_text):
             buf.popleft()
     return False  # don't stop other modules
 
-
-def flush_on_exit():
+def handle_telegram_exit():
     for k in buffers:
         buf = buffers[k]
         if buf and buf[0]['is_outgoing']:

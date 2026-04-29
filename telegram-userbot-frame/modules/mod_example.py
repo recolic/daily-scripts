@@ -27,9 +27,9 @@ def handle_msg_txt(tg, chat_id, sender_id, msg_id, is_outgoing, message_text):
 
 # OPTIONAL: called after login and chat preload, just before entering the event loop.
 def handle_telegram_startup():
-    print("[example_mod] handle_telegram_startup: bot is ready")
+    print("[example_mod] handle_telegram_startup: run your init task here...")
 
 
 # OPTIONAL: called when the bot is shutting down. Return value is ignored.
 def handle_telegram_exit():
-    print("[example_mod] handle_telegram_exit: shutting down")
+    print("[example_mod] handle_telegram_exit: run your cleanup here...")

@@ -2,7 +2,6 @@
 
 from telegram.client import Telegram
 import subprocess, sys, os, importlib.util
-import handler_impl, simpledb
 def rsec(k): return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
 prefix = '.'
 
@@ -13,8 +12,6 @@ tg = Telegram(
     database_encryption_key='any_password',
     files_directory=prefix+'/tdlib_files.gi',
 )
-
-simpledb.dbpath = prefix+'/data.db.gi'
 
 # Load all modules from ./modules/
 modules = []
@@ -58,21 +55,6 @@ def dispatch(update):
 def new_message_handler(update):
     try:
         dispatch(update)
-
-        # Legacy handler_impl buffering (kept as a module too, runs after dispatch)
-        msg = update.get('message')
-        if msg:
-            content = msg['content']
-            sender = msg['sender_id']
-            chat_id = msg['chat_id']
-            msg_id = msg['id']
-            sender_id = sender['user_id'] if sender['@type'] == 'messageSenderUser' else sender['chat_id']
-            is_outgoing = msg['is_outgoing']
-            if content['@type'] == 'messageText':
-                message_text = content.get('text', {}).get('text', '')
-                handler_impl.handle(chat_id, is_outgoing, sender_id, msg_id, message_text)
-            else:
-                print("ignore non-text msg:" + str(content), msg_id, file=open(prefix+'/debug.log.gi', 'a'))
     except Exception as e:
         print(update, file=open(prefix+'/debug.log.gi', 'a'))
         print(type(e).__name__, e, file=open(prefix+'/debug.log.gi', 'a'))
@@ -91,10 +73,7 @@ if __name__ == "__main__":
         if hasattr(mod, 'handle_telegram_startup'):
             mod.handle_telegram_startup()
     tg.idle()  # blocking waiting for CTRL+C
-    handler_impl.flush_on_exit()
     for mod in modules:
-        if hasattr(mod, 'flush_on_exit'):
-            mod.flush_on_exit()
         if hasattr(mod, 'handle_telegram_exit'):
             mod.handle_telegram_exit()
     tg.stop()  # you must call `stop` at the end of the script
