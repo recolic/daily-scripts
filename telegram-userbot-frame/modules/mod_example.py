@@ -23,3 +23,13 @@ def handle_msg(tg, chat_id, sender_id, msg_id, is_outgoing, message_content):
 def handle_msg_txt(tg, chat_id, sender_id, msg_id, is_outgoing, message_text):
     print(f"[example_mod] handle_msg_txt: chat={chat_id} sender={sender_id} msg={msg_id} is_outgoing={is_outgoing} text={message_text!r}")
     return False  # don't stop
+
+
+# OPTIONAL: called after login and chat preload, just before entering the event loop.
+def handle_telegram_startup():
+    print("[example_mod] handle_telegram_startup: bot is ready")
+
+
+# OPTIONAL: called when the bot is shutting down. Return value is ignored.
+def handle_telegram_exit():
+    print("[example_mod] handle_telegram_exit: shutting down")

@@ -39,9 +39,10 @@ def dispatch(update):
         chat_id = msg['chat_id']
         msg_id = msg['id']
         sender_id = sender['user_id'] if sender['@type'] == 'messageSenderUser' else sender['chat_id']
-        is_text = content['@type'] == 'messageText'
-        message_text = content.get('text', {}).get('text', '') if is_text else None
         is_outgoing = msg['is_outgoing']
+        is_text = content['@type'] == 'messageText'
+        if is_text:
+            message_text = content.get('text', {}).get('text', '')
 
     for mod in modules:
         stop = False
@@ -86,10 +87,15 @@ if __name__ == "__main__":
     print("Started Telegram Antispam Watchdog. API test by listing your chats: ", result.update)
 
     tg.add_message_handler(new_message_handler)
+    for mod in modules:
+        if hasattr(mod, 'handle_telegram_startup'):
+            mod.handle_telegram_startup()
     tg.idle()  # blocking waiting for CTRL+C
     handler_impl.flush_on_exit()
     for mod in modules:
         if hasattr(mod, 'flush_on_exit'):
             mod.flush_on_exit()
+        if hasattr(mod, 'handle_telegram_exit'):
+            mod.handle_telegram_exit()
     tg.stop()  # you must call `stop` at the end of the script
 
