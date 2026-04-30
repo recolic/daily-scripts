@@ -11,62 +11,30 @@ CACHE_FILE = './msg_cleanup.db.gi'
 _prev_ts = None
 
 
-def result_of(async_result):
-    async_result.wait()
-    return async_result.update
-
-
-def _chat_is_whitelisted(chat_id):
-    return chat_id in WHITELIST_CHATS or str(chat_id) in WHITELIST_CHATS
-
-
-def _day_id(ts):
-    return time.strftime('%Y-%m-%d', time.localtime(ts))
-
-
-def _parse_row(line):
-    line = line.strip()
-    if not line:
-        return None
-    try:
-        ts_str, chat_id_str, msg_id_str = line.split(':', 2)
-        return int(ts_str), int(chat_id_str), int(msg_id_str)
-    except Exception:
-        return None
-
-
-def _append_cache_record(ts, chat_id, msg_id):
-    with open(CACHE_FILE, 'a', encoding='utf-8') as f:
-        f.write(f'{int(ts)}:{int(chat_id)}:{int(msg_id)}\n')
-
-
-def _run_cleanup_by_cache(tg, now_ts):
+def slow_cleanup(tg, now_ts):
     if not os.path.exists(CACHE_FILE):
         return
 
-    current_day = _day_id(now_ts)
     keep_rows = []
     delete_by_chat = {}
 
     with open(CACHE_FILE, 'r', encoding='utf-8') as f:
         for line in f:
-            row = _parse_row(line)
-            if row is None:
+            line = line.strip()
+            if not line:
                 continue
-            ts, chat_id, msg_id = row
-
-            # Keep current-day rows; delete rows from previous days.
-            if _day_id(ts) == current_day:
-                keep_rows.append((ts, chat_id, msg_id))
+            try:
+                ts, chat_id, msg_id = [int(s) for s in line.split(':', 2)]
+                if now_ts - ts > MSG_ALIVE_TIME:
+                    delete_by_chat.setdefault(chat_id, []).append(msg_id)
+                else:
+                    keep_rows.append((ts, chat_id, msg_id))
+            except Exception:
                 continue
-
-            if _chat_is_whitelisted(chat_id):
-                continue
-
-            delete_by_chat.setdefault(chat_id, []).append(msg_id)
 
     for chat_id, msg_ids in delete_by_chat.items():
         try:
+            print(f"DEBUG: delete msg chat={chat_id} msg={msg_ids}")
             tg.delete_messages(str(chat_id), msg_ids)
         except Exception as e:
             print(type(e).__name__, e)
@@ -82,15 +50,16 @@ def handle_msg(tg, chat_id, sender_id, msg_id, is_outgoing, message_content):
 
     if not is_outgoing:
         return False
-    if _chat_is_whitelisted(chat_id):
+    if str(chat_id) in WHITELIST_CHATS:
         return False
 
     now_ts = int(time.time())
 
-    _append_cache_record(now_ts, chat_id, msg_id)
+    with open(CACHE_FILE, 'a', encoding='utf-8') as f:
+        f.write(f'{now_ts}:{int(chat_id)}:{int(msg_id)}\n')
 
-    if _prev_ts is not None and _day_id(_prev_ts) != _day_id(now_ts):
-        _run_cleanup_by_cache(tg, now_ts)
+    if _prev_ts and (_prev_ts // 86400) != (now_ts // 86400):
+        slow_cleanup(tg, now_ts)
 
     _prev_ts = now_ts
 
