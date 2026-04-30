@@ -5,6 +5,8 @@
 #   handle_update  >  handle_msg  >  handle_msg_txt
 #
 # Return True to stop dispatching to subsequent modules; return False/None to continue.
+#
+# Everything is single-threaded. Don't worry about race condition but don't block.
 
 
 # OPTIONAL: called for every update (messages, edits, reads, etc.)
