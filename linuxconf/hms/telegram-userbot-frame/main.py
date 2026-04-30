@@ -69,11 +69,11 @@ if __name__ == "__main__":
 
     for mod in modules:
         if hasattr(mod, 'handle_telegram_startup'):
-            mod.handle_telegram_startup()
+            mod.handle_telegram_startup(tg)
     tg.add_message_handler(new_message_handler)
     tg.idle()  # blocking waiting for CTRL+C
     for mod in modules:
         if hasattr(mod, 'handle_telegram_exit'):
-            mod.handle_telegram_exit()
+            mod.handle_telegram_exit(tg)
     tg.stop()  # you must call `stop` at the end of the script
 

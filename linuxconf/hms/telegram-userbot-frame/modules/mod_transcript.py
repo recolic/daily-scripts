@@ -39,7 +39,7 @@ def handle_msg_txt(tg, chat_id, sender_id, msg_id, is_outgoing, message_text):
             buf.popleft()
     return False  # don't stop other modules
 
-def handle_telegram_exit():
+def handle_telegram_exit(tg):
     for k in buffers:
         buf = buffers[k]
         if buf and buf[0]['is_outgoing']:
