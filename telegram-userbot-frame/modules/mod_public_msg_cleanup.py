@@ -48,19 +48,15 @@ def slow_cleanup(tg, now_ts):
 def handle_msg(tg, chat_id, sender_id, msg_id, is_outgoing, message_content):
     global _prev_ts
 
-    if not is_outgoing:
-        return False
-    if str(chat_id) in WHITELIST_CHATS:
-        return False
+    if is_outgoing and str(chat_id) not in WHITELIST_CHATS:
+        now_ts = int(time.time())
 
-    now_ts = int(time.time())
+        with open(CACHE_FILE, 'a', encoding='utf-8') as f:
+            f.write(f'{now_ts}:{int(chat_id)}:{int(msg_id)}\n')
 
-    with open(CACHE_FILE, 'a', encoding='utf-8') as f:
-        f.write(f'{now_ts}:{int(chat_id)}:{int(msg_id)}\n')
+        if _prev_ts and (_prev_ts // 86400) != (now_ts // 86400):
+            slow_cleanup(tg, now_ts)
 
-    if _prev_ts and (_prev_ts // 86400) != (now_ts // 86400):
-        slow_cleanup(tg, now_ts)
-
-    _prev_ts = now_ts
+        _prev_ts = now_ts
 
     return False
