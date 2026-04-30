@@ -48,9 +48,9 @@ def new_message_handler(update):
             stop = False
             if hasattr(mod, 'handle_update'):
                 stop = mod.handle_update(tg, update)
-            elif msg and hasattr(mod, 'handle_msg'):
+            if msg and hasattr(mod, 'handle_msg'):
                 stop = mod.handle_msg(tg, chat_id, sender_id, msg_id, is_outgoing, content)
-            elif msg and is_text and hasattr(mod, 'handle_msg_txt'):
+            if msg and is_text and hasattr(mod, 'handle_msg_txt'):
                 stop = mod.handle_msg_txt(tg, chat_id, sender_id, msg_id, is_outgoing, message_text)
             if stop:
                 break
