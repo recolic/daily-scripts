@@ -35,7 +35,6 @@ def write_whitelist_to_disk(fname):
         f.write('\n'.join([str(i) for i in whitelisted_chat_ids]))
 
 def mark_msg_read(tg, chat_id, msg_id):
-    global tg
     # This function must be called multiple times. For example, call it once a second, for 8 times.
     # You must call mark_msg_read_finish() after the last mark_msg_read(). You must wait as long as possible before calling mark_msg_read_finish(), to make the mark_msg_read reliable.
     # This problem only appears in GMS notification.
@@ -100,6 +99,14 @@ def handle_msg(tg, chat_id, sender_id, msg_id, is_outgoing, message_content):
 
     # Mark as read to suppress the notification.
     mark_msg_read(tg, chat_id, msg_id)
+    mark_msg_read(tg, chat_id, msg_id)
+    mark_msg_read(tg, chat_id, msg_id)
+    mark_msg_read(tg, chat_id, msg_id)
+    mark_msg_read(tg, chat_id, msg_id)
+    mark_msg_read(tg, chat_id, msg_id)
+    mark_msg_read(tg, chat_id, msg_id)
+    mark_msg_read(tg, chat_id, msg_id)
+    mark_msg_read_finish(tg, chat_id)
 
     if message_content['@type'] == 'messageText' and message_text.lower() == YOUR_ANSWER.lower():
         # Answer is correct: add to whitelist and send hello
@@ -115,9 +122,9 @@ def handle_msg(tg, chat_id, sender_id, msg_id, is_outgoing, message_content):
         with remove_gms_notify_queue_lock:
             remove_gms_notify_queue.append((chat_id, msg_id, 16))
 
-def timer_thread_func():
+def timer_thread_func(tg):
     while True:
-        timer_handler()
+        timer_handler(tg)
         time.sleep(1)
 
 def handle_telegram_startup(tg):
@@ -125,5 +132,6 @@ def handle_telegram_startup(tg):
     
     print("Started Telegram Antispam Watchdog. (mod)")
 
-    threading.Thread(target=timer_thread_func, args=(tg,)).start()
+    ## tmp: disable this and see if it works
+    ## threading.Thread(target=timer_thread_func, args=(tg,)).start()
 
