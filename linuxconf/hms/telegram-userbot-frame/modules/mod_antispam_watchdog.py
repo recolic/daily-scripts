@@ -15,12 +15,6 @@ msg_verify = 'This account is protected by Telegram Antispam WatchDog.\nPlease a
 msg_whitelisted = '[Telegram Antispam Watchdog] Whitelisted this chat.'
 msg_passed = 'You have passed the verification. Thanks!\n你已经通过验证, 感谢你的理解!'
 
-# We need to mark_message_read() for 30 times, with one second interval. That's the only method to eliminate GMS notification.
-# Format: [(chat_id, msg_id, count), ...]
-# count will decrease from 30 to 0 by a timer in another thread.
-remove_gms_notify_queue = []
-remove_gms_notify_queue_lock = threading.Lock()
-
 def read_whitelist_from_disk(fname):
     try:
         with open(fname, 'r') as f:
@@ -59,19 +53,7 @@ def mark_msg_read_finish(tg, chat_id):
     }
     tg._tdjson.send(fn_data)
 
-def timer_handler(tg):
-    # In every second, check if there is any message to be marked as read.
-    global remove_gms_notify_queue
-    with remove_gms_notify_queue_lock:
-        result_list = []
-        for entry in remove_gms_notify_queue:
-            chat_id, msg_id, count = entry
-            mark_msg_read(tg, chat_id, msg_id)
-            if count-1 > 0:
-                result_list.append((chat_id, msg_id, count-1))
-            else:
-                mark_msg_read_finish(tg, chat_id)
-        remove_gms_notify_queue = result_list
+
 
 def handle_msg(tg, chat_id, sender_id, msg_id, is_outgoing, message_content):
     message_text = message_content.get('text', {}).get('text', '')
@@ -119,19 +101,38 @@ def handle_msg(tg, chat_id, sender_id, msg_id, is_outgoing, message_content):
         print("DEBUG: bad answer")
         tg.send_message(chat_id=chat_id, text=magic_text + msg_verify)
         tg.delete_messages(chat_id, [msg_id])
-        with remove_gms_notify_queue_lock:
-            remove_gms_notify_queue.append((chat_id, msg_id, 16))
-
-def timer_thread_func(tg):
-    while True:
-        timer_handler(tg)
-        time.sleep(1)
+##### tmp: this is later found unnecessary... spamming mark_msg_read in handler is enough.
+# #         with remove_gms_notify_queue_lock:
+# #             remove_gms_notify_queue.append((chat_id, msg_id, 16))
+##### tmp: this is later found unnecessary... spamming mark_msg_read in handler is enough.
+# # # We need to mark_message_read() for 30 times, with one second interval. That's the only method to eliminate GMS notification.
+# # # Format: [(chat_id, msg_id, count), ...]
+# # # count will decrease from 30 to 0 by a timer in another thread.
+# # remove_gms_notify_queue = []
+# # remove_gms_notify_queue_lock = threading.Lock()
+# # def timer_handler(tg):
+# #     # In every second, check if there is any message to be marked as read.
+# #     global remove_gms_notify_queue
+# #     with remove_gms_notify_queue_lock:
+# #         result_list = []
+# #         for entry in remove_gms_notify_queue:
+# #             chat_id, msg_id, count = entry
+# #             mark_msg_read(tg, chat_id, msg_id)
+# #             if count-1 > 0:
+# #                 result_list.append((chat_id, msg_id, count-1))
+# #             else:
+# #                 mark_msg_read_finish(tg, chat_id)
+# #         remove_gms_notify_queue = result_list
+# # def timer_thread_func(tg):
+# #     while True:
+# #         timer_handler(tg)
+# #         time.sleep(1)
 
 def handle_telegram_startup(tg):
     read_whitelist_from_disk(whitelist_filename)
     
     print("Started Telegram Antispam Watchdog. (mod)")
 
-    ## tmp: disable this and see if it works
+    ## tmp: this is later found unnecessary... spamming mark_msg_read in handler is enough.
     ## threading.Thread(target=timer_thread_func, args=(tg,)).start()
 
