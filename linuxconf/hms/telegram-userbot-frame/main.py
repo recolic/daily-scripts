@@ -30,8 +30,6 @@ for fname in sorted(os.listdir(modules_dir)):
 def new_message_handler(update):
     try:
         msg = update.get('message')
-        #chat_id = sender_id = msg_id = content = message_text = None
-        #is_text = False
 
         if msg:
             content = msg['content']
