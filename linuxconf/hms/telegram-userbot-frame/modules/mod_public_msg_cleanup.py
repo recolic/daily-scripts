@@ -48,11 +48,12 @@ def slow_cleanup(tg, now_ts):
 def handle_msg(tg, chat_id, sender_id, msg_id, is_outgoing, message_content):
     global _prev_ts
 
-    if is_outgoing and str(chat_id) not in WHITELIST_CHATS:
+    if is_outgoing and chat_id < 0 and str(chat_id) not in WHITELIST_CHATS:
         now_ts = int(time.time())
 
         with open(CACHE_FILE, 'a', encoding='utf-8') as f:
             f.write(f'{now_ts}:{int(chat_id)}:{int(msg_id)}\n')
+        print("DEBUG: register cleanup", f'{now_ts}:{int(chat_id)}:{int(msg_id)} - from {sender_id} - {message_content}')
 
         if _prev_ts and (_prev_ts // 86400) != (now_ts // 86400):
             slow_cleanup(tg, now_ts)

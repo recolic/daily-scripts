@@ -205,7 +205,7 @@ Usage (C1, by Post date):
         alliant_csv_calc /tmp/.alliant-1.csv > /tmp/.alliant-tx.txt || return $?
     elif [[ $CSV = c1 ]]; then
         echo c1_csv_filter 1
-        c1_csv_filter 1852 "$fname" > /tmp/.alliant-1.csv || return $?
+        c1_csv_filter 7983 "$fname" > /tmp/.alliant-1.csv || return $?
         echo c1_csv_filter 2
         c1_csv_filter 3662 "$fname" > /tmp/.alliant-other.csv || return $?
         echo c1_csv_calc
