@@ -53,7 +53,6 @@ def handle_msg(tg, chat_id, sender_id, msg_id, is_outgoing, message_content):
 
         with open(CACHE_FILE, 'a', encoding='utf-8') as f:
             f.write(f'{now_ts}:{int(chat_id)}:{int(msg_id)}\n')
-        print("DEBUG: register cleanup", f'{now_ts}:{int(chat_id)}:{int(msg_id)} - from {sender_id} - {message_content}')
 
         if _prev_ts and (_prev_ts // 86400) != (now_ts // 86400):
             slow_cleanup(tg, now_ts)
