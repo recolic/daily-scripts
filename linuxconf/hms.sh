@@ -29,7 +29,7 @@ TODO: manual steps
 #######################################################
 #### Setup this server from stretch
 # 1. Clean-Installed archlinux
-# 2. dhcpcd patch: add 'allowinterfaces enp4s0f1' to /etc/dhdpcd.conf
+# 2. dhcpcd patch: modify /etc/dhdpcd.conf below
 # 3. Setup everything in OTHER SERVICE LIST.
 # 4. linuxconf register
 ################## OTHER SERVICE LIST #################
@@ -37,7 +37,11 @@ TODO: manual steps
 # docker (systemd) for jenserat/samba-publicshare, hms-sms-and-door-api
 # fancontrol (systemd) for /sys/devices/platform/nct6775.2592/hwmon/hwmon2/pwm2_enable automodify
 # dhcpcd (systemd):
-#   modify /etc/dhcpcd.conf to set allowinterfaces to ETHERNET
+#   modify /etc/dhcpcd.conf to add the following:
+#     allowinterfaces enp5s0
+#     allowinterfaces enp0s20u1 # left USB3 port
+#     allowinterfaces enp0s20u2 # right USB3 port
+#   remove 'slaac private'
 #
 ## python telegram bot:
 # pip install python-telegram setuptools --break-system-packages
