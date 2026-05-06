@@ -13,4 +13,4 @@ script_dir="$(pwd)/$(dirname $0)"
 mkdir -p /mnt/fsdisk/tmp/tg-transcript-workdir
 cd /mnt/fsdisk/tmp/tg-transcript-workdir
 
-python $script_dir/tg-transcript.py || email_notify "telegram-transcript daemon failed"
+python $script_dir/main.py || email_notify "telegram-transcript daemon failed"
