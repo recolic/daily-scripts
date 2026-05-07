@@ -14,8 +14,8 @@ all_impl = {
         ),
         extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None, max_completion_tokens=16000)
     ),
-    'gpt53': lambda: dict(
-        model = "gpt-5.3-chat",
+    'gpt54': lambda: dict(
+        model = "gpt-5.4",
         client = AzureOpenAI(
             azure_endpoint=rsec("Az_OpenAI_API"),
             api_key=rsec("Az_OpenAI_KEY"),
@@ -56,7 +56,7 @@ all_impl = {
         extra_args = dict()
     ),
 }
-default_impl = 'gpt53'
+default_impl = 'gpt54'
 
 def impl_list():
     return list(all_impl.keys())
