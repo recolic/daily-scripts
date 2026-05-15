@@ -40,7 +40,7 @@ all_impl = {
         extra_args = dict(max_tokens=16000, reasoning_effort="high")
     ),
     'grok': lambda: dict(
-        model = "grok-4-1-fast-non-reasoning",
+        model = "grok-4.20-0309-non-reasoning",
         client = OpenAI(
             api_key=rsec("Grok_KEY"),
             base_url="https://api.x.ai/v1"
@@ -52,6 +52,14 @@ all_impl = {
         client = OpenAI(
             api_key=rsec("Grok_KEY"),
             base_url="https://api.x.ai/v1"
+        ),
+        extra_args = dict()
+    ),
+    'local': lambda: dict(
+        model = "Qwen3.6-27B",
+        client = OpenAI(
+            api_key="a",
+            base_url="http://localhost:8001"
         ),
         extra_args = dict()
     ),
