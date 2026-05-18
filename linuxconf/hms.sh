@@ -108,6 +108,9 @@ lc_startup () {
     
     # naive file send server
     lc_bgrun /var/log/fserver.log python -u hms/fserver/hms-fserver.py
+
+    # hdd: quiet mode in sleep hour
+    lc_bgrun /var/log/hdd-sleep.log every 10m bash hms/cron_hdd_sleep.sh
     
     # extra iptables rules
     iptables  -I INPUT -p tcp -m tcp --dport 22 -j ACCEPT
