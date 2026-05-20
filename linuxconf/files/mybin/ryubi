@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# GPT 5.4
+set -euo pipefail
+
+gpg_agent_conf="${HOME}/.gnupg/gpg-agent.conf"
+scdaemon_conf="${HOME}/.gnupg/scdaemon.conf"
+
+mkdir -p "${HOME}/.gnupg"
+touch "$gpg_agent_conf" "$scdaemon_conf"
+
+has_line() {
+  grep -qxF "$1" "$2" 2>/dev/null
+}
+
+add_line() {
+  has_line "$1" "$2" || printf '%s\n' "$1" >> "$2"
+}
+
+remove_line() {
+  grep -vxF "$1" "$2" > "$2.tmp" || true
+  mv "$2.tmp" "$2"
+}
+
+mode() {
+  if has_line "disable-scdaemon" "$gpg_agent_conf"; then
+    echo piv
+  else
+    echo gpg
+  fi
+}
+
+case "${1:-}" in
+  piv)
+    add_line "disable-scdaemon" "$gpg_agent_conf"
+    gpg-connect-agent reloadagent /bye >/dev/null
+    ;;
+  gpg)
+    remove_line "disable-scdaemon" "$gpg_agent_conf"
+    add_line "disable-ccid" "$scdaemon_conf"
+    gpg-connect-agent reloadagent /bye >/dev/null
+    ;;
+  *)
+    echo "usage: ryubi [gpg|piv]" >&2
+    mode
+    ;;
+esac
+

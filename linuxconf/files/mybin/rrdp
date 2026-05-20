@@ -53,8 +53,10 @@ end
 test -n "$target_line"
 or set target_line (echo $targets | grep "^$target *|")
 or die "Target $target not found."
-set user (maybe_eval (string trim (echo $target_line | cut -d '|' -f 2)))
-set pass (maybe_eval (string trim (echo $target_line | cut -d '|' -f 3)))
+contains -- /smartcard-logon $argv; or begin
+    set user (maybe_eval (string trim (echo $target_line | cut -d '|' -f 2)))
+    set pass (maybe_eval (string trim (echo $target_line | cut -d '|' -f 3)))
+end
 set host (maybe_eval (string trim (echo $target_line | cut -d '|' -f 4)))
 
 if string match "@*" $target_line > /dev/null
@@ -102,12 +104,17 @@ else
         # disable NLA to avoid a weird bug
         set ext_opt $ext_opt /sec:tls
     end
+    contains -- /smartcard-logon $argv; and begin
+        # why this bug appears for smartcard logon...
+        string match -q "*freerdp*" -- $rdp ; and set ext_opt $ext_opt /sec:tls
+    end ; or begin
+        set ext_opt $ext_opt /u:$user /p:$pass
+    end
     
     if test $rdp = rdesktop
         echo "EXEC: $rdp -K -g $w'x'$h -r disk:loctmp=$HOME/tmp $ext_opt -u $user -p #pass -v $host"
         $rdp -K -g $w'x'$h -r disk:loctmp=$HOME/tmp $ext_opt -u $user -p $pass -v $host
     else
-        # $rdp -disable-grab-keyboard -disable-toggle-fullscreen --auth-pkg-list !kerberos -w $w -h $h -drive loctmp,$HOME/tmp $ext_opt -u $user -p $pass -v $host -timeout 100000
         if not grep 192.168.191.191 /etc/krb5.conf > /dev/null
             echo "Removing malware... need root access"
             echo -e "[libdefaults]\\ndefault_realm = 192.168.191.191" | sudo tee /etc/krb5.conf
@@ -119,13 +126,11 @@ else
   1. disable-scdaemon in ~/.gnupg/gpg-agent.conf
   2. gpg-connect-agent reloadagent /bye
   3. (optional) sudo usbreset 1050:0406
-  4. (optional) systemctl status pcscd -> start if not running
-  5. run freerdp with:
-       xfreerdp3 ... ... /smartcard /smartcard-logon
+  4. run with: /smartcard /smartcard-logon
   smartcard (FIDO2): use xfreerdp-2604.3
 "
-        echo "EXEC: $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:loctmp,$HOME/tmp $ext_opt /u:$user /p:#pass /v:$host /timeout:100000" $argv[2..-1]
-        $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:loctmp,$HOME/tmp $ext_opt /u:$user /p:$pass /v:$host /timeout:100000 $argv[2..-1]
+        echo "EXEC: $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:loctmp,$HOME/tmp $ext_opt /v:$host /timeout:100000 $argv[2..-1]"
+        $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:loctmp,$HOME/tmp $ext_opt /v:$host /timeout:100000 $argv[2..-1]
     end
 end
 
