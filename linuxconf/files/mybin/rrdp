@@ -116,13 +116,12 @@ else
   fullscreen: +f
   audio forward: /sound /microphone
   smartcard (PIV):
-  > Assuming GPG use default CCID mode, not PCSC mode. Ask GPT for details.
   1. disable-scdaemon in ~/.gnupg/gpg-agent.conf
   2. gpg-connect-agent reloadagent /bye
-  3. sudo usbreset 1050:0406
-  4. systemctl status pcscd -> make sure running
+  3. (optional) sudo usbreset 1050:0406
+  4. (optional) systemctl status pcscd -> start if not running
   5. run freerdp with:
-       sudo xfreerdp3 ... ... /smartcard /smartcard-logon /usb:id:1050:0406
+       xfreerdp3 ... ... /smartcard /smartcard-logon
   smartcard (FIDO2): use xfreerdp-2604.3
 "
         echo "EXEC: $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:loctmp,$HOME/tmp $ext_opt /u:$user /p:#pass /v:$host /timeout:100000" $argv[2..-1]
