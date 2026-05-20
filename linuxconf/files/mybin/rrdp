@@ -116,6 +116,7 @@ else
   fullscreen: +f
   audio forward: /sound /microphone
   smartcard (PIV):
+  > Assuming GPG use default CCID mode, not PCSC mode. Ask GPT for details.
   1. disable-scdaemon in ~/.gnupg/gpg-agent.conf
   2. gpg-connect-agent reloadagent /bye
   3. sudo usbreset 1050:0406

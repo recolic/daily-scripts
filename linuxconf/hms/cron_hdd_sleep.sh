@@ -28,7 +28,7 @@ ensure_active() {
 
 hour=$(TZ=America/Los_Angeles date +%H)
 
-if (( hour >= 23 || hour < 3 )); then
+if (( 10#$hour >= 23 || 10#$hour < 3 )); then
   ensure_sleep
 else
   ensure_active
