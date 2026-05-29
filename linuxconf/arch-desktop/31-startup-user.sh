@@ -19,6 +19,26 @@ done
     
     xdg-user-dirs-update --set DOCUMENTS "$HOME/Documents"
     xdg-user-dirs-update --set PICTURES "$HOME/Pictures"
+
+  local rnote="$HOME/.local/share/applications/note.desktop"
+  if [[ -d "$NEXTCLOUD_PREFIX" && "$NEXTCLOUD_PREFIX" != "$HOME/" ]]; then
+    if [[ ! -f "$rnote" ]]; then
+      mkdir -p "$HOME/.local/share/applications"
+      echo "
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=note
+Comment=Open my notes folder in Kate
+Exec=kate '$NEXTCLOUD_PREFIX'
+Icon=accessories-text-editor
+Terminal=false
+Categories=Utility;TextEditor;
+Keywords=note;notes;notebook;rnote;
+" > "$rnote"
+      chmod +x "$rnote"
+    fi
+  fi
 }
 
 lc_login () {
