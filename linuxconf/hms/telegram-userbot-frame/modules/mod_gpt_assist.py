@@ -1,5 +1,6 @@
 import json
 import sys
+import time
 
 
 CHAIN_LIMIT = 10
@@ -92,6 +93,22 @@ def _print_context_chain(buf):
         print(f"[{i}] {json.dumps(_message_summary(message), ensure_ascii=False, sort_keys=True)}")
 
 
+def _edit_message_text(tg, chat_id, msg_id, text):
+    return _wait_result(tg._send_data({
+        '@type': 'editMessageText',
+        'chat_id': chat_id,
+        'message_id': msg_id,
+        'input_message_content': {
+            '@type': 'inputMessageText',
+            'text': {
+                '@type': 'formattedText',
+                'text': text,
+                'entities': [],
+            },
+        },
+    }))
+
+
 def handle_update(tg, update):
     message = update.get('message')
     if not message or not message.get('is_outgoing'):
@@ -109,6 +126,6 @@ def handle_update(tg, update):
         buf.append(curr)
         curr = _next_context_message(tg, curr)
 
-    print(json.dumps([_message_summary(m) for m in buf], ensure_ascii=False, indent=2), file=sys.stderr)
     _print_context_chain(buf)
+    _edit_message_text(tg, message.get('chat_id'), message.get('id'), str(int(time.time())))
     return False
