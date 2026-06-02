@@ -129,7 +129,7 @@ else
   3. (optional) sudo usbreset 1050:0406
   4. run with: /smartcard /smartcard-logon
 "
-        echo "EXEC: $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:loctmp,$HOME/tmp \$ext_opt /v:$host /timeout:100000 $argv[2..-1]"
+        echo "EXEC: $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:loctmp,$HOME/tmp $ext_opt /v:$host /timeout:100000 $argv[2..-1]"
         $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:loctmp,$HOME/tmp $ext_opt /v:$host /timeout:100000 $argv[2..-1]
     end
 end
