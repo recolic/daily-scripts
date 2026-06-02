@@ -70,9 +70,9 @@ else
         set h (math (echo $resolution | cut -d x -f 2 | grep -o '[0-9]*')-100)
         # current 1920 x 1080
         if which xfreerdp
-            set rdp xfreerdp
+            set -q rdp ; or set rdp xfreerdp
         else
-            set rdp xfreerdp3
+            set -q rdp ; or set rdp xfreerdp3
         end
     else if test $XDG_SESSION_TYPE = wayland
         # Xwayland is also working
@@ -83,7 +83,7 @@ else
         #if which wlfreerdp
         #    set rdp wlfreerdp
         #else
-            set rdp xfreerdp
+            set -q rdp ; or set rdp xfreerdp
             set h (math $h-50)
             # clipboard doesnt work in wlfreerdp3 sdl-freerdp3
             #end
@@ -122,14 +122,14 @@ else
         echo "Note:
   fullscreen: +f
   audio forward: /sound /microphone
+  smartcard (FIDO2): out of box (rdpewa)
   smartcard (PIV):
   1. disable-scdaemon in ~/.gnupg/gpg-agent.conf
   2. gpg-connect-agent reloadagent /bye
   3. (optional) sudo usbreset 1050:0406
   4. run with: /smartcard /smartcard-logon
-  smartcard (FIDO2): use xfreerdp-2604.3
 "
-        echo "EXEC: $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:loctmp,$HOME/tmp $ext_opt /v:$host /timeout:100000 $argv[2..-1]"
+        echo "EXEC: $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:loctmp,$HOME/tmp \$ext_opt /v:$host /timeout:100000 $argv[2..-1]"
         $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:loctmp,$HOME/tmp $ext_opt /v:$host /timeout:100000 $argv[2..-1]
     end
 end
