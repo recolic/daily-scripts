@@ -32,7 +32,7 @@ all_impl = {
         extra_args = dict(max_tokens=16000, reasoning_effort="low")
     ),
     'pro': lambda: dict(
-        model = "gemini-3-pro-preview",
+        model = "gemini-3.1-pro-preview",
         client = OpenAI(
             api_key=rsec("Gemini_KEY"),
             base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
@@ -48,12 +48,12 @@ all_impl = {
         extra_args = dict()
     ),
     'grokr': lambda: dict(
-        model = "grok-4-1-fast-reasoning",
+        model = "grok-latest",
         client = OpenAI(
             api_key=rsec("Grok_KEY"),
             base_url="https://api.x.ai/v1"
         ),
-        extra_args = dict()
+        extra_args = dict(reasoning_effort="high")
     ),
     'local': lambda: dict(
         model = "Qwen3.6-27B",

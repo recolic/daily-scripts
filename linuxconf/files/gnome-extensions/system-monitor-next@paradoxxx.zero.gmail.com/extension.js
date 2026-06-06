@@ -738,16 +738,10 @@ const TipMenu = class SystemMonitor_TipMenu extends PopupMenu.PopupMenuBase {
 
         let sourceTopLeftX = 0;
         let sourceTopLeftY = 0;
-        if (typeof this.sourceActor.get_transformed_extents === 'function') {
-            let extents = this.sourceActor.get_transformed_extents();
-            let sourceTopLeft = extents.get_top_left();
-            sourceTopLeftY = sourceTopLeft.y;
-            sourceTopLeftX = sourceTopLeft.x;
-        } else {
-            let allocation = Shell.util_get_transformed_allocation(this.sourceActor);
-            sourceTopLeftY = allocation.y1;
-            sourceTopLeftX = allocation.x1;
-        }
+        let extents = this.sourceActor.get_transformed_extents();
+        let sourceTopLeft = extents.get_top_left();
+        sourceTopLeftY = sourceTopLeft.y;
+        sourceTopLeftX = sourceTopLeft.x;
         let monitor = Main.layoutManager.findMonitorForActor(this.sourceActor);
         let [x, y] = [sourceTopLeftX + contentbox.x1,
             sourceTopLeftY + contentbox.y1];
@@ -1134,6 +1128,7 @@ const Battery = class SystemMonitor_Battery extends ElementBase {
     constructor(extension) {
         super(extension, {
             elt: 'battery',
+            elt_short: 'batt',
             item_name: _('Battery'),
             color_name: ['batt0'],
             icon: '. GThemedIcon battery-good-symbolic battery-good'
@@ -1143,27 +1138,78 @@ const Battery = class SystemMonitor_Battery extends ElementBase {
         this.icon_hidden = false;
         this.percentage = 0;
         this.timeString = '-- ';
-        // TODO: Figure out when Main.panel.statusArea.quickSettings._system becomes available
-        // It's defined while poking around in Looking Glass, but not here during enable when
-        // starting a new GS session.
-        this._proxy = Main.panel.statusArea.quickSettings._system._systemItem._powerToggle._proxy;
-        this.powerSigID = this._proxy.connect('g-properties-changed', this.update_battery.bind(this));
+
+        // Battery updates are event driven, and require the following _proxy value to exist.
+        //   this._proxy = Main.panel.statusArea.quickSettings._system._systemItem._powerToggle._proxy;
+        // This does not exist at launch time, so start a GLib handler to poll for it
+        this._poll_attempts = 0;
+        this._max_poll_attempts = 9;
+        this._poll_handler_id = GLib.timeout_add_seconds(
+            GLib.PRIORITY_DEFAULT, 1, this._poll_quickSettings.bind(this)
+        );
 
         // need to specify a default icon, since the contructor completes before UPower callback
         this.gicon = Gio.icon_new_for_string(this.icon);
 
         this.tip_format('%');
 
-        this.update_battery();
         this.update_tips();
         // this.hide_system_icon();
-        this.update();
 
         // Schema.connect('changed::' + this.elt + '-hidesystem', this.hide_system_icon.bind(this));
         extension._Schema.connect('changed::' + this.elt + '-time', this.update_tips.bind(this));
     }
     refresh() {
         // do nothing here?
+    }
+    _poll_quickSettings() {
+        // check if the quickSettings proxy value is defined
+        // once it is, set this._proxy and remove the handler
+
+        if (this._proxy) {
+            return GLib.SOURCE_REMOVE;
+        }
+
+        try {
+            const proxy = (
+                Main.panel
+                ?.statusArea
+                ?.quickSettings
+                ?._system
+                ?._systemItem
+                ?._powerToggle
+                ?._proxy
+            );
+
+            sm_log(`Looking for battery proxy (attempt ${this._poll_attempts})`);
+            if (proxy) {
+                // set this._proxy, bind update_battery(), and stop polling
+                sm_log("Battery proxy found!");
+                this._proxy = proxy;
+                this.powerSigID = this._proxy.connect(
+                    'g-properties-changed',
+                    this.update_battery.bind(this),
+                );
+                this._poll_handler_id = undefined;
+                this._poll_attempts = 0;
+                return GLib.SOURCE_REMOVE;
+            }
+        } catch (error) {
+            sm_log(`Error accessing quickSettings proxy: ${error.message}`, 'warn');
+        }
+
+        // Check if we've exceeded maximum attempts
+        this._poll_attempts++;
+        if (this._poll_attempts >= this._max_poll_attempts) {
+            sm_log(`Battery proxy not found after ${this._poll_attempts}, giving up`);
+            this._poll_handler_id = undefined;
+            return GLib.SOURCE_REMOVE;
+        }
+
+        // Exponential backoff
+        const next_delay = Math.pow(2, this._poll_attempts - 1);
+        this._poll_handler_id = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, next_delay, this._poll_quickSettings.bind(this));
+        return GLib.SOURCE_REMOVE;
     }
     update_battery() {
         // callback function for when battery stats updated.
@@ -1324,7 +1370,15 @@ const Battery = class SystemMonitor_Battery extends ElementBase {
     }
     destroy() {
         ElementBase.prototype.destroy.call(this);
-        this._proxy.disconnect(this.powerSigID);
+
+        if (this._proxy) {
+            this._proxy.disconnect(this.powerSigID);
+        }
+
+        if (this._poll_handler_id) {
+            GLib.source_remove(this._poll_handler_id);
+            this._poll_handler_id = undefined;
+        }
     }
 }
 
@@ -1852,16 +1906,22 @@ const Net = class SystemMonitor_Net extends ElementBase {
         this.update_iface_list();
 
         if (!this.ifs.length) {
-            let net_lines = Shell.get_file_contents_utf8_sync('/proc/net/dev').split('\n');
-            for (let i = 2; i < net_lines.length - 1; i++) {
-                let ifc = net_lines[i].replace(/^\s+/g, '').split(':')[0];
-                if (Shell.get_file_contents_utf8_sync('/sys/class/net/' + ifc + '/operstate')
-                    .replace(/\s/g, '') === 'up' &&
-                    ifc.indexOf('br') < 0 &&
-                    ifc.indexOf('lo') < 0) {
-                    this.ifs.push(ifc);
+            try {
+                let [, net_contents] = Gio.File.new_for_path('/proc/net/dev').load_contents(null);
+                let net_lines = new TextDecoder().decode(net_contents).split('\n');
+                for (let i = 2; i < net_lines.length - 1; i++) {
+                    let ifc = net_lines[i].replace(/^\s+/g, '').split(':')[0];
+                    try {
+                        let [, op_contents] = Gio.File.new_for_path(
+                            '/sys/class/net/' + ifc + '/operstate').load_contents(null);
+                        if (new TextDecoder().decode(op_contents).replace(/\s/g, '') === 'up' &&
+                            ifc.indexOf('br') < 0 &&
+                            ifc.indexOf('lo') < 0) {
+                            this.ifs.push(ifc);
+                        }
+                    } catch (_e) { /* operstate file may not exist */ }
                 }
-            }
+            } catch (_e) { /* /proc/net/dev unavailable */ }
         }
         this.gtop = new GTop.glibtop_netload();
         this.last = [0, 0, 0, 0, 0];
@@ -2472,13 +2532,30 @@ const Icon = class SystemMonitor_Icon {
 }
 
 export default class SystemMonitorExtension extends Extension {
-    openSystemMonitor() {
+    _lookupMonitorApp() {
+        const monitorAppIds = [
+            'org.gnome.SystemMonitor.desktop',
+            'gnome-system-monitor.desktop',
+            'net.nokyan.Resources.desktop',
+        ];
         let _appSys = Shell.AppSystem.get_default();
-        let _gsmApp = _appSys.lookup_app('org.gnome.SystemMonitor.desktop') || _appSys.lookup_app('gnome-system-monitor.desktop');
+        for (const id of monitorAppIds) {
+            let app = _appSys.lookup_app(id);
+            if (app)
+                return app;
+        }
+        return null;
+    }
+
+    openSystemMonitor() {
+        let _gsmApp = this._lookupMonitorApp();
         let customCmd = this._Schema.get_string('custom-monitor-command');
 
         if (!customCmd || customCmd.trim() === '') {
-            _gsmApp.activate();
+            if (_gsmApp)
+                _gsmApp.activate();
+            else
+                sm_log('No system monitor application found', 'warn');
             return;
         }
 
@@ -2487,7 +2564,8 @@ export default class SystemMonitorExtension extends Extension {
             let [success, argv] = GLib.shell_parse_argv(customCmd);
             if (!success) {
                 sm_log('Failed to parse custom monitor command: ' + customCmd, 'error');
-                _gsmApp.activate();
+                if (_gsmApp)
+                    _gsmApp.activate();
                 return;
             }
 
@@ -2506,7 +2584,8 @@ export default class SystemMonitorExtension extends Extension {
             });
         } catch (e) {
             sm_log('Failed to execute custom monitor command: ' + e.message, 'error');
-            _gsmApp.activate();
+            if (_gsmApp)
+                _gsmApp.activate();
         }
     }
 
@@ -2577,7 +2656,7 @@ export default class SystemMonitorExtension extends Extension {
         positionList[this._Schema.get_int('thermal-position')] = new Thermal(this);
         positionList[this._Schema.get_int('fan-position')] = new Fan(this);
         // See TODO inside Battery
-        // positionList[this._Schema.get_int('battery-position')] = new Battery(this);
+        positionList[this._Schema.get_int('battery-position')] = new Battery(this);
 
         if (this._Schema.get_boolean('move-clock')) {
             let dateMenu = Main.panel.statusArea.dateMenu;
@@ -2651,11 +2730,14 @@ export default class SystemMonitorExtension extends Extension {
         );
 
         let item;
-        item = new PopupMenu.PopupMenuItem(_('System Monitor...'));
-        item.connect('activate', () => {
-            this.openSystemMonitor();
-        });
-        tray.menu.addMenuItem(item);
+        let customCmd = this._Schema.get_string('custom-monitor-command');
+        if (this._lookupMonitorApp() || (customCmd && customCmd.trim() !== '')) {
+            item = new PopupMenu.PopupMenuItem(_('System Monitor...'));
+            item.connect('activate', () => {
+                this.openSystemMonitor();
+            });
+            tray.menu.addMenuItem(item);
+        }
 
         item = new PopupMenu.PopupMenuItem(_('Preferences...'));
         item.connect('activate', () => {
