@@ -37,6 +37,7 @@ case "${1:-}" in
     add_line "disable-ccid" "$scdaemon_conf"
     sudo systemctl stop pcscd
     gpg-connect-agent reloadagent /bye >/dev/null
+    sudo systemctl restart pcscd
     ;;
   *)
     echo "usage: ryubi [gpg|piv]" >&2
