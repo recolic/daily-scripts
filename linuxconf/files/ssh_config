@@ -59,6 +59,11 @@ host vm.shared-box.recolic
     user r
     proxyjump ms.recolic
 
+host rpi.ms.recolic
+    hostname 192.168.100.2
+    user root
+    proxyjump msbackup.recolic
+
 host remote.river-mac.recolic
     hostname proxy.recolic.net
     user river
