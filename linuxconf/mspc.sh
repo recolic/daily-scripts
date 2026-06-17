@@ -16,6 +16,8 @@ lc_startup () {
     lc_bgrun /tmp/frpc2.log  auto_restart bash -c "curl -s https://recolic.net/api/ms-rpctl.php | grep rp.enabled=1 && frpc tcp -n mspc_ssh -l 22 -r 30622 -s proxy-cdn.recolic.net -P 30999 --token $(rsec FRP_KEY) ; sleep 10m"
     # Note: 30474 -> 30623
 
+    lc_bgrun /tmp/ss.log auto_restart shadowsocks2-linux -udp -s "ss://chacha20-ietf-poly1305:$(rsec genpasswd_ss@ms.recolic)@:30411" -verbose 
+
     lc_bgrun /tmp/cron.log  every 30m bash utils/mspc-check-internet.sh
     lc_bgrun /tmp/cron.log  every 1m  env svm_workdir=/extradisk/simple-vm-manager/data bash files/mspc-simple-vmm/cron-callback.sh
     lc_bgrun /tmp/cron.log  every 5m  curl "https://recolic.net/api/echo.php?mspc-keepalive"
