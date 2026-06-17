@@ -25,6 +25,11 @@ import (
 
 func on_new_email(dir, subject, body string) {
 	log.Printf("dir=%s subject=%q body_len=%d", dir, subject, len(body))
+
+	// BOA Junk: "Your credit card statement is available"
+	// C1  Junk: "Your Venture X Card statement is ready"
+	// WF Inbox: "Your statement for credit card account ...1111"
+	// BltInbox: "Your automatic payment is scheduled for .*"
 }
 
 func load_email(path string) (string, string) {
