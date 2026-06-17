@@ -34,12 +34,11 @@ host storage.recolic
     hostname storage.recolic.net
     user root
 
-host ms.recolic
-    hostname mspc.m.recolic
-    user recolic
-
-host msbackup.recolic
+match host ms.recolic exec "nmcli d | grep -qw MSFTGUEST"
     hostname mspc.wlo.m.recolic
+match host ms.recolic !exec "nmcli d | grep -qw MSFTGUEST"
+    hostname mspc.m.recolic
+host ms.recolic
     user recolic
 
 host remote.msbackup.recolic
