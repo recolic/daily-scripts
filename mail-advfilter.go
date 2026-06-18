@@ -29,7 +29,7 @@ import (
 func on_new_email(dir, subject, body string) {
 	log.Printf("dir=%s subject=%q body_len=%d", dir, subject, len(body))
 
-	http.Get("https://recolic.net/api/telegram-notify.php?b64Content=" + url.QueryEscape(base64.StdEncoding.EncodeToString([]byte("<b>New Mail:</b>" + subject))))
+	http.Get("https://recolic.net/api/telegram-notify.php?b64Content=" + url.QueryEscape(base64.StdEncoding.EncodeToString([]byte("New Mail:<br />" + subject))))
 
 
 	// BOA Junk: "Your credit card statement is available"
