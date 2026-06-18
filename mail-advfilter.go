@@ -26,11 +26,34 @@ import (
 	"net/url"
 )
 
+func appendFile(path, body string) {
+	f, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	if err != nil {
+		log.Printf("open %s: %v", path, err)
+		return
+	}
+	defer f.Close()
+
+	if _, err := f.WriteString(body + "\n\n"); err != nil {
+		log.Printf("write %s: %v", path, err)
+	}
+}
+
 func on_new_email(dir, subject, body string) {
 	log.Printf("dir=%s subject=%q body_len=%d", dir, subject, len(body))
 
 	http.Get("https://recolic.net/api/telegram-notify.php?b64Content=" + url.QueryEscape(base64.StdEncoding.EncodeToString([]byte("New Mail:<br />" + subject))))
 
+	switch {
+	case subject == "Your credit card statement is available":
+		appendFile("/tmp/boa.log", body)
+	case subject == "Your Venture X Card statement is ready":
+		appendFile("/tmp/c1.log", body)
+	case strings.HasPrefix(subject, "Your statement for credit card account"):
+		appendFile("/tmp/wf.log", body)
+	case strings.HasPrefix(subject, "Your automatic payment is scheduled for"):
+		appendFile("/tmp/bilt.log", body)
+	}
 
 	// BOA Junk: "Your credit card statement is available"
 	// C1  Junk: "Your Venture X Card statement is ready"
