@@ -21,10 +21,16 @@ import (
 	"strings"
 	"syscall"
 	"unsafe"
+	"encoding/base64"
+	"net/http"
+	"net/url"
 )
 
 func on_new_email(dir, subject, body string) {
 	log.Printf("dir=%s subject=%q body_len=%d", dir, subject, len(body))
+
+	http.Get("https://recolic.net/api/telegram-notify.php?b64Content=" + url.QueryEscape(base64.StdEncoding.EncodeToString([]byte("<b>New Mail:</b>" + subject))))
+
 
 	// BOA Junk: "Your credit card statement is available"
 	// C1  Junk: "Your Venture X Card statement is ready"
