@@ -26,6 +26,8 @@ lc_startup () {
 
         # Don't pollute my app search
         [ -f /usr/share/applications/firefox-developer-edition.desktop ] && sed -i 's/Edition//g' /usr/share/applications/firefox-developer-edition.desktop
+
+        lc_bgrun /var/log/mspc_switch.log every 60s bash files/etc-hosts-auto-switch.sh
     else
         # lc_bgrun /dev/null every 30m /etc/ar2/ar2.sh
 

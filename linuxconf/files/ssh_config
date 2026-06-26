@@ -34,11 +34,8 @@ host storage.recolic
     hostname storage.recolic.net
     user root
 
-match host ms.recolic exec "nmcli d | grep -qw MSFTGUEST"
-    hostname mspc.wlo.m.recolic
-match host ms.recolic !exec "nmcli d | grep -qw MSFTGUEST"
-    hostname mspc.m.recolic
 host ms.recolic
+    hostname mspc.m.recolic
     user recolic
 
 host remote.msbackup.recolic
@@ -61,7 +58,7 @@ host vm.shared-box.recolic
 host rpi.ms.recolic
     hostname 192.168.100.2
     user root
-    proxyjump msbackup.recolic
+    proxyjump ms.recolic
 
 host remote.river-mac.recolic
     hostname proxy.recolic.net
