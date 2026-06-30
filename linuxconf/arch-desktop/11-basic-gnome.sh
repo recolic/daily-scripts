@@ -21,6 +21,7 @@ lc_init () {
     #For GPG smartcard# sudo apt install pcscd scdaemon gnupg2 pcsc-tools -y
 
     pacman -Sy --needed --noconfirm recolic-aur/gnome-terminal-transparency recolic-aur/oreo-cursors-git
+    lc_todo "yay -S linux-wifi-hotspot"
 
     echo "
 GTK_IM_MODULE=fcitx5
