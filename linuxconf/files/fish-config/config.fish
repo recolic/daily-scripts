@@ -51,3 +51,6 @@ end
 # end
 #set -x WINEDEBUG '-all'
 
+# BEGIN Agency MANAGED BLOCK
+fish_add_path "/home/recolic/.config/agency/CurrentVersion"
+# END Agency MANAGED BLOCK

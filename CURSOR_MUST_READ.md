@@ -11,3 +11,5 @@
   Then run `git push` etc. If the key is locked, gpg-agent will ask for a PIN; the agent terminal has **no TTY**, so pinentry cannot show. User must push from their own terminal when the key is locked.
 
 - **Secrets**: User has a secret manager. `rsec` lists all secret names; `rsec SECRET_NAME` fetches a secret's value. Use `rsec` in your script/program. If needed, You may run `rsec` without explicitly asking; Cursor will prompt for permission as needed.
+
+- Copilot only: To describe a Kusto table, do not run control cmd, use `table | take 1` instead.
