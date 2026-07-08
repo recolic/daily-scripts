@@ -1,3 +1,4 @@
+# GPT-5.4
 import json
 import importlib.util
 import os
@@ -209,7 +210,7 @@ def handle_update(tg, update):
         curr = _next_context_message(tg, curr)
 
     try:
-        response = _telegram_safe_text(_complete_from_context(buf) + f"\n{PRIVACY_FOOTNOTE}")
+        response = _telegram_safe_text(_strip_command(text) + _complete_from_context(buf) + "\n" + PRIVACY_FOOTNOTE)
     except Exception as e:
         print('[mod_gpt_assist] LLM completion failed', file=sys.stderr)
         traceback.print_exc(file=sys.stderr)
