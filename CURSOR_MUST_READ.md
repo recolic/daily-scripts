@@ -12,4 +12,4 @@
 
 - **Secrets**: User has a secret manager. `rsec` lists all secret names; `rsec SECRET_NAME` fetches a secret's value. Use `rsec` in your script/program. If needed, You may run `rsec` without explicitly asking; Cursor will prompt for permission as needed.
 
-- Copilot only: To describe a Kusto table, do not run control cmd, use `table | take 1` instead.
+- Copilot only: To describe a Kusto table, do not run control cmd, use `table | take 1` instead. Always include cluster+db in your kql.

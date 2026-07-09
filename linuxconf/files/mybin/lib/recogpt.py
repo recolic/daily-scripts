@@ -14,6 +14,15 @@ all_impl = {
         ),
         extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None, max_completion_tokens=16000)
     ),
+    'gpt54n': lambda: dict(
+        model = "gpt-5.4-nano",
+        client = AzureOpenAI(
+            azure_endpoint=rsec("Az_OpenAI_API"),
+            api_key=rsec("Az_OpenAI_KEY"),
+            api_version="2025-01-01-preview"
+        ),
+        extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None, max_completion_tokens=16000)
+    ),
     'gpt54': lambda: dict(
         model = "gpt-5.4",
         client = AzureOpenAI(
