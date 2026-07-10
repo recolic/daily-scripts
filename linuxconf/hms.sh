@@ -130,10 +130,13 @@ lc_startup () {
     done                                          #
     ######## Barrier END: Wait for network up #####
 
-    subline=$(curl "$(rsec ProxySub_API)?3a" | base64 -d | grep us1lw)
+    proxysub="$(curl "$(rsec ProxySub_API)?3a" | base64 -d)"
+    subline=$(echo "$proxysub" | grep us1lw)
     lc_bgrun /var/log/v1080.log  go-shadowsocks2 -c "$subline" -socks :1080
-    subline=$(curl "$(rsec ProxySub_API)?3a" | base64 -d | grep jp3lw)
+    subline=$(echo "$proxysub" | grep jp3lw)
     lc_bgrun /var/log/v10808.log go-shadowsocks2 -c "$subline" -socks :10808
+    subline=$(echo "$proxysub" | grep hmslw | sed "s/rhome.896444.xyz//")
+    lc_bgrun /var/log/vserv.log  go-shadowsocks2 -udp -s "$subline"
 
     # lc_bgrun /dev/null fish hms/tfc-repomon.fish
 
