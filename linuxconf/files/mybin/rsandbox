@@ -3,7 +3,8 @@
 set -euo pipefail
 
 NAME="${RSANDBOX_NAME:-rsandbox}"
-IMAGE="${RSANDBOX_IMAGE:-archlinux:base-devel}"
+#IMAGE="${RSANDBOX_IMAGE:-archlinux:base-devel}"
+IMAGE="${RSANDBOX_IMAGE:-ubuntu:26.04}"
 WD="$(pwd)"
 
 usage() {
