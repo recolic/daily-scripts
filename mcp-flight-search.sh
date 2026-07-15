@@ -8,8 +8,8 @@
 # uv sync
 
 source "$HOME/.local/bin/env"
-export DUFFEL_API_KEY_LIVE="$1"
+export DUFFEL_API_KEY_LIVE="___TODO_PLEASE_ADD_ME___"
 exec "$HOME/.local/bin/uv" --directory /root/flights-mcp run flights-mcp
 
 #manual# vscode add mcp server: 
-######## bash -c exec rsandbox /root/mcp-wrapper.sh $(rsec DUFFEL_API)
+######## rsandbox bash /root/mcp-wrapper.sh
