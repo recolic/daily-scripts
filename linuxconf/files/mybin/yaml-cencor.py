@@ -4,7 +4,7 @@ import re, subprocess, sys, tempfile
 def string_match_filter(filter_str, input_str):
     # simple non-AI filtering.
     if not (filter_str.startswith("gpt.py(") and filter_str.endswith(")")):
-        return [filter_str == "_any_unicode" and not x.isascii() or filter_str in x for x in input_str]
+        return [filter_str == "any_unicode()" and not x.isascii() or filter_str in x for x in input_str]
 
     todo, result = list(enumerate(input_str)), []
     while todo:
@@ -33,7 +33,7 @@ if len(sys.argv) < 4:
     print('This program will remove all YAML top-level entry that matches the keyword. ')
     print('Usage: ./this.py yaml-path keyword dryrun?0/1')
     print('Usage: ./this.py ./test.yaml hello 1')
-    print('Usage: ./this.py ./test.yaml _any_unicode 1')
+    print('Usage: ./this.py ./test.yaml any_unicode() 1')
     print('Usage: ./this.py ./test.yaml "gpt.py(natural language condition)" 1')
     exit(0)
 
