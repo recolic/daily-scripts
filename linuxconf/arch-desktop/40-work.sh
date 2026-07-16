@@ -10,10 +10,6 @@ lc_startup () {
           fi  
         fi  
 
-        # default browser for Azure VPN + azcli
-        [ -f /usr/share/applications/microsoft-azurevpnclient.desktop ] && sed -i 's|^Exec=/opt/microsoft|Exec=env BR=microsoft-edge-stable /opt/microsoft|' /usr/share/applications/microsoft-azurevpnclient.desktop
-        [ -f /usr/bin/az ] && sed -i 's|^/opt/azure-cli|BR=microsoft-edge-stable /opt/azure-cli|' /usr/bin/az
-
         # Azure VPN fix
         if [ -f /usr/share/polkit-1/rules.d/microsoft-azurevpnclient.rules ]; then
             if ! grep "action.id.indexOf" /usr/share/polkit-1/rules.d/microsoft-azurevpnclient.rules; then
@@ -41,16 +37,8 @@ lc_fsmap /home/recolic/code/msdoc/proj/mymsbin /usr/mymsbin
 lc_assert_user_is_not root
 
 lc_init () {
-    echo "[Desktop Entry]
-Version=1.0
-Name=_browser_wrapper
-Exec=bash -c '[[ -z \$BR ]] && BR=firefox ; \$BR \"\$@\"' _ %U
-StartupNotify=true
-Terminal=false
-Type=Application
-Categories=Network;WebBrowser;
-MimeType=text/html;text/xml;application/xhtml_xml;image/webp;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;" | sudo tee /usr/share/applications/default-browser.desktop
-    xdg-settings set default-web-browser default-browser.desktop
+    env install=1 /usr/mymsbin/browser-wrapper.sh
+
     sudo systemctl enable systemd-resolved # for azure-vpn
 
     lc_todo "yay -S --noconfirm aur/microsoft-azure-vpn-client-bin aur/microsoft-edge-stable-bin aur/globalprotect-openconnect-git azure-cli clion clion-jre"
