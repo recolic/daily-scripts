@@ -30,7 +30,7 @@ host32      |Administrator|(rsec OVL_HOST_RDP     )|host.blade32.m.recolic
 host33      |Administrator|(rsec OVL_HOST_RDP     )|host.blade33.m.recolic
 hosto3t1    |Administrator|(rsec OVL_HOST_RDP     )|host.o3r19s1.m.recolic
 hosto3t2    |Administrator|(rsec OVL_HOST_RDP     )|host.o3r19s2.m.recolic
-tmpvsbox    |recolic      |(rsec WEAK10           )|localhost:30477
+tmpvsbox    |recolic      |(rsec WEAK10           )|mspc.m.recolic:30477
 @openwrt    |root         |(genpasswd 10.100.100.1)|10.100.100.1
 "
 
