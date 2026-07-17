@@ -8,7 +8,7 @@ devbox     ;-m 18G -smp 16 -vnc :13 -net user,hostfwd=tcp::30474-:3390,hostfwd=u
 ##drive-reco  ;-m 8G -smp 2 -vnc :14 -net user,hostfwd=tcp::30480-:22,hostfwd=tcp::30481-:4022 -bios /usr/share/edk2-ovmf/x64/OVMF.4m.fd
 # TEST
 chinabox    ;-m 4G -smp 2 -vnc :16 -net user,hostfwd=tcp::30476-:3389 -bios /usr/share/edk2-ovmf/x64/OVMF.4m.fd
-#vsbox      ;-m 8G -smp 8 -vnc :17 -net user,hostfwd=tcp::30477-:3389 -bios /usr/share/edk2-ovmf/x64/OVMF.4m.fd -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time
+vsbox      ;-m 8G -smp 8 -vnc :17 -net user,hostfwd=tcp::30477-:3389 -bios /usr/share/edk2-ovmf/x64/OVMF.4m.fd -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time
 sharedbox   ;-m 2G -smp 2 -vnc :19 -net user,hostfwd=tcp::30479-:22
 
-# total RAM usage: 24G
+# total RAM usage: 32G
