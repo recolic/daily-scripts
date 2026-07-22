@@ -6,7 +6,7 @@ import sys
 import traceback
 
 
-CHAIN_LIMIT = 10
+CHAIN_LIMIT = 24
 COMMAND_PREFIX = '!llm'
 RECOGPT_RELPATH = '../../../files/mybin/lib/recogpt.py'
 MAX_TELEGRAM_EDIT_TEXT = 4096
