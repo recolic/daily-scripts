@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# GPT 5.6 sol. list email, or print one email, for other script.
 
 import argparse
 import getpass
@@ -84,7 +85,7 @@ def main():
             if args.download_one_mail is not None:
                 sys.stdout.buffer.write(body)
                 return
-            print(f"{message_id.decode()}\t{subject}\t{len(body)}")
+            print(f"{message_id.decode()}\t{subject}\tlen={len(body)}")
     finally:
         try:
             client.logout()
