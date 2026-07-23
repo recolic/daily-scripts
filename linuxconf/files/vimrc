@@ -40,12 +40,11 @@ map <C-f> viwyk/<C-r>"<CR>
 set mouse=
 
 " my private flow file format
-au BufRead,BufNewFile *.flow set filetype=flow
-
-au BufNewFile,BufRead *.vcxproj set filetype=xml
-
+autocmd BufRead,BufNewFile *.flow    setlocal filetype=flow
+autocmd BufRead,BufNewFile *.vcxproj setlocal filetype=xml
+autocmd BufRead,BufNewFile *.kql     setlocal syntax=sql
 " properly highlight json comment
-autocmd FileType json setlocal syntax=jsonc
+autocmd FileType           json      setlocal syntax=jsonc
 
 " """""""""""""""""""""" BEGIN edit GPG file """"""""""""""""""""""""""""""
 " " Don't save backups of *.gpg files
