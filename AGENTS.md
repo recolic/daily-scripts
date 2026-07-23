@@ -14,4 +14,7 @@ For microsoft azure work-related task: user has personal note at ~/code/msdoc. r
 SSH and GIT: SSH key is in gpg-agent. Before any git push/fetch/pull or ssh, set `export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh"`
 If the key is locked, gpg-agent will ask for a PIN; the agent terminal has **no TTY**, so pinentry cannot show. User must push from their own terminal when the key is locked.
 
+## VScode (github copilot) only instruction
+
+When using the browser, if hitting robot check, you can call human to help by giving a "choice" and tell user to select "passed or failed"
 
