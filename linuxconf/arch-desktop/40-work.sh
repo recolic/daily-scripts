@@ -35,6 +35,7 @@ lc_startup () {
 lc_fsmap /home/recolic/code/msdoc/proj/mymsbin /usr/mymsbin
 
 lc_assert_user_is_not root
+lc_fsmap "$HOME/sh/AGENTS.md" "$HOME/.copilot/copilot-instructions.md"
 
 lc_init () {
     env install=1 /usr/mymsbin/browser-wrapper.sh
@@ -55,4 +56,3 @@ lc_login () {
         chmod 777 "$HOME/.cache/git-work-config.inc"
     fi
 }
-
