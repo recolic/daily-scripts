@@ -1,5 +1,5 @@
 if test -d /usr/mymsbin
-    set -gx PATH /usr/mymsbin $PATH
+    set -gx PATH /usr/mymsbin /usr/mymsbin/msbin-ship-x86 $PATH
 end
 if test -d /usr/mybin
     set -gx PATH /usr/mybin $PATH
