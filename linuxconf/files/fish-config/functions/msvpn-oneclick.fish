@@ -1,17 +1,23 @@
 function msvpn-oneclick
+    set -l prev_ts 0
+    set -l fail_count 0
+
     while true
         sudo -E gpclient --fix-openssl connect --browser microsoft-edge-stable --gateway Redmond-WA --disable-ipv6 https://msftvpn-alt.ras.microsoft.com
         sudo -E gpclient --fix-openssl connect --browser microsoft-edge-stable --gateway Redmond --disable-ipv6 https://msftvpn-alt.ras.microsoft.com
 
-        # tmp: global VPN
-        # sudo resolvectl dns tun0 10.50.10.50
-        # sudo resolvectl domain tun0 "~corp.microsoft.com"
-        # sudo resolvectl default-route tun0 yes
-        # sudo ip r add default dev tun0  metric 98
+        set -l now_ts (date +%s)
 
-        sleep 1 ; or break
-        if grep 1 /tmp/gpexit 2> /dev/null
-            break
+        if test $prev_ts -ne 0
+            if test (math "$now_ts - $prev_ts") -lt 10
+                set fail_count (math "$fail_count + 1")
+            else
+                set fail_count 0
+            end
         end
+
+        set prev_ts $now_ts
+        sleep $fail_count; or break
     end
 end
+
