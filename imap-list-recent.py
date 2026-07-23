@@ -24,6 +24,7 @@ def parse_args():
     parser.add_argument("--days", type=int, default=30, help="number of recent days to search (default: 30)")
     parser.add_argument("--contains", metavar="STRING", help="filter messages whose subject contains STRING")
     parser.add_argument("--download-first", action="store_true", help="print the first filtered message body and exit")
+    parser.add_argument("--download", metavar="MESSAGE_ID", help="print one message body and exit")
     return parser.parse_args()
 
 
@@ -57,6 +58,13 @@ def main():
         status, _ = client.select(args.mailbox, readonly=True)
         if status != "OK":
             raise RuntimeError(f"Could not select mailbox: {args.mailbox}")
+
+        if args.download is not None:
+            status, body_data = client.fetch(args.download, "(BODY.PEEK[TEXT])")
+            if status != "OK":
+                raise RuntimeError(f"Could not fetch message: {args.download}")
+            sys.stdout.buffer.write(extract_bytes(body_data))
+            return
 
         search_args = ["SINCE", since]
         if args.contains is not None:
