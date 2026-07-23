@@ -22,7 +22,7 @@ def parse_args():
     parser.add_argument("--port", type=int, default=143, help="IMAP port (default: 143)")
     parser.add_argument("--mailbox", default="INBOX", help="Mailbox name (default: INBOX)")
     parser.add_argument("--days", type=int, default=30, help="number of recent days to search (default: 30)")
-    parser.add_argument("--startswith", metavar="STRING", help="filter messages by subject prefix")
+    parser.add_argument("--contains", metavar="STRING", help="filter messages whose subject contains STRING")
     parser.add_argument("--download-first", action="store_true", help="print the first filtered message body and exit")
     return parser.parse_args()
 
@@ -58,7 +58,12 @@ def main():
         if status != "OK":
             raise RuntimeError(f"Could not select mailbox: {args.mailbox}")
 
-        status, data = client.search(None, "SINCE", since)
+        search_args = ["SINCE", since]
+        if args.contains is not None:
+            escaped = args.contains.replace("\\", "\\\\").replace('"', '\\"')
+            search_args.extend(("SUBJECT", f'"{escaped}"'))
+
+        status, data = client.search(None, *search_args)
         if status != "OK":
             raise RuntimeError("IMAP search failed")
 
@@ -72,11 +77,6 @@ def main():
                 continue
 
             subject = decode_subject(extract_bytes(header_data))
-            if (
-                args.startswith is not None
-                and not subject.startswith(args.startswith)
-            ):
-                continue
 
             status, body_data = client.fetch(message_id, "(BODY.PEEK[TEXT])")
             if status != "OK":
