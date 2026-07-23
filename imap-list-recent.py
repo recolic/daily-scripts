@@ -21,7 +21,9 @@ def parse_args():
     parser.add_argument("--password", help="IMAP password (prompted if omitted)")
     parser.add_argument("--port", type=int, default=143, help="IMAP port (default: 143)")
     parser.add_argument("--mailbox", default="INBOX", help="Mailbox name (default: INBOX)")
-    parser.add_argument("--download-one-mail", metavar="PREFIX", help="print the first matching message body and exit")
+    parser.add_argument("--days", type=int, default=30, help="number of recent days to search (default: 30)")
+    parser.add_argument("--startswith", metavar="STRING", help="filter messages by subject prefix")
+    parser.add_argument("--download-first", action="store_true", help="print the first filtered message body and exit")
     return parser.parse_args()
 
 
@@ -45,7 +47,7 @@ def decode_subject(header_bytes):
 def main():
     args = parse_args()
     password = args.password if args.password is not None else getpass.getpass("Password: ")
-    since = (date.today() - timedelta(days=30)).strftime("%d-%b-%Y")
+    since = (date.today() - timedelta(days=args.days)).strftime("%d-%b-%Y")
 
     client = imaplib.IMAP4(args.server, args.port)
     try:
@@ -71,8 +73,8 @@ def main():
 
             subject = decode_subject(extract_bytes(header_data))
             if (
-                args.download_one_mail is not None
-                and not subject.startswith(args.download_one_mail)
+                args.startswith is not None
+                and not subject.startswith(args.startswith)
             ):
                 continue
 
@@ -82,7 +84,7 @@ def main():
                 continue
 
             body = extract_bytes(body_data)
-            if args.download_one_mail is not None:
+            if args.download_first:
                 sys.stdout.buffer.write(body)
                 return
             print(f"{message_id.decode()}\t{subject}\tlen={len(body)}")
