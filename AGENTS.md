@@ -6,6 +6,7 @@ Git: User prefer branch name `master`.
 Secrets: User has a secret manager. `rsec` lists all secret names; `rsec SECRET_NAME` fetches a secret's value. Use `rsec` in your script/program. If needed, You may run `rsec` without explicitly asking; Cursor will prompt for permission as needed.
 Shell: User has fish, not bash.
 Kusto task: To describe a Kusto table, do not run control cmd, use `table | take 1` instead. Always include cluster+db in your kql.
+Code/Shell: DO NOT break code into multiple-line, unless longer than 256 char.
 
 For microsoft azure work-related task: user has personal note at ~/code/msdoc. read-only access is allowed without confirm.
 
