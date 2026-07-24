@@ -17,5 +17,5 @@ If the key is locked, gpg-agent will ask for a PIN; the agent terminal has **no 
 
 ## VScode (github copilot) only instruction
 
-When using the browser, if hitting robot check, you can call human to help by giving a "choice" and tell user to select "passed or failed"
+When using the browser, if hitting robot check, you can call human to help by giving a "choice" and tell user to select "passed or failed". Google wont work, use bing.
 
