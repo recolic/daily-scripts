@@ -7,6 +7,7 @@ Secrets: User has a secret manager. `rsec` lists all secret names; `rsec SECRET_
 Shell: User has fish, not bash.
 Kusto task: To describe a Kusto table, do not run control cmd, use `table | take 1` instead. Always include cluster+db in your kql.
 Code/Shell: DO NOT break code into multiple-line, unless longer than 256 char.
+Testing: DO NOT install extra software or run anything as root, unless explicitly approved by user with text (or vscode/copilot choice box).
 
 For microsoft azure work-related task: user has personal note at ~/code/msdoc. read-only access is allowed without confirm.
 
