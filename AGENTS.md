@@ -12,7 +12,7 @@ Code/Shell: DO NOT break code into multiple-line, unless longer than 256 char.
 Testing: DO NOT install extra software or run anything as root, unless explicitly approved by user with text (or vscode/copilot choice box).
 Code Generation: Before major design decision, please ask HUMAN-APPROVAL. Minor design decision or disposible test code don't need approval. Your code should match existing coding style, or minimal if no context.
 
-For microsoft azure work-related task: user has personal note at ~/code/msdoc. read-only access is allowed without confirm.
+For microsoft azure work-related task: if you need something not found in knowledge base, you are allowed to read user personal note at ~/code/msdoc.
 
 ## CURSOR only instruction
 
