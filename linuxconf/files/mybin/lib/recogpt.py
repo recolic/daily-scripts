@@ -62,7 +62,7 @@ all_impl = {
             api_key=rsec("Grok_KEY"),
             base_url="https://api.x.ai/v1"
         ),
-        extra_args = dict(reasoning_effort="high")
+        extra_args = dict(reasoning_effort="medium")
     ),
     'local': lambda: dict(
         model = "Qwen3.6-27B",

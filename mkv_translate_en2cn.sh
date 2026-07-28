@@ -118,7 +118,7 @@ for ((chunk = 1; chunk <= chunk_count; chunk++)); do
     for ((attempt = 1; attempt <= max_retries; attempt++)); do
         raw_file="$chunk_prefix.$chunk.attempt$attempt.raw"
         echo "[$chunk/$chunk_count] Translating, attempt $attempt/$max_retries"
-        if gpt.py "$prompt_file" > "$raw_file" && python3 "$helper" validate "$source_chunk" "$raw_file" "$translated_file"; then
+        if gpt.py grokr "$prompt_file" > "$raw_file" && python3 "$helper" validate "$source_chunk" "$raw_file" "$translated_file"; then
             valid=true
             break
         fi
