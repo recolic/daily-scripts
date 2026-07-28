@@ -4,7 +4,7 @@ host *
     hostkeyAlgorithms +ssh-rsa
     Ciphers +aes256-cbc
     StricthostKeyChecking no
-    #userKnownhostsFile=/dev/null
+    userKnownhostsFile=/dev/null
     ServerAliveInterval 3
     #LogLevel ERROR
 
