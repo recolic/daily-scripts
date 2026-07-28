@@ -2,15 +2,19 @@
 
 # Notes for AI agents (read this first)
 
-> "HUMAN-APPROVAL" means, for vscode github copilot, giving a "choice" and tell user to select; for others, explicit user approval over text (future or past).
+> "HUMAN-APPROVAL" means, giving a "choice" and tell user to select; for AI agent without this capability, explicit user approval over text (future or past).
 
 Git: User prefer branch name `master`.
 Secrets: User has a secret manager. `rsec` lists all secret names; `rsec SECRET_NAME` fetches a secret's value. Use `rsec` in your script/program. If needed, You may run `rsec` without explicitly asking; Cursor will prompt for permission as needed.
 Shell: User has fish, not bash.
 Kusto task: To describe a Kusto table, do not run control cmd, use `table | take 1` instead. Always include cluster+db in your kql.
-Code/Shell: DO NOT break code into multiple-line, unless longer than 256 char.
-Testing: DO NOT install extra software or run anything as root, unless explicitly approved by user with text (or vscode/copilot choice box).
-Code Generation: Before major design decision, please ask HUMAN-APPROVAL. Minor design decision or disposible test code don't need approval. Your code should match existing coding style, or minimal if no context.
+Testing: 
+  - ANY non-readonly command requires HUMAN-APPROVAL, especially these with root access.
+  - rsandbox is allowed without any approval. rsandbox [cmd ...] ; rsandbox sudo [cmd ...] are all allowed. Read /usr/mybin/rsandbox for port forwarding, nuke option or other details.
+Code Generation:
+  - Before major design decision, please ask HUMAN-APPROVAL. Minor design decision or disposible test code don't need approval. Your code should match existing coding style, or minimal if no context.
+  - DO NOT break code into multiple-line, unless longer than 256 char.
+
 
 For microsoft azure work-related task: if you need something not found in knowledge base, you are allowed to read user personal note at ~/code/msdoc.
 
