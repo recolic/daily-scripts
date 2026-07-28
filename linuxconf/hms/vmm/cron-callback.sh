@@ -2,7 +2,7 @@
 
 # You may change this directory
 svm_workdir="${svm_workdir:-./data}"
-ver=1.0.63
+ver=1.0.64
 
 _self_bin_name="$0"
 function where_is_him () {
@@ -23,6 +23,9 @@ _script_path=`where_am_i`
 
 function echo2 () {
     echo "$@" 1>&2
+}
+function config_get_section () {
+    sed -n '/^;BEGIN_'$1'/,/^;BEGIN_/{/^;BEGIN_/!p}' "$2"
 }
 function generate_metadata () {
     local name=$1
@@ -59,6 +62,7 @@ function download_cloud_img_if_not_exist () {
     knowledge["ubuntu-22.04-server.img"]=https://cloud-images.ubuntu.com/releases/22.04/release/ubuntu-22.04-server-cloudimg-amd64.img
     knowledge["ubuntu-24.04-server.img"]=https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-amd64.img
     knowledge["ubuntu-24.04-server-arm64.img"]=https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-arm64.img
+    knowledge["ubuntu-26.04-server.img"]=https://cloud-images.ubuntu.com/releases/26.04/release/ubuntu-26.04-server-cloudimg-amd64.img
     knowledge["debian-10.img"]=https://cloud.debian.org/images/cloud/buster/latest/debian-10-genericcloud-amd64.qcow2
     knowledge["debian-11.img"]=https://cloud.debian.org/images/cloud/bullseye/latest/debian-11-genericcloud-amd64.qcow2
     knowledge["debian-12.img"]=https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2
@@ -155,7 +159,7 @@ function do_init () {
                 echo2 "Error: Bad configuration line: $line"
             fi
         fi
-    done < "$_script_path/init.settings"
+    done
 }
 
 function do_start () {
@@ -179,7 +183,7 @@ function do_start () {
                 echo2 "Error: Bad configuration line: $line"
             fi
         fi
-    done < "$_script_path/runtime.settings"
+    done
 }
 
 # Check if current script is already running. Stupid flock is very unreliable.
@@ -196,5 +200,5 @@ mkdir -p "$svm_workdir"
 cd "$svm_workdir" || exit $?
 mkdir -p base vm tmp
 
-do_init
-do_start
+config_get_section   "IMAGE_SETTING" "$_script_path/vm.settings" | do_init
+config_get_section "RUNTIME_SETTING" "$_script_path/vm.settings" | do_start
