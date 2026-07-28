@@ -81,7 +81,7 @@ for kind, path in zip(sys.argv[1::2], sys.argv[2::2]):
             due = match(r"will be made on ([A-Z]+ \d{1,2}(?:, \d{4})?)", body, "payment date")
         rows.append((parse_date(due), card, amount))
     except ValueError as error:
-        raise SystemExit(f"{kind}: {error}")
+        print("pass... raise SystemExit", (f"{kind}: {error}"))
 
 print(f"{'DAY':<10}  {'CREDIT CARD':<42}  {'USD':>10}")
 for due, card, amount in sorted(rows):
