@@ -8,10 +8,6 @@ host *
     ServerAliveInterval 3
     #LogLevel ERROR
 
-host vs-ssh.visualstudio.com
-    IdentityFile ~/.ssh/aur
-    IdentitiesOnly yes
-
 host main.recolic
     hostname func.main.recolic.net
     user root
@@ -33,32 +29,6 @@ host proxy.recolic
 host storage.recolic
     hostname storage.recolic.net
     user root
-
-host ms.recolic
-    hostname mspc.m.recolic
-    user recolic
-
-host remote.msbackup.recolic
-    hostname proxy-cdn.recolic.net
-    port 30622
-    user recolic
-
-host vm.ndpa-build.recolic
-    hostname 127.0.0.1
-    port 30472
-    user r
-    proxyjump ms.recolic
-
-host vm.shared-box.recolic
-    hostname 127.0.0.1
-    port 30479
-    user r
-    proxyjump ms.recolic
-
-host rpi.ms.recolic
-    hostname 192.168.100.2
-    user root
-    proxyjump ms.recolic
 
 host remote.river-mac.recolic
     hostname proxy.recolic.net
@@ -91,7 +61,7 @@ host mpc.recolic
     port 22
     user recolic
 
-host playg.re
+host playg.hms.recolic
     hostname hms.recolic
     port 30474
     user root
@@ -108,6 +78,53 @@ host remote.rpi.recolic.backup
     hostname proxy.recolic.net
     user root
     port 30654
+
+### Devbox
+
+host ms.recolic
+    hostname mspc.m.recolic
+    user recolic
+
+host remote.msbackup.recolic
+    hostname proxy-cdn.recolic.net
+    port 30622
+    user recolic
+
+host vmndpa.ms.recolic
+    hostname 127.0.0.1
+    port 30472
+    user r
+    proxyjump ms.recolic
+
+host vmsbox.ms.recolic
+    hostname 127.0.0.1
+    port 30479
+    user r
+    proxyjump ms.recolic
+
+host vmt1.ms.recolic
+    hostname 127.0.0.1
+    port 30491
+    user r
+    proxyjump ms.recolic
+
+host vmt2.ms.recolic
+    hostname 127.0.0.1
+    port 30492
+    user r
+    proxyjump ms.recolic
+
+host vmt3.ms.recolic
+    hostname 127.0.0.1
+    port 30493
+    user r
+    proxyjump ms.recolic
+
+host rpi.ms.recolic
+    hostname 192.168.100.2
+    user root
+    proxyjump ms.recolic
+
 
 ### Work machine. IP must be protected.
 

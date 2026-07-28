@@ -2,9 +2,12 @@
 
 ## init VM from cloudimg
 # name;cloudimg;disk;username;password (space will be trimmed)
-gitlab-ci-ms;focal-server-cloudimg-amd64.img ;50G;r;1
-##drive-reco  ;focal-server-cloudimg-amd64.img ;200G;r;1
-sharedbox   ;focal-server-cloudimg-amd64.img ;50G;r;1
+#gitlab-ci-ms;ubuntu-24.04-server.img ;50G;r;1
+##drive-reco ;ubuntu-24.04-server.img ;200G;r;1
+sharedbox    ;ubuntu-24.04-server.img ;50G;r;1
+tb1 ;debian-12.img;50G;r;1
+tb2 ;debian-12.img;50G;r;1
+tb3 ;debian-12.img;50G;r;1
 
 ## or init VM from pre-deployed backing image (please put it into data/base/)
 # name;existing_img_fname
@@ -16,7 +19,7 @@ vsbox       ;win10pro-22h2-virtio-uefi.qcow2
 
 # name;options (name will be trimmed, options will be passed as-is)
 #                              :4 used by HostVNC
-# allowed port: 30450-30499. 30480-30483 reserved for drive.recolic
+# allowed port: 30450-30499
 # PROD
 # devbox 14G is fine
 devbox     ;-m 18G -smp 16 -vnc :13 -net user,hostfwd=tcp::30474-:3390,hostfwd=udp::30474-:3390,hostfwd=tcp::30472-:8000,hostfwd=udp::30472-:8000 -machine pc-q35-8.2 -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time -chardev socket,id=chrtpm,path=/extradisk/swtpm/mytpm.sock -tpmdev emulator,id=tpm0,chardev=chrtpm -device tpm-tis,tpmdev=tpm0 -drive if=pflash,format=raw,readonly=on,file=/extradisk/uefi/OVMF_CODE_4M.ms.fd -drive if=pflash,format=raw,file=/extradisk/uefi/OVMF_VARS_4M.ms.fd
@@ -25,6 +28,10 @@ devbox     ;-m 18G -smp 16 -vnc :13 -net user,hostfwd=tcp::30474-:3390,hostfwd=u
 # TEST
 chinabox    ;-m 4G -smp 2 -vnc :16 -net user,hostfwd=tcp::30476-:3389 -bios /usr/share/edk2-ovmf/x64/OVMF.4m.fd
 vsbox      ;-m 8G -smp 8 -vnc :17 -net user,hostfwd=tcp::30477-:3389 -bios /usr/share/edk2-ovmf/x64/OVMF.4m.fd -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time
-sharedbox   ;-m 2G -smp 2 -vnc :19 -net user,hostfwd=tcp::30479-:22
 
-# total RAM usage: 32G
+sharedbox   ;-m 2G -smp 2 -vnc :19 -net user,hostfwd=tcp::30479-:22
+tb1 ;-m 4G -smp 2 -vnc :21 -net user,hostfwd=tcp::30491-:22
+tb2 ;-m 4G -smp 2 -vnc :22 -net user,hostfwd=tcp::30492-:22
+tb3 ;-m 4G -smp 2 -vnc :23 -net user,hostfwd=tcp::30493-:22
+
+# total RAM usage: 44G / 46G
