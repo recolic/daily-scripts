@@ -78,14 +78,13 @@ if (($_GET['action'] ?? '') === 'finish') {
 </head>
 <body>
   <h1>Passkey login</h1>
-  <button id="login">Login</button>
-  <pre id="output"></pre>
+  <pre id="output">Waiting for passkey...</pre>
   <script>
     const output = document.querySelector('#output');
     const fromB64u = value => Uint8Array.from(atob(value.replaceAll('-', '+').replaceAll('_', '/').padEnd(Math.ceil(value.length / 4) * 4, '=')), c => c.charCodeAt(0));
     const toB64u = value => btoa(String.fromCharCode(...new Uint8Array(value))).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '');
     const endpoint = action => { const url = new URL(location.href); url.searchParams.set('action', action); return url; };
-    document.querySelector('#login').onclick = async () => {
+    const login = async () => {
       try {
         const optionsResponse = await fetch(endpoint('options'));
         if (!optionsResponse.ok) throw new Error(await optionsResponse.text());
@@ -100,6 +99,7 @@ if (($_GET['action'] ?? '') === 'finish') {
         form.submit();
       } catch (error) { output.textContent = `${error.name}: ${error.message}`; }
     };
+    login();
   </script>
 </body>
 </html>
