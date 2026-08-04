@@ -8,6 +8,12 @@ host *
     ServerAliveInterval 3
     #LogLevel ERROR
 
+Host tmpgpu
+    HostName 154.64.230.50
+    User root
+    Port 53301
+
+
 host main.recolic
     hostname func.main.recolic.net
     user root
