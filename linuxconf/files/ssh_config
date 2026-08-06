@@ -200,15 +200,17 @@ host vm.blade33
     user root
     proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d ' ' -f 1) %p
 
-host soc.o3r19s1.m.recolic
+host lab31
     # Host: host.o3r19s1.m.recolic
     #!rmssh: rm.o3r19sx.m.recolic;1;R_SEC_RM3233_PSWD
+    hostname soc.o3r19s1.m.recolic
     user root
     proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d ' ' -f 1) %p
 
-host soc.o3r19s2.m.recolic
+host lab32
     # Host: host.o3r19s2.m.recolic
     #!rmssh: rm.o3r19sx.m.recolic;2;R_SEC_RM3233_PSWD
+    hostname soc.o3r19s2.m.recolic
     user root
     proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d ' ' -f 1) %p
 
