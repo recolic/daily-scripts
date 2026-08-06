@@ -76,6 +76,7 @@ function target_mail_www_recolic_net_data
     # mail.recolic.net, www.recolic.net.
     run_until_success rsync -avz --partial --delete \
         --exclude /srv/html/tmp/ \
+        --exclude /srv/html/.git/ \
         root@func.main.recolic:/srv /storage/cache/target_mail_www_recolic_net_data
 
     and pack_backup_dir /storage/cache/target_mail_www_recolic_net_data
