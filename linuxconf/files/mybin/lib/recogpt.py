@@ -72,6 +72,14 @@ all_impl = {
         ),
         extra_args = dict()
     ),
+    'local2': lambda: dict(
+        model = "gpt-5.6-sol",
+        client = OpenAI(
+            api_key="a", # fw protected
+            base_url="http://us1.896444.xyz:25584/v1"
+        ),
+        extra_args = dict(reasoning_effort="medium")
+    ),
 }
 default_impl = 'gpt54'
 
