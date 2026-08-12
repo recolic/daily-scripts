@@ -17,18 +17,28 @@ switch $argv[1]
     case daily
         backup_flist
         zfs snapshot nas-data-raid@daily-(date +%Y%m%d-%H%M)
+        zfs snapshot nas-data-hdd@daily-(date +%Y%m%d-%H%M)
         exit $status
     case monthly
-        zfs snapshot nas-data-raid@monthly-(date +%Y%m%d-%H%M)
-            or exit $status # If monthly snapshot failed, do not delete daily snapshots. 
+        # If monthly snapshot failed, do not delete daily snapshots. 
+        zfs snapshot nas-data-raid@monthly-(date +%Y%m%d-%H%M); or exit $status
+        zfs snapshot nas-data-hdd@monthly-(date +%Y%m%d-%H%M); or exit $status
         for dailys in (zfs list -t snapshot nas-data-raid | cut -d ' ' -f 1 | grep @daily)
             echo "Deleting daily snapshot $dailys..."
             zfs destroy $dailys
         end
+        for dailys in (zfs list -t snapshot nas-data-hdd | cut -d ' ' -f 1 | grep @daily)
+            echo "Deleting daily snapshot $dailys..."
+            zfs destroy $dailys
+        end
     case annually
-        zfs snapshot nas-data-raid@annually-(date +%Y%m%d-%H%M)
-            or exit $status
+        zfs snapshot nas-data-raid@annually-(date +%Y%m%d-%H%M); or exit $status
+        zfs snapshot nas-data-hdd@annually-(date +%Y%m%d-%H%M); or exit $status
         for monthlys in (zfs list -t snapshot nas-data-raid | cut -d ' ' -f 1 | grep @monthly)
+            echo "Deleting monthly snapshot $monthlys..."
+            zfs destroy $monthlys
+        end
+        for monthlys in (zfs list -t snapshot nas-data-hdd | cut -d ' ' -f 1 | grep @monthly)
             echo "Deleting monthly snapshot $monthlys..."
             zfs destroy $monthlys
         end

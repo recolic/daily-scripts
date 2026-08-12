@@ -122,7 +122,7 @@ function c1_csv_filter () {
         local cur_y=`date +%Y`
         [ "$cur_m" = 1 ] && local prev_m=12 || local prev_m=$(($cur_m-1))
         [ "$cur_m" = 1 ] && local prev_y=$(($cur_y-1)) || local prev_y=$cur_y
-        cat "$l_fname" | grep ",$what," | grep ",$prev_y-$prev_m-"
+        cat "$l_fname" | grep ",$what," | grep ",$prev_y-0\?$prev_m-"
     else
         cat "$l_fname" | grep ",$what," 
     fi
@@ -205,7 +205,7 @@ Usage (C1, by Post date):
         alliant_csv_calc /tmp/.alliant-1.csv > /tmp/.alliant-tx.txt || return $?
     elif [[ $CSV = c1 ]]; then
         echo c1_csv_filter 1
-        c1_csv_filter 1852 "$fname" > /tmp/.alliant-1.csv || return $?
+        c1_csv_filter 7983 "$fname" > /tmp/.alliant-1.csv || return $?
         echo c1_csv_filter 2
         c1_csv_filter 3662 "$fname" > /tmp/.alliant-other.csv || return $?
         echo c1_csv_calc
@@ -259,12 +259,13 @@ Thanks for using Recolic Payment Service.
     
     cat /tmp/.alliant-h1.html /tmp/.alliant-h2.html /tmp/.alliant-h3.html /tmp/.alliant-h4.html > /tmp/.alliant-all.html
     cp /tmp/.alliant-1.csv /tmp/river-statement-$prev_month.csv
+    cp /tmp/.alliant-1.csv $HOME/tmp/river-statement-$prev_month.csv
 
     echo ">>>
 EMAIL DONE! (Use Thunderbird -> Insert -> HTML)
   Title:  Your $prev_month Statement and $next_month Budget
   Content:    /tmp/.alliant-all.html
-  Attachment: /tmp/river-statement-$prev_month.csv
+  Attachment: ~/tmp/river-statement-$prev_month.csv
 >>>
 Also check non-CNY cost: /tmp/.alliant-other.csv"
 }

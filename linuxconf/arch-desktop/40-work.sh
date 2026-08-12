@@ -10,10 +10,6 @@ lc_startup () {
           fi  
         fi  
 
-        # default browser for Azure VPN + azcli
-        [ -f /usr/share/applications/microsoft-azurevpnclient.desktop ] && sed -i 's|^Exec=/opt/microsoft|Exec=env BR=microsoft-edge-stable /opt/microsoft|' /usr/share/applications/microsoft-azurevpnclient.desktop
-        [ -f /usr/bin/az ] && sed -i 's|^/opt/azure-cli|BR=microsoft-edge-stable /opt/azure-cli|' /usr/bin/az
-
         # Azure VPN fix
         if [ -f /usr/share/polkit-1/rules.d/microsoft-azurevpnclient.rules ]; then
             if ! grep "action.id.indexOf" /usr/share/polkit-1/rules.d/microsoft-azurevpnclient.rules; then
@@ -23,6 +19,11 @@ lc_startup () {
 
         # Both Azure-VPN and GlobalProtect use systemd-resolved. This one won't break NetworkManager.
         ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+
+        # Don't pollute my app search
+        [ -f /usr/share/applications/firefox-developer-edition.desktop ] && sed -i 's/Edition//g' /usr/share/applications/firefox-developer-edition.desktop
+
+        lc_bgrun /var/log/mspc_switch.log every 60s bash files/etc-hosts-auto-switch.sh
     else
         # lc_bgrun /dev/null every 30m /etc/ar2/ar2.sh
 
@@ -34,18 +35,11 @@ lc_startup () {
 lc_fsmap /home/recolic/code/msdoc/proj/mymsbin /usr/mymsbin
 
 lc_assert_user_is_not root
+lc_fsmap "$HOME/sh/AGENTS.md" "$HOME/.copilot/copilot-instructions.md"
 
 lc_init () {
-    echo "[Desktop Entry]
-Version=1.0
-Name=_browser_wrapper
-Exec=bash -c '[[ -z \$BR ]] && BR=firefox ; \$BR \"\$@\"' _ %U
-StartupNotify=true
-Terminal=false
-Type=Application
-Categories=Network;WebBrowser;
-MimeType=text/html;text/xml;application/xhtml_xml;image/webp;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;" | sudo tee /usr/share/applications/default-browser.desktop
-    xdg-settings set default-web-browser default-browser.desktop
+    env install=1 /usr/mymsbin/browser-wrapper.sh
+
     sudo systemctl enable systemd-resolved # for azure-vpn
 
     lc_todo "yay -S --noconfirm aur/microsoft-azure-vpn-client-bin aur/microsoft-edge-stable-bin aur/globalprotect-openconnect-git azure-cli clion clion-jre"
@@ -54,8 +48,7 @@ MimeType=text/html;text/xml;application/xhtml_xml;image/webp;x-scheme-handler/ht
 
 lc_login () {
     if ! grep -F .m.recolic /etc/hosts > /dev/null; then
-        gpg -d -o /tmp/.hosts.tmp secrets/work-hosts.gpg &&
-            sudo mv /tmp/.hosts.tmp /etc/hosts
+        gpg -d -o /tmp/.hosts.tmp secrets/work-hosts.gpg && sudo mv /tmp/.hosts.tmp /etc/hosts
     fi
 
     if [ ! -f "$HOME/.cache/git-work-config.inc" ]; then
@@ -63,4 +56,3 @@ lc_login () {
         chmod 777 "$HOME/.cache/git-work-config.inc"
     fi
 }
-

@@ -1,5 +1,5 @@
 if test -d /usr/mymsbin
-    set -gx PATH /usr/mymsbin $PATH
+    set -gx PATH /usr/mymsbin /usr/mymsbin/msbin-ship-x86 $PATH
 end
 if test -d /usr/mybin
     set -gx PATH /usr/mybin $PATH
@@ -51,3 +51,6 @@ end
 # end
 #set -x WINEDEBUG '-all'
 
+# BEGIN Agency MANAGED BLOCK
+fish_add_path "/home/recolic/.config/agency/CurrentVersion"
+# END Agency MANAGED BLOCK

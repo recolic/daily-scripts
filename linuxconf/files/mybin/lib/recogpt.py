@@ -4,83 +4,95 @@ from openai import OpenAI, AzureOpenAI
 def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
 
 all_impl = {
-    # Warning: Azure heavy censorship
-    'gpt5': lambda: dict(
-        model = "gpt-5-chat",
-        client = AzureOpenAI(
-            azure_endpoint=rsec("Az_OpenAI_API5"),
-            api_key=rsec("Az_OpenAI_KEY5"),
-            api_version="2025-01-01-preview"
+    'gpt56': lambda: dict(
+        model = "gpt-5.6-sol",
+        client = OpenAI(
+            api_key=rsec("GITHUB_EMU_TOKEN"),
+            base_url="http://us1.896444.xyz:25584/v1"
         ),
-        extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None, max_tokens=16000)
+        response_api = True,
+        extra_args = dict(reasoning_effort="medium")
     ),
-    'gpt51': lambda: dict(
-        model = "gpt-5.1-chat",
+    'gpt56t': lambda: dict(
+        model = "gpt-5.6-terra",
+        client = OpenAI(
+            api_key=rsec("GITHUB_EMU_TOKEN"),
+            base_url="http://us1.896444.xyz:25584/v1"
+        ),
+        response_api = True,
+        extra_args = dict(reasoning_effort="medium")
+    ),
+    'gpt56l': lambda: dict(
+        model = "gpt-5.6-luna",
+        client = OpenAI(
+            api_key=rsec("GITHUB_EMU_TOKEN"),
+            base_url="http://us1.896444.xyz:25584/v1"
+        ),
+        response_api = True,
+        extra_args = dict(reasoning_effort="medium")
+    ),
+    # Warning: Azure heavy censorship
+    'gpt54m': lambda: dict(
+        model = "gpt-5.4-mini",
         client = AzureOpenAI(
-            azure_endpoint=rsec("Az_OpenAI_API5"),
-            api_key=rsec("Az_OpenAI_KEY5"),
+            azure_endpoint=rsec("Az_OpenAI_API"),
+            api_key=rsec("Az_OpenAI_KEY"),
             api_version="2025-01-01-preview"
         ),
         extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None, max_completion_tokens=16000)
     ),
-    'gpt52': lambda: dict(
-        model = "gpt-5.2-chat",
+    'gpt54n': lambda: dict(
+        model = "gpt-5.4-nano",
         client = AzureOpenAI(
-            azure_endpoint=rsec("Az_OpenAI_API5"),
-            api_key=rsec("Az_OpenAI_KEY5"),
+            azure_endpoint=rsec("Az_OpenAI_API"),
+            api_key=rsec("Az_OpenAI_KEY"),
+            api_version="2025-01-01-preview"
+        ),
+        extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None, max_completion_tokens=16000)
+    ),
+    'gpt54': lambda: dict(
+        model = "gpt-5.4",
+        client = AzureOpenAI(
+            azure_endpoint=rsec("Az_OpenAI_API"),
+            api_key=rsec("Az_OpenAI_KEY"),
             api_version="2025-01-01-preview"
         ),
         extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None, max_completion_tokens=16000)
     ),
     'flash': lambda: dict(
-        model = "gemini-2.5-flash",
+        model = "gemini-flash-latest",
         client = OpenAI(
             api_key=rsec("Gemini_KEY"),
             base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
         ),
-        extra_args = dict(max_tokens=16000)
+        extra_args = dict(max_tokens=16000, reasoning_effort="low")
     ),
     'pro': lambda: dict(
-        model = "gemini-2.5-pro",
+        model = "gemini-pro-latest",
         client = OpenAI(
             api_key=rsec("Gemini_KEY"),
             base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
         ),
-        extra_args = dict(max_tokens=16000)
+        extra_args = dict(max_tokens=16000, reasoning_effort="high")
     ),
     'grok': lambda: dict(
-        model = "grok-4-1-fast-non-reasoning",
+        model = "grok-latest",
         client = OpenAI(
             api_key=rsec("Grok_KEY"),
             base_url="https://api.x.ai/v1"
         ),
-        extra_args = dict(extra_body={
-            "search_enabled": True,
-            "real_time_data": True,
-            "search_parameters": {
-                "max_search_results": 15,
-                "mode": "auto",
-                "include_citations": False
-            }
-        })
+        extra_args = dict(reasoning_effort="medium")
     ),
-    'grokr': lambda: dict(
-        model = "grok-4-1-fast-reasoning",
+    'local': lambda: dict(
+        model = "Qwen3.6-27B",
         client = OpenAI(
-            api_key=rsec("Grok_KEY"),
-            base_url="https://api.x.ai/v1"
+            api_key="a",
+            base_url="http://localhost:8001"
         ),
-        extra_args = dict(extra_body={
-            "search_enabled": True,
-            "real_time_data": True,
-            "search_parameters": {
-                "max_search_results": 15,
-                "mode": "auto",
-                "include_citations": False
-            }
-        })
+        extra_args = dict()
     ),
 }
+default_impl = 'gpt56'
 
 def impl_list():
     return list(all_impl.keys())
@@ -128,24 +140,31 @@ def prompt_init_default():
     return prompt_system("You are an AI assistant that helps people. User usually want short daily conversation, so do not give detailed lecture unless really necessary, sometimes you must think against user to give useful insights. For complex discussion, your context is limited. So please act like a human and don't unnecessarily say too much.")
 
 
-def complete(impl, prompt):
-    completion = impl['client'].chat.completions.create(
-        model=impl['model'],
-        messages=prompt,
-        stream=False,
-        **impl['extra_args']
-    )
-    # Extract assistant reply (Azure format: a list, we just join)
-    assistant_text = ""
-    # Azure's completion structure: choices[0].message.content is a list of dicts with 'type':'text', 'text':...
-    # So we gather all text chunks together
-    if hasattr(completion.choices[0].message, "content"):
-        for chunk in completion.choices[0].message.content:
-            if isinstance(chunk, dict) and chunk.get("type") == "text":
-                assistant_text += chunk.get("text", "")
-            elif isinstance(chunk, str):
-                assistant_text += chunk
+def complete(prompt, impl = default_impl):
+    if impl.get('response_api'):
+        response_prompt = [{**message, "content": [{"type": "output_text" if message["role"] == "assistant" else "input_text", "text": part["text"]} if part["type"] == "text" else {"type": "input_image", "image_url": part["image_url"]["url"]} for part in message["content"]]} for message in prompt]
+        extra_args = impl['extra_args'].copy()
+        if 'reasoning_effort' in extra_args:
+            extra_args['reasoning'] = {"effort": extra_args.pop('reasoning_effort')}
+        return impl['client'].responses.create(model=impl['model'], input=response_prompt, stream=False, **extra_args).output_text
     else:
-        raise RuntimeError(str(completion))
-    return assistant_text
+        completion = impl['client'].chat.completions.create(
+            model=impl['model'],
+            messages=prompt,
+            stream=False,
+            **impl['extra_args']
+        )
+        # Extract assistant reply (Azure format: a list, we just join)
+        assistant_text = ""
+        # Azure's completion structure: choices[0].message.content is a list of dicts with 'type':'text', 'text':...
+        # So we gather all text chunks together
+        if hasattr(completion.choices[0].message, "content"):
+            for chunk in completion.choices[0].message.content:
+                if isinstance(chunk, dict) and chunk.get("type") == "text":
+                    assistant_text += chunk.get("text", "")
+                elif isinstance(chunk, str):
+                    assistant_text += chunk
+        else:
+            raise RuntimeError(str(completion))
+        return assistant_text
 

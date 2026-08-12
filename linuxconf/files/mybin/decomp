@@ -4,12 +4,12 @@
 # 1.06: allow decompress nupkg
 # 1.07: allow decompress tar.zst
 
-[[ $1 == '' ]] && echo 'Usage: decompress [-g: use GB2312 aur/unzip-iconv] [-c: extract to new folder] <files ...>' && exit 1
+[[ $1 == '' ]] && echo 'Usage: decompress [-g: use GB2312] [-c: extract to new folder] <files ...>' && exit 1
 
 function _e () {
     fname=`basename "$1"`
     case "$fname" in
-        *.7z | *.iso )
+        *.7z | *.iso | *.squashfs | *.raw )
             7z x "$1"
             ;;
         *.zip | *.nupkg )

@@ -6,7 +6,7 @@ lc_include arch-common/* utils/arch-virt.sh
 lc_assert_user_is root
 lc_fsmap hms/nginx.conf /etc/nginx/nginx.conf
 lc_fsmap hms/exports /etc/exports
-export PATH="$PATH:files/mybin"
+export PATH="$PATH:$(pwd)/files/mybin"
 
 function install_x86_gzip_bin () {
     binname="$1"
@@ -29,7 +29,7 @@ TODO: manual steps
 #######################################################
 #### Setup this server from stretch
 # 1. Clean-Installed archlinux
-# 2. dhcpcd patch: add 'allowinterfaces enp4s0f1' to /etc/dhdpcd.conf
+# 2. dhcpcd patch: modify /etc/dhdpcd.conf below
 # 3. Setup everything in OTHER SERVICE LIST.
 # 4. linuxconf register
 ################## OTHER SERVICE LIST #################
@@ -37,7 +37,11 @@ TODO: manual steps
 # docker (systemd) for jenserat/samba-publicshare, hms-sms-and-door-api
 # fancontrol (systemd) for /sys/devices/platform/nct6775.2592/hwmon/hwmon2/pwm2_enable automodify
 # dhcpcd (systemd):
-#   modify /etc/dhcpcd.conf to set allowinterfaces to ETHERNET
+#   modify /etc/dhcpcd.conf to add the following:
+#     allowinterfaces enp5s0
+#     allowinterfaces enp0s20u1 # left USB3 port
+#     allowinterfaces enp0s20u2 # right USB3 port
+#   remove 'slaac private'
 #
 ## python telegram bot:
 # pip install python-telegram setuptools --break-system-packages
@@ -87,9 +91,11 @@ lc_startup () {
     # lc_bgrun /var/log/ddns-daemon.log every 10m curl -s "https://dynamicdns.park-your-domain.com/update?host=rhome&domain=896444.xyz&password=$(rsec DDNS_XYZ_TOKEN)"
     
     # frpc. recolichms : 30510-30519
-    lc_bgrun /var/log/frpc2.log auto_restart frpc tcp -n hms_audit -l 30510 -r 30510 -s proxy.recolic.net -P 30999 --token $(rsec FRP_KEY)
+    # lc_bgrun /var/log/frpc2.log auto_restart frpc tcp -n hms_audit -l 30510 -r 30510 -s proxy.recolic.net -P 30999 --token $(rsec FRP_KEY)
     lc_bgrun /var/log/frpc1.log auto_restart frpc tcp -n hms_ssh  -l 22 -r 30512 -s proxy.recolic.net -P 30999 --token $(rsec FRP_KEY)
     lc_bgrun /var/log/frpc2.log auto_restart frpc tcp -n hms_http -l 80 -r 30513 -s proxy.recolic.net -P 30999 --token $(rsec FRP_KEY)
+
+    [ -d /mnt/fsdisk/nfs ] && mount --bind /mnt/hdd/nfs /mnt/fsdisk/nfs
     
     # aria2 rpc
     lc_bgrun /var/log/aria2-rpcd.log bash -c "cd /mnt/fsdisk/nfs/pub/ && aria2c --enable-rpc --rpc-listen-all --rpc-allow-origin-all"
@@ -102,6 +108,9 @@ lc_startup () {
     
     # naive file send server
     lc_bgrun /var/log/fserver.log python -u hms/fserver/hms-fserver.py
+
+    # hdd: quiet mode in sleep hour
+    lc_bgrun /var/log/hdd-sleep.log every 10m bash hms/cron_hdd_sleep.sh
     
     # extra iptables rules
     iptables  -I INPUT -p tcp -m tcp --dport 22 -j ACCEPT
@@ -121,18 +130,22 @@ lc_startup () {
     done                                          #
     ######## Barrier END: Wait for network up #####
 
-    subline=$(curl "$(rsec ProxySub_API)?3a" | base64 -d | grep C100.US1LW)
+    proxysub="$(curl "$(rsec ProxySub_API)?3a" | base64 -d)"
+    subline=$(echo "$proxysub" | grep us1lw)
     lc_bgrun /var/log/v1080.log  go-shadowsocks2 -c "$subline" -socks :1080
-    subline=$(curl "$(rsec ProxySub_API)?3a" | base64 -d | grep C100.JP2LW)
+    subline=$(echo "$proxysub" | grep jp3lw)
     lc_bgrun /var/log/v10808.log go-shadowsocks2 -c "$subline" -socks :10808
+    subline=$(echo "$proxysub" | grep hmslw | sed "s/rhome.896444.xyz//")
+    lc_bgrun /var/log/vserv.log  go-shadowsocks2 -udp -s "$subline"
 
-    lc_bgrun /dev/null fish hms/tfc-repomon.fish
+    # lc_bgrun /dev/null fish hms/tfc-repomon.fish
 
     lc_bgrun /var/log/cron.log every 1d docker run --rm recolic/mailbox-cleaner imap.recolic.net tmp@recolic.net "$(rsec genpasswd_tmp@recolic.net)" -d 15
     # Using (rsec Telegram_API_HASH) (rsec Telegram_API_ID) (rsec PHONE)
-    lc_bgrun /var/log/cron.log every 1d bash hms/telegram-public-msg-auto-cleanup/daily.sh
-    lc_bgrun /var/log/cron.log env audit_port=30510 audit_token="$(rsec genpasswd_tgaudit@dummy)" bash hms/telegram-transcript/daemon.sh
-    lc_bgrun /var/log/cron.log every 1d env suburl="$(rsec ProxySub_API)?1" fish hms/balancemon.fish
+    # For the AI plugin, using (rsec Az_OpenAI_API) (rsec Az_OpenAI_API_OAI) (rsec Az_OpenAI_KEY)
+    #lc_bgrun /var/log/cron.log every 1d bash hms/telegram-public-msg-auto-cleanup/daily.sh
+    lc_bgrun /var/log/cron.log env audit_port=30510 audit_token="$(rsec genpasswd_tgaudit@dummy)" bash hms/telegram-userbot-frame/daemon.sh
+    # lc_bgrun /var/log/cron.log every 1d env suburl="$(rsec ProxySub_API)?1" fish hms/balancemon.fish
     lc_bgrun /var/log/cron.log every 1d ntpdate -u 1.pool.ntp.org
     lc_bgrun /var/log/cron.log every 1m env svm_workdir=/mnt/fsdisk/svm hms/vmm/cron-callback.sh
 }

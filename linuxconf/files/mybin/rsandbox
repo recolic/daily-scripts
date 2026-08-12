@@ -1,0 +1,85 @@
+#!/bin/bash
+# author: copilot GPT5.4, Recolic K <codepublic@me.recolic.net>
+set -euo pipefail
+
+NAME="${RSANDBOX_NAME:-rsandbox}"
+IMAGE="${RSANDBOX_IMAGE:-cimg/base:current-24.04}"
+WD="$(pwd)"
+
+usage() {
+  cat <<'EOF'
+Run command or program in sandbox. (No protect against advanced exploit or network abuse)
+
+Usage:
+  rsandbox [--mount] [sudo] <cmd> [args...]
+  rsandbox --nuke
+
+Examples:
+  rsandbox --mount ./unknown_app ./input.data rule_dir/my-rules
+  rsandbox sudo apt-get update
+  rsandbox sudo apt-get install -y strace
+  rsandbox sudo bash
+  rsandbox --nuke
+
+TCP/UDP 30440-30449 are mapped to HOST.
+EOF
+}
+
+# Pick docker command (docker or sudo docker) automatically
+DOCKER="docker"
+if ! docker ps >/dev/null 2>&1; then
+  DOCKER="sudo docker"
+fi
+
+if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
+  usage; exit 0
+fi
+
+extra_args_run=()
+extra_args_exec=()
+if [[ "${1:-}" == "--mount" ]]; then
+  extra_args_run+=(-v "$WD:$WD:rw" -w "$WD")
+  extra_args_exec+=(-w "$WD")
+  shift
+fi
+
+if [[ "${1:-}" == "--nuke" ]]; then
+  $DOCKER rm -f "$NAME" >/dev/null 2>&1 || true
+  shift || true
+  if [[ $# -eq 0 ]]; then
+    exit 0
+  fi
+fi
+
+if [[ $# -lt 1 ]]; then
+  usage; exit 1
+fi
+
+# Create container if missing
+if ! $DOCKER inspect "$NAME" >/dev/null 2>&1; then
+  $DOCKER run -d --name "$NAME" \
+    "${extra_args_run[@]}" \
+    -p 30440-30449:30440-30449/tcp \
+    -p 30440-30449:30440-30449/udp \
+    --tmpfs /tmp:rw,nosuid,nodev,size=256m \
+    "$IMAGE" \
+    sleep infinity >/dev/null
+else
+  if [[ "$($DOCKER inspect -f '{{.State.Running}}' "$NAME")" != "true" ]]; then
+    $DOCKER start "$NAME" >/dev/null
+  fi
+fi
+
+# validate and print warning
+[[ "${1:-}" == "sudo" ]] && binname="${2:-}" || binname="${1:-}"
+[[ "$(realpath -m "$binname" 2>/dev/null)" == "$(realpath -m "$WD")"* ]] || echo "warning: sandbox only have access to current workdir, not '$binname'. use shell for full access" 1>&2
+
+# If command begins with literal "sudo", eat it and run as root inside container.
+if [[ "${1:-}" == "sudo" ]]; then
+  shift
+else
+  extra_args_exec+=(-u "$(id -u):$(id -g)")
+fi
+[ -t 0 ] && [ -t 1 ] && extra_args_exec+=(-t)
+
+exec $DOCKER exec -i "${extra_args_exec[@]}" "$NAME" "$@"

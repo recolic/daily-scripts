@@ -2,14 +2,23 @@
 import json, sys, os
 import lib.recogpt as recogpt
 
-if len(sys.argv) < 2:
-    alias = 'gpt52'
-    print("Available config:", recogpt.impl_list())
-else:
-    alias = sys.argv[1]
+alias = recogpt.default_impl
+single_file_mode = ""
+if len(sys.argv) == 1: print("Available config:", recogpt.impl_list())
+
+for arg in sys.argv[1:]:
+    if arg in recogpt.impl_list():
+        alias = arg
+    elif os.path.exists(arg):
+        single_file_mode = arg
 
 impl = recogpt.impl_load(alias)
 chat_prompt = recogpt.prompt_init_default()
+
+if single_file_mode:
+    chat_prompt += recogpt.prompt_user(open(os.path.expanduser(arg)).read())
+    print(recogpt.complete(chat_prompt, impl))
+    exit(0)
 
 T_BLUEB = '\033[44m'
 T_CLR = '\033[0m'
@@ -62,13 +71,13 @@ while True:
     chat_prompt += recogpt.prompt_user(user_input)
 
     try:
-        resp = recogpt.complete(impl, chat_prompt)
+        resp = recogpt.complete(chat_prompt, impl)
     except Exception as e:
         print(f"Error: {e}")
         if "The response was filtered due to the prompt triggering Azure OpenAI" in str(e) and "gpt" in alias:
             print("Triggered fucking azure filter. Loading backup model...")
             impl2 = recogpt.impl_load("grok")
-            resp = recogpt.complete(impl2, chat_prompt)
+            resp = recogpt.complete(chat_prompt, impl2)
         else:
             continue
 

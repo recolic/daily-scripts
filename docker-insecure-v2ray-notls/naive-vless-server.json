@@ -1,0 +1,76 @@
+// Config file of V2Ray. This file follows standard JSON format, with comments support.
+// Uncomment entries below to satisfy your needs. Also read our manual for more detail at
+// https://www.v2ray.com/
+{
+  "log": {
+    // By default, V2Ray writes access log to stdout.
+    // "access": "/path/to/access/log/file",
+
+    // By default, V2Ray write error log to stdout.
+    // "error": "/path/to/error/log/file",
+
+    // Log level, one of "debug", "info", "warning", "error", "none"
+    "loglevel": "error"
+  },
+  // List of inbound proxy configurations.
+  "inbounds": [  	
+	  {
+			"port": 10000,
+			"protocol": "vless",
+			"settings": {
+				"clients": [
+					{
+						"id": "11111111-7b5d-44a1-bb69-6e100bc0083f",
+						"level": 1,
+						"alterId": 0
+					}
+				],
+				"decryption": "none"
+			},
+			"listen": "127.0.0.1",
+			"streamSettings": {
+				"network": "ws"
+			},
+			"sniffing": {
+				"enabled": true,
+				"destOverride": [
+					"http",
+					"tls"
+				]
+			}
+		}
+
+  
+  ],
+  // List of outbound proxy configurations.
+  "outbounds": [{
+    // Protocol name of the outbound proxy.
+    "protocol": "freedom",
+
+    // Settings of the protocol. Varies based on protocol.
+    "settings": {"domainStrategy": "UseIP"},
+
+    // Tag of the outbound. May be used for routing.
+    "tag": "direct"
+  },{
+    "protocol": "blackhole",
+    "settings": {},
+    "tag": "blocked"
+  }],
+
+
+
+        "dns": {
+"hosts": { // washconnect app crack here
+      "domain:_example_getwashconnect.com": "1.1.1.1"
+    }
+        },
+
+  // Transport is for global transport settings. If you have multiple transports with same settings
+  // (say mKCP), you may put it here, instead of in each individual inbound/outbounds.
+  //"transport": {},
+
+  // You may add other entries to the configuration, but they will not be recognized by V2Ray.
+  "other": {}
+}
+

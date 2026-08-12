@@ -1,4 +1,4 @@
-#!/bin/python -u
+#!/bin/python3 -u
 
 from datetime import datetime
 import sys, os

@@ -54,11 +54,10 @@ end
 ########################### Targets begin #############################
 
 function target_nas_data
+    run_until_success ssh remote.nfs.recolic tar -cvJf /mnt/fsdisk/nfs/backups/I2/nfs-books-latest.tar.xz /mnt/fsdisk/nfs/pub/books
+    # replica only, skip history version packing. sync directly into /backups/
     run_until_success rsync -avz --partial --delete --no-links \
-        root@remote.nfs.recolic:/mnt/fsdisk/nfs/backups /storage/cache/target_nas_data
-
-    # replica only, skip history version packing.
-    # and pack_backup_dir /storage/cache/target_nas_data
+        root@remote.nfs.recolic:/mnt/fsdisk/nfs/backups /storage/backups/target_nas_data
     return $status
 end
 
@@ -77,6 +76,7 @@ function target_mail_www_recolic_net_data
     # mail.recolic.net, www.recolic.net.
     run_until_success rsync -avz --partial --delete \
         --exclude /srv/html/tmp/ \
+        --exclude /srv/html/.git/ \
         root@func.main.recolic:/srv /storage/cache/target_mail_www_recolic_net_data
 
     and pack_backup_dir /storage/cache/target_mail_www_recolic_net_data

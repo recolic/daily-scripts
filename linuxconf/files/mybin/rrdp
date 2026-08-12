@@ -21,15 +21,16 @@ msdev2      |(rsec MSIDw )|(rsec MSPASS           )|mspc.m.recolic:30474
 msdevlan    |recolic      |(genpasswd devbox -S   )|mspc.wlo.m.recolic:30474
 labjump     |(rsec MSIDw )|(rsec MSPASS           )|jb3.team1.m.recolic
 labjum2     |(rsec MSIDw )|(rsec MSPASS           )|jb1.team6.m.recolic
-lanbox      |recolic      |(genpasswd lanbox      )|10.100.100.101:30473
+labjump2b   |(rsec MSIDw )|(rsec MSPASS           )|jb1.backup6.m.recolic
 cnbox       |recolic      |(genpasswd cnbox       )|mspc.m.recolic:30476
+tb4w        |recolic      |(rsec WEAK10)           |mspc.m.recolic:30494
 host16      |Administrator|(rsec OVL_HOST_RDP     )|host.blade16.m.recolic
 host18      |Administrator|(rsec OVL_HOST_RDP     )|host.blade18.m.recolic
 host32      |Administrator|(rsec OVL_HOST_RDP     )|host.blade32.m.recolic
 host33      |Administrator|(rsec OVL_HOST_RDP     )|host.blade33.m.recolic
 hosto3t1    |Administrator|(rsec OVL_HOST_RDP     )|host.o3r19s1.m.recolic
 hosto3t2    |Administrator|(rsec OVL_HOST_RDP     )|host.o3r19s2.m.recolic
-tmpvsbox    |recolic      |(rsec WEAK10           )|localhost:30477
+tmpvsbox    |recolic      |(rsec WEAK10           )|mspc.m.recolic:30477
 @openwrt    |root         |(genpasswd 10.100.100.1)|10.100.100.1
 "
 
@@ -52,8 +53,10 @@ end
 test -n "$target_line"
 or set target_line (echo $targets | grep "^$target *|")
 or die "Target $target not found."
-set user (maybe_eval (string trim (echo $target_line | cut -d '|' -f 2)))
-set pass (maybe_eval (string trim (echo $target_line | cut -d '|' -f 3)))
+contains -- /smartcard-logon $argv; or begin
+    set user (maybe_eval (string trim (echo $target_line | cut -d '|' -f 2)))
+    set pass (maybe_eval (string trim (echo $target_line | cut -d '|' -f 3)))
+end
 set host (maybe_eval (string trim (echo $target_line | cut -d '|' -f 4)))
 
 if string match "@*" $target_line > /dev/null
@@ -67,9 +70,9 @@ else
         set h (math (echo $resolution | cut -d x -f 2 | grep -o '[0-9]*')-100)
         # current 1920 x 1080
         if which xfreerdp
-            set rdp xfreerdp
+            set -q rdp ; or set rdp xfreerdp
         else
-            set rdp xfreerdp3
+            set -q rdp ; or set rdp xfreerdp3
         end
     else if test $XDG_SESSION_TYPE = wayland
         # Xwayland is also working
@@ -80,7 +83,7 @@ else
         #if which wlfreerdp
         #    set rdp wlfreerdp
         #else
-            set rdp xfreerdp
+            set -q rdp ; or set rdp xfreerdp
             set h (math $h-50)
             # clipboard doesnt work in wlfreerdp3 sdl-freerdp3
             #end
@@ -101,18 +104,33 @@ else
         # disable NLA to avoid a weird bug
         set ext_opt $ext_opt /sec:tls
     end
+    contains -- /smartcard-logon $argv; and begin
+        # why this bug appears for smartcard logon...
+        string match -q "*freerdp*" -- $rdp ; and set ext_opt $ext_opt /sec:tls
+    end ; or begin
+        set ext_opt $ext_opt /u:$user /p:$pass
+    end
     
     if test $rdp = rdesktop
         echo "EXEC: $rdp -K -g $w'x'$h -r disk:loctmp=$HOME/tmp $ext_opt -u $user -p #pass -v $host"
         $rdp -K -g $w'x'$h -r disk:loctmp=$HOME/tmp $ext_opt -u $user -p $pass -v $host
     else
-        # $rdp -disable-grab-keyboard -disable-toggle-fullscreen --auth-pkg-list !kerberos -w $w -h $h -drive loctmp,$HOME/tmp $ext_opt -u $user -p $pass -v $host -timeout 100000
         if not grep 192.168.191.191 /etc/krb5.conf > /dev/null
             echo "Removing malware... need root access"
             echo -e "[libdefaults]\\ndefault_realm = 192.168.191.191" | sudo tee /etc/krb5.conf
         end
-        echo "EXEC: $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:loctmp,$HOME/tmp $ext_opt /u:$user /p:#pass /v:$host /timeout:100000"
-        $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:loctmp,$HOME/tmp $ext_opt /u:$user /p:$pass /v:$host /timeout:100000
+        echo "Note:
+  fullscreen: +f
+  audio forward: /sound /microphone
+  smartcard (FIDO2): out of box (rdpewa)
+  smartcard (PIV):
+  1. disable-scdaemon in ~/.gnupg/gpg-agent.conf
+  2. gpg-connect-agent reloadagent /bye
+  3. (optional) sudo usbreset 1050:0406
+  4. run with: /smartcard /smartcard-logon
+"
+        echo "EXEC: $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:loctmp,$HOME/tmp $ext_opt /v:$host /timeout:100000 $argv[2..-1]"
+        $rdp -grab-keyboard -toggle-fullscreen /auth-pkg-list:!kerberos,!u2u /w:$w /h:$h /drive:loctmp,$HOME/tmp $ext_opt /v:$host /timeout:100000 $argv[2..-1]
     end
 end
 

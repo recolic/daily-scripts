@@ -4,13 +4,15 @@ host *
     hostkeyAlgorithms +ssh-rsa
     Ciphers +aes256-cbc
     StricthostKeyChecking no
-    #userKnownhostsFile=/dev/null
+    userKnownhostsFile=/dev/null
     ServerAliveInterval 3
     #LogLevel ERROR
 
-host vs-ssh.visualstudio.com
-    IdentityFile ~/.ssh/aur
-    IdentitiesOnly yes
+Host tmpgpu
+    HostName 154.64.230.50
+    User root
+    Port 53301
+
 
 host main.recolic
     hostname func.main.recolic.net
@@ -24,7 +26,7 @@ host drive.recolic-emerg
     hostname localhost
     port 30481
     user root
-    proxyjump ms.recolic
+    proxyjump remote.hms.recolic
 host proxy.recolic
     hostname proxy.recolic.net
     port 2022
@@ -33,29 +35,6 @@ host proxy.recolic
 host storage.recolic
     hostname storage.recolic.net
     user root
-
-host ms.recolic
-    hostname mspc.m.recolic
-    user recolic
-
-host msbackup.recolic
-    hostname mspc.wlo.m.recolic
-    user recolic
-
-host remote.msbackup.recolic
-    hostname proxy-cdn.recolic.net
-    port 30622
-    user recolic
-
-host vm.ndpa-build.recolic
-    hostname 127.0.0.1
-    port 30472
-    user r
-    proxyjump ms.recolic
-
-host intpyf.com
-    user root
-    port 4022
 
 host remote.river-mac.recolic
     hostname proxy.recolic.net
@@ -68,31 +47,31 @@ host hms.recolic
     user root
 
 host remote.hms.recolic
-    hostname base.ddns1.recolic.cc
+    hostname base.ddns1.recolic.net
     port 25567
     #hostname proxy-cdn.recolic.net
     #port 30512
     user root
 
-host pc.re
+host pc.recolic
     port 25566
     user recolic
 
-host remote.pc.re
-    hostname base.ddns1.recolic.cc
+host remote.pc.recolic
+    hostname base.ddns1.recolic.net
     port 25566
     user recolic
 
-host mpc.re
+host mpc.recolic
     hostname RECOLICMPC
     port 22
     user recolic
 
-host playg.re
+host playg.hms.recolic
     hostname hms.recolic
     port 30474
     user root
-    #proxyjump remote.hms.recolic
+    proxyjump remote.hms.recolic
 
 host rpi.recolic
     user root
@@ -101,6 +80,57 @@ host remote.rpi.recolic
     hostname rpi.recolic
     user root
     proxyjump remote.hms.recolic
+host remote.rpi.recolic.backup
+    hostname proxy.recolic.net
+    user root
+    port 30654
+
+### Devbox
+
+host ms.recolic
+    hostname mspc.m.recolic
+    user recolic
+
+host remote.msbackup.recolic
+    hostname proxy-cdn.recolic.net
+    port 30622
+    user recolic
+
+host vmndpa.ms.recolic
+    hostname 127.0.0.1
+    port 30472
+    user r
+    proxyjump ms.recolic
+
+host vmsbox.ms.recolic
+    hostname 127.0.0.1
+    port 30479
+    user r
+    proxyjump ms.recolic
+
+host vmt1.ms.recolic
+    hostname 127.0.0.1
+    port 30491
+    user r
+    proxyjump ms.recolic
+
+host vmt2.ms.recolic
+    hostname 127.0.0.1
+    port 30492
+    user r
+    proxyjump ms.recolic
+
+host vmt3.ms.recolic
+    hostname 127.0.0.1
+    port 30493
+    user r
+    proxyjump ms.recolic
+
+host rpi.ms.recolic
+    hostname 192.168.100.2
+    user root
+    proxyjump ms.recolic
+
 
 ### Work machine. IP must be protected.
 
@@ -170,15 +200,17 @@ host vm.blade33
     user root
     proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d ' ' -f 1) %p
 
-host soc.o3r19s1.m.recolic
+host lab31
     # Host: host.o3r19s1.m.recolic
     #!rmssh: rm.o3r19sx.m.recolic;1;R_SEC_RM3233_PSWD
+    hostname soc.o3r19s1.m.recolic
     user root
     proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d ' ' -f 1) %p
 
-host soc.o3r19s2.m.recolic
+host lab32
     # Host: host.o3r19s2.m.recolic
     #!rmssh: rm.o3r19sx.m.recolic;2;R_SEC_RM3233_PSWD
+    hostname soc.o3r19s2.m.recolic
     user root
     proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d ' ' -f 1) %p
 

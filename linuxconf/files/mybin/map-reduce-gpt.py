@@ -10,7 +10,7 @@ def run_gpt(system_text, user_text):
     chat_prompt = recogpt.prompt_system(system_text) + recogpt.prompt_user(user_text)
     while True: # Retry loop
         try:
-            return recogpt.complete(impl, chat_prompt)
+            return recogpt.complete(chat_prompt, impl)
         except Exception as e:
             print(f"sleep 30s before retry... ({e})")
             time.sleep(30)
