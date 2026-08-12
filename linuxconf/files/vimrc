@@ -26,13 +26,13 @@ map <C-n> :NERDTreeToggle<CR>
 " autocmd vimenter * NERDTree
 " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
-au BufNewFile,BufRead SCons* set filetype=scons
-
-" echo "(>^.^<)"
+" some extra thing
 map - ddp
 map + ddkP
 map <C-d> daw
 nnoremap <C-o> o<Esc>I
+" does this even work?
+set display+=uhex
 
 " Ctrl-F search
 set hlsearch
@@ -43,6 +43,7 @@ set mouse=
 autocmd BufRead,BufNewFile *.flow    setlocal filetype=flow
 autocmd BufRead,BufNewFile *.vcxproj setlocal filetype=xml
 autocmd BufRead,BufNewFile *.kql     setlocal syntax=sql
+autocmd BufNewFile,BufRead SCons*    setlocal filetype=scons
 " properly highlight json comment
 autocmd FileType           json      setlocal syntax=jsonc
 
