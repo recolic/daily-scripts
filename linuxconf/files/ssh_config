@@ -176,26 +176,26 @@ host blade18
     user root
     proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d ' ' -f 1) %p
 
-host blade32
+host lab11
     hostname soc.blade32.m.recolic
     # Host: host.blade32.m.recolic
     #!rmssh: rm.blade33.m.recolic;32;R_SEC_RM3233_PSWD
     user root
     proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d ' ' -f 1) %p
 
-host blade33
+host lab12
     hostname soc.blade33.m.recolic
     # Host: host.blade33.m.recolic
     #!rmssh: rm.blade33.m.recolic;33;R_SEC_RM3233_PSWD
     user root
     proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d ' ' -f 1) %p
 
-host vm.blade32
+host vm.lab11
     hostname vm.blade32.m.recolic
     user root
     proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d ' ' -f 1) %p
 
-host vm.blade33
+host vm.lab12
     hostname vm.blade33.m.recolic
     user root
     proxycommand /usr/bin/nc -X 5 -x 127.0.0.1:10809 $(getent hosts %h | cut -d ' ' -f 1) %p
