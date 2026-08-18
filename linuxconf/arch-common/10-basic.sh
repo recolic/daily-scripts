@@ -2,7 +2,7 @@ lc_assert_user_is root
 
 lc_init () {
     # basic pkg and config
-    pacman -Syu --noconfirm fish dhcpcd vim sudo openssh git inetutils wget htop tmux unzip  base-devel
+    pacman -Syu --noconfirm fish dhcpcd vim sudo openssh git inetutils wget htop tmux unzip  base-devel ntp
     pacman -S --noconfirm --asdeps openssl
 
     grep kernel.sysrq=1 /etc/sysctl.d/99-sysctl.conf > /dev/null || echo 'kernel.sysrq=1' >> /etc/sysctl.d/99-sysctl.conf
@@ -30,5 +30,6 @@ lc_startup () {
 
     local ips="$(ip a | grep inet | grep global | sed 's/^ *//g' | cut -d ' ' -f 2 | paste -sd' ' -)"
     curl 'https://recolic.net/api/cloudlog.php' --data "lc.arch-common Powered up $(uname -a), IP $ips"
+    ntpdate -u 1.pool.ntp.org
 }
 
