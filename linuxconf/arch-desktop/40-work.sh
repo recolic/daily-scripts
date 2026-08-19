@@ -33,11 +33,11 @@ lc_startup () {
 }
 
 lc_fsmap /home/recolic/code/msdoc/proj/mymsbin /usr/mymsbin
-
-lc_assert_user_is_not root
 lc_fsmap "$HOME/sh/AGENTS.md" "$HOME/.copilot/copilot-instructions.md"
 
 lc_init () {
+    lc_assert_user_is_not root
+
     env install=1 /usr/mymsbin/browser-wrapper.sh
 
     sudo systemctl enable systemd-resolved # for azure-vpn
@@ -47,6 +47,8 @@ lc_init () {
 }
 
 lc_login () {
+    lc_assert_user_is_not root
+
     if ! grep -F .m.recolic /etc/hosts > /dev/null; then
         gpg -d -o /tmp/.hosts.tmp secrets/work-hosts.gpg && sudo mv /tmp/.hosts.tmp /etc/hosts
     fi
