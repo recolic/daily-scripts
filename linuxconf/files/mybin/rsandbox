@@ -1,5 +1,6 @@
 #!/bin/bash
 # author: copilot GPT5.4, Recolic K <codepublic@me.recolic.net>
+# Aug 2026, GPT 5.6 sol reworked everything.
 set -euo pipefail
 
 NAME="${RSANDBOX_NAME:-rsandbox}"
@@ -22,6 +23,7 @@ Examples:
   rsandbox --nuke
 
 TCP/UDP 30440-30449 are mapped to HOST.
+--mount only works within HOME.
 EOF
 }
 
@@ -38,8 +40,10 @@ fi
 extra_args_run=()
 extra_args_exec=()
 if [[ "${1:-}" == "--mount" ]]; then
-  extra_args_run+=(-v "$WD:$WD:rw" -w "$WD")
-  extra_args_exec+=(-w "$WD")
+  DOCKER_WD="$HOME/tmp"
+  [[ "$WD" == "$HOME" || "$WD" == "$HOME/"* ]] && DOCKER_WD="$WD"
+  extra_args_run+=(-v "$HOME:$HOME:rw" -w "$DOCKER_WD")
+  extra_args_exec+=(-w "$DOCKER_WD")
   shift
 fi
 
