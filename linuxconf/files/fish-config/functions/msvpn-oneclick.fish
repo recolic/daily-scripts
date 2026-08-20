@@ -17,6 +17,8 @@ function msvpn-oneclick
         end
 
         set prev_ts $now_ts
+
+        test $fail_count -ge 3; and break
         sleep $fail_count; or break
     end
 end
