@@ -12,18 +12,17 @@ usage() {
 Run command or program in sandbox. (No protect against advanced exploit or network abuse)
 
 Usage:
-  rsandbox [--mount] [sudo] <cmd> [args...]
+  rsandbox [sudo] <cmd> [args...]
   rsandbox --nuke
 
 Examples:
-  rsandbox --mount ./unknown_app ./input.data rule_dir/my-rules
+  rsandbox ./unknown_app ./input.data rule_dir/my-rules
   rsandbox sudo apt-get update
   rsandbox sudo apt-get install -y strace
   rsandbox sudo bash
   rsandbox --nuke
 
-TCP/UDP 30440-30449 are mapped to HOST.
---mount only works within HOME.
+TCP/UDP 30440-30449 are mapped to HOST. HOME dir is mapped to HOST.
 EOF
 }
 
@@ -37,15 +36,10 @@ if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
   usage; exit 0
 fi
 
-extra_args_run=()
-extra_args_exec=()
-if [[ "${1:-}" == "--mount" ]]; then
-  DOCKER_WD="$HOME/tmp"
-  [[ "$WD" == "$HOME" || "$WD" == "$HOME/"* ]] && DOCKER_WD="$WD"
-  extra_args_run+=(-v "$HOME:$HOME:rw" -w "$DOCKER_WD")
-  extra_args_exec+=(-w "$DOCKER_WD")
-  shift
-fi
+DOCKER_WD="$HOME/tmp"
+[[ "$WD" == "$HOME" || "$WD" == "$HOME/"* ]] && DOCKER_WD="$WD"
+extra_args_run=(-v "$HOME:$HOME:rw" -w "$DOCKER_WD")
+extra_args_exec=(-w "$DOCKER_WD")
 
 if [[ "${1:-}" == "--nuke" ]]; then
   $DOCKER rm -f "$NAME" >/dev/null 2>&1 || true
