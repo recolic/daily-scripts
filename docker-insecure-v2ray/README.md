@@ -13,6 +13,6 @@ sudo docker run -d --restart always --log-opt max-size=1M --name rv -p 443:443 r
 - to use
 
 ```
-vless://11111111-7b5d-44a1-bb69-6e100bc0083f@YOUR_SERVER_IP:443?path=%2Fteams&security=tls&encryption=none&host=anything.example.com&type=ws&sni=www.paypal.com#TEST-SPOOF-PAYPAL
+vless://11111111-7b5d-44a1-bb69-6e100bc0083f@YOUR_SERVER_IP:443?path=%2Fteams&security=tls&encryption=none&pcs=0784E5446A7F36654390DF4E9DA3AB4AD788189136273B8CAAABD023217C115B&host=anything.example.com&type=ws&sni=www.paypal.com#TEST-SPOOF-PAYPAL
 ```
 
