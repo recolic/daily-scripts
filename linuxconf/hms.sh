@@ -34,7 +34,10 @@ TODO: manual steps
 # 4. linuxconf register
 ################## OTHER SERVICE LIST #################
 # zfs/zpool setup
-# docker (systemd) for jenserat/samba-publicshare, hms-sms-and-door-api
+# docker (systemd):
+#   docker run -tid --publish 445:445 --publish 137:137 --publish 138:138 --publish 139:139 --volume /mnt/hdd/nfs:/srv --name smbshare --restart=always recolic/smb-secure
+#   docker run -d --restart always --log-opt max-size=10M --name rmaj -p 10802:10802 recolic/maj
+#   docker run -d --restart always --log-opt max-size=1M -m 60m --name rv -p 30514:443 recolic/insecure-v2ray
 # fancontrol (systemd) for /sys/devices/platform/nct6775.2592/hwmon/hwmon2/pwm2_enable automodify
 # dhcpcd (systemd):
 #   modify /etc/dhcpcd.conf to add the following:
@@ -94,6 +97,7 @@ lc_startup () {
     # lc_bgrun /var/log/frpc2.log auto_restart frpc tcp -n hms_audit -l 30510 -r 30510 -s proxy.recolic.net -P 30999 --token $(rsec FRP_KEY)
     lc_bgrun /var/log/frpc1.log auto_restart frpc tcp -n hms_ssh  -l 22 -r 30512 -s proxy.recolic.net -P 30999 --token $(rsec FRP_KEY)
     lc_bgrun /var/log/frpc2.log auto_restart frpc tcp -n hms_http -l 80 -r 30513 -s proxy.recolic.net -P 30999 --token $(rsec FRP_KEY)
+    lc_bgrun /var/log/frpc3.log auto_restart frpc tcp -n hms_v -l 30514 -r 30514 -s proxy.recolic.net -P 30999 --token $(rsec FRP_KEY)
 
     [ -d /mnt/fsdisk/nfs ] && mount --bind /mnt/hdd/nfs /mnt/fsdisk/nfs
     
