@@ -13,6 +13,7 @@ all_impl = {
         response_api = True,
         extra_args = dict(reasoning_effort="medium")
     ),
+    # gpt56t used by telegram-userbot
     'gpt56t': lambda: dict(
         model = "gpt-5.6-terra",
         client = OpenAI(
@@ -92,6 +93,7 @@ all_impl = {
         extra_args = dict()
     ),
 }
+# default_impl used by telegram-userbot-frame, update secret in hms.sh
 default_impl = 'gpt56'
 
 def impl_list():

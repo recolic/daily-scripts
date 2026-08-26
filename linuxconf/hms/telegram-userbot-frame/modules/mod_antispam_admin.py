@@ -1,5 +1,9 @@
 import json
+import importlib.util
+import os
+import sys
 import time
+import traceback
 from functools import cache
 
 ##################### Configuration Begin ######################
@@ -8,7 +12,29 @@ DRYRUN_GROUPS = []
 NEW_MEMBER_MAX_AGE = 2 * 24 * 60 * 60
 BAN_TIME = 60 * 60
 DRYRUN_LOG_FILE = './antispam_admin_dryrun.log.gi'
+SPAM_EXAMPLE_FILE = './spam_example.log.gi'
+RECOGPT_RELPATH = '../../../files/mybin/lib/recogpt.py'
 ##################### Configuration End ########################
+
+
+def _try_import_rel(relpath, module_name):
+    path = os.path.join(os.path.dirname(__file__), relpath)
+    if not os.path.exists(path):
+        return None
+    spec = importlib.util.spec_from_file_location(module_name, path)
+    if spec is None or spec.loader is None:
+        return None
+    mod = importlib.util.module_from_spec(spec)
+    try:
+        spec.loader.exec_module(mod)
+    except Exception:
+        print(f'[mod_antispam_admin] failed to import {path}', file=sys.stderr)
+        traceback.print_exc(file=sys.stderr)
+        return None
+    return mod
+
+
+recogpt = _try_import_rel(RECOGPT_RELPATH, 'recogpt_antispam_admin')
 
 
 def _wait(result):
@@ -43,8 +69,33 @@ def check_condition_2(tg, sender_id, message_content):
     return _contains_contact_link(_get_bio_text(tg, sender_id))
 
 
-def check_condition_3_is_spam(message_content):
-    # TODO: Replace this placeholder with the real spam check.
+def check_condition_3_is_spam(username, message_content):
+    try:
+        with open(SPAM_EXAMPLE_FILE, 'r', encoding='utf-8') as f:
+            spam_examples = f.read()
+    except OSError as e:
+        print(f'[mod_antispam_admin] spam examples unavailable; assuming not_spam: {e}', file=sys.stderr)
+        return False
+    if recogpt is None:
+        print('[mod_antispam_admin] AI unavailable; assuming not_spam', file=sys.stderr)
+        return False
+    prompt = f'''Your job: match the following username and message with these attached examples, to tell if a message is advertisement or not. Outout a single word `spam` or `not_spam`.
+
+Input username: {username}
+Input message: {_message_text(message_content)}
+
+{spam_examples}'''
+    for attempt in range(1, 4):
+        try:
+            response = recogpt.complete(recogpt.prompt_user(prompt), recogpt.impl_load("gpt56t")).strip().lower()
+            if response == 'spam':
+                return True
+            if response == 'not_spam':
+                return False
+            raise ValueError(f'unexpected response: {response!r}')
+        except Exception as e:
+            print(f'[mod_antispam_admin] AI attempt {attempt}/3 failed: {type(e).__name__}: {e}', file=sys.stderr)
+    print('[mod_antispam_admin] AI failed after 3 attempts; assuming not_spam', file=sys.stderr)
     return False
 
 
@@ -54,8 +105,16 @@ def _get_bio_text(tg, sender_id):
     return user_info.get('bio', {}).get('text', '')
 
 
-def _log_dryrun_violation(tg, chat_id, sender_id, msg_id, message_content, now):
-    entry = {'timestamp': now, 'chat_id': chat_id, 'sender_id': sender_id, 'msg_id': msg_id, 'message_text': _message_text(message_content), 'bio_text': _get_bio_text(tg, sender_id)}
+@cache
+def _get_username(tg, sender_id):
+    user = _wait(tg.get_user(sender_id))
+    usernames = user.get('usernames') or {}
+    active_usernames = usernames.get('active_usernames') or []
+    return usernames.get('editable_username') or (active_usernames[0] if active_usernames else '') or user.get('username', '')
+
+
+def _log_violation(tg, chat_id, sender_id, msg_id, message_content, now):
+    entry = {'timestamp': now, 'chat_id': chat_id, 'sender_id': sender_id, 'username': _get_username(tg, sender_id), 'msg_id': msg_id, 'message_text': _message_text(message_content), 'bio_text': _get_bio_text(tg, sender_id)}
     line = 'ANTISPAM DRYRUN: ' + json.dumps(entry, ensure_ascii=False)
     print(line)
     with open(DRYRUN_LOG_FILE, 'a', encoding='utf-8') as f:
@@ -71,10 +130,10 @@ def handle_msg(tg, chat_id, sender_id, msg_id, is_outgoing, message_content):
         return False
     if not check_condition_2(tg, sender_id, message_content):
         return False
-    if not check_condition_3_is_spam(message_content):
+    if not check_condition_3_is_spam(_get_username(tg, sender_id), message_content):
         return False
 
-    _log_dryrun_violation(tg, chat_id, sender_id, msg_id, message_content, now)
+    _log_violation(tg, chat_id, sender_id, msg_id, message_content, now)
     if chat_id in DRYRUN_GROUPS:
         return False
 
