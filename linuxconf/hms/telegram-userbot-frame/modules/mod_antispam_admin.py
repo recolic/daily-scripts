@@ -12,10 +12,29 @@ DRYRUN_GROUPS = []
 NEW_MEMBER_MAX_AGE = 2 * 24 * 60 * 60
 BAN_TIME = 60 * 60
 DRYRUN_LOG_FILE = './antispam_admin_dryrun.log.gi'
-SPAM_EXAMPLE_FILE = './spam_example.log.gi'
 RECOGPT_RELPATH = '../../../files/mybin/lib/recogpt.py'
 ##################### Configuration End ########################
 
+SPAM_EXAMPLE_TEXT = """
+spam message example:
+团队‌缺几​个没事做​‧的兄弟​，下个⁠月‌一起提奔​驰！‍安排到​位⁠，看​煮叶
+他‌奶‌奶的‌  ​这个·兄弟相‌木·这么⁠牛·逼‌吗  ⁠一​天搞好‌几·个‌Ｗ  👀煮页 缺人⁠速教⁠
+找几·位‍空闲的‧哥们⁠一‌起干点‍·事，两⁠个月‍·后·直‍接开宝‍马‍，给⁠你安​排到‧位​，看‍我‧筑‍夜
+解决域名被墙无法访问  @RaySun101
+出香港🇭🇰美国🇺🇸新加坡🇸🇬服务器❤️‍🔥 免测✅ 免实名✅ 不限内容✅ 需要可以联系我哦    @RaySun101
+最·近缺收入⁠‧的看‧过⁠来‌💰　⁠拍‍照兼职，日结７０0⁠左‍右​！
+有‧没有闲‌着‌的？手‌机‍拍‌照就​能做‍📱‌  ‌无⁠经⁠验⁠也可以！‌
+会用手机拍‌照​·就‌行‌📸 不需​专⁠业​，完‌成⁠当天结⁠算！
+想找‍轻·松兼职吗‍？⁠📸‍　‍按‌要求​拍⁠照，完‍成就结‌‧算！⁠
+广东iepl专线 ✔️低延迟 · 高稳定 · 少丢包 ✔️全天候稳定在线 ✔️独享带宽 💬咨询：@zorlink000  📢群组：@zorlink222
+美西高性能独服上线，1G带宽不限速跑满，电信联通移动三网优化，CIA+CMI回国精品线路，支持测试。
+有没有想学搭建的
+⚡️ 【皮卡丘专线 · 华为云 BGP 震撼来袭】 ⚡️还在为延迟和通报发愁？顶配网络它来了！🥇 极致三网调优：畅享丝滑体验，延迟低到难以想象！  🛡 双重安全护航：官方独家提供售后整改，可吃 2 次通报！💰 性价比之王：价格美丽，配置拉满，绝不让您踩坑！🌐 官方正版通道，认准皮卡丘：@abc787888
+
+spam username example:
+simon 全球IDC-免实名可测
+{看-个-签}7·折·出·iphOne17·水·果·机·全·系·列
+"""
 
 def _try_import_rel(relpath, module_name):
     path = os.path.join(os.path.dirname(__file__), relpath)
@@ -69,13 +88,8 @@ def check_condition_2(tg, sender_id, message_content):
     return _contains_contact_link(_get_bio_text(tg, sender_id))
 
 
-def check_condition_3_is_spam(username, message_content):
-    try:
-        with open(SPAM_EXAMPLE_FILE, 'r', encoding='utf-8') as f:
-            spam_examples = f.read()
-    except OSError as e:
-        print(f'[mod_antispam_admin] spam examples unavailable; assuming not_spam: {e}', file=sys.stderr)
-        return False
+def check_condition_3(username, message_content):
+    # GPT check if msg is spam
     if recogpt is None:
         print('[mod_antispam_admin] AI unavailable; assuming not_spam', file=sys.stderr)
         return False
@@ -84,7 +98,7 @@ def check_condition_3_is_spam(username, message_content):
 Input username: {username}
 Input message: {_message_text(message_content)}
 
-{spam_examples}'''
+{SPAM_EXAMPLE_TEXT}'''
     for attempt in range(1, 4):
         try:
             response = recogpt.complete(recogpt.prompt_user(prompt), recogpt.impl_load("gpt56t")).strip().lower()
@@ -130,7 +144,7 @@ def handle_msg(tg, chat_id, sender_id, msg_id, is_outgoing, message_content):
         return False
     if not check_condition_2(tg, sender_id, message_content):
         return False
-    if not check_condition_3_is_spam(_get_username(tg, sender_id), message_content):
+    if not check_condition_3(_get_username(tg, sender_id), message_content):
         return False
 
     _log_violation(tg, chat_id, sender_id, msg_id, message_content, now)
