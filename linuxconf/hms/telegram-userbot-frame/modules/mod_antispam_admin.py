@@ -8,9 +8,8 @@ from functools import cache
 
 ##################### Configuration Begin ######################
 ENABLED_GROUPS = []
-DRYRUN_GROUPS = []
-NEW_MEMBER_MAX_AGE = 2 * 24 * 60 * 60
-BAN_TIME = 60 * 60
+DRYRUN_GROUPS = [-1001561894350, -1003337407536, -1001224518181, -1001792060257, -1001262613096]
+NEW_MEMBER_AGE = 2 * 24 * 60 * 60
 DRYRUN_LOG_FILE = './antispam_admin_dryrun.log.gi'
 RECOGPT_RELPATH = '../../../files/mybin/lib/recogpt.py'
 ##################### Configuration End ########################
@@ -78,7 +77,7 @@ def check_condition_1(tg, chat_id, sender_id, now):
     # joined within 2 days
     member = _wait(tg.call_method('getChatMember', params={'chat_id': chat_id, 'member_id': {'@type': 'messageSenderUser', 'user_id': sender_id}}))
     joined_at = member.get('joined_chat_date', 0)
-    return (not joined_at) or (joined_at <= now and now - joined_at <= NEW_MEMBER_MAX_AGE)
+    return (not joined_at) or (joined_at <= now and now - joined_at <= NEW_MEMBER_AGE)
 
 
 def check_condition_2(tg, sender_id, message_content):
@@ -94,6 +93,7 @@ def check_condition_3(username, message_content):
         print('[mod_antispam_admin] AI unavailable; assuming not_spam', file=sys.stderr)
         return False
     prompt = f'''Your job: match the following username and message with these attached examples, to tell if a message is advertisement or not. Outout a single word `spam` or `not_spam`.
+Only check for these matching existing pattern. Internal log message from other bot are not spam.
 
 Input username: {username}
 Input message: {_message_text(message_content)}
@@ -151,7 +151,13 @@ def handle_msg(tg, chat_id, sender_id, msg_id, is_outgoing, message_content):
     if chat_id in DRYRUN_GROUPS:
         return False
 
-    print(f'DEBUG: deleting spam and banning user for one hour: chat={chat_id} user={sender_id} msg={msg_id}')
+    print(f'DEBUG: deleting spam and permanently banning user: chat={chat_id} user={sender_id} msg={msg_id}')
     _wait(tg.delete_messages(chat_id, [msg_id]))
-    _wait(tg.call_method('setChatMemberStatus', params={'chat_id': chat_id, 'member_id': {'@type': 'messageSenderUser', 'user_id': sender_id}, 'status': {'@type': 'chatMemberStatusBanned', 'banned_until_date': now + BAN_TIME}}))
+    _wait(tg.call_method('setChatMemberStatus', params={'chat_id': chat_id, 'member_id': {'@type': 'messageSenderUser', 'user_id': sender_id}, 'status': {'@type': 'chatMemberStatusBanned', 'banned_until_date': 0}}))
+    notice = f'''User ID: {sender_id}
+Based on our review, we determined that your account violated Telegram Terms of Service. As a result, your account has been permanently banned.
+We are unable to disclose the specific policies or criteria used to reach this decision.
+To submit an appeal, please contact @pakstv.
+Thank you.'''
+    _wait(tg.send_message(chat_id=chat_id, text=notice))
     return True
