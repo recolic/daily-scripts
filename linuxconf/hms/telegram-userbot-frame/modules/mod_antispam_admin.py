@@ -78,7 +78,7 @@ def check_condition_1(tg, chat_id, sender_id, now):
     # joined within 2 days
     member = _wait(tg.call_method('getChatMember', params={'chat_id': chat_id, 'member_id': {'@type': 'messageSenderUser', 'user_id': sender_id}}))
     joined_at = member.get('joined_chat_date', 0)
-    return bool(joined_at and joined_at <= now and now - joined_at <= NEW_MEMBER_MAX_AGE)
+    return (not joined_at) or (joined_at <= now and now - joined_at <= NEW_MEMBER_MAX_AGE)
 
 
 def check_condition_2(tg, sender_id, message_content):
