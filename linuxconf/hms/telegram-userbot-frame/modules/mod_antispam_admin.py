@@ -127,8 +127,8 @@ def _get_username(tg, sender_id):
     return usernames.get('editable_username') or (active_usernames[0] if active_usernames else '') or user.get('username', '')
 
 
-def _log_violation(tg, chat_id, sender_id, msg_id, message_content, now):
-    entry = {'timestamp': now, 'chat_id': chat_id, 'sender_id': sender_id, 'username': _get_username(tg, sender_id), 'msg_id': msg_id, 'message_text': _message_text(message_content), 'bio_text': _get_bio_text(tg, sender_id)}
+def _log_violation(tg, chat_id, sender_id, msg_id, message_content, now, decision):
+    entry = {'timestamp': now, 'chat_id': chat_id, 'sender_id': sender_id, 'username': _get_username(tg, sender_id), 'msg_id': msg_id, 'message_text': _message_text(message_content), 'bio_text': _get_bio_text(tg, sender_id), 'decision': decision}
     line = 'ANTISPAM DRYRUN: ' + json.dumps(entry, ensure_ascii=False)
     print(line)
     with open(DRYRUN_LOG_FILE, 'a', encoding='utf-8') as f:
@@ -141,13 +141,16 @@ def handle_msg(tg, chat_id, sender_id, msg_id, is_outgoing, message_content):
 
     now = int(time.time())
     if not check_condition_1(tg, chat_id, sender_id, now):
+        _log_violation(tg, chat_id, sender_id, msg_id, message_content, now, 'c1pass')
         return False
     if not check_condition_2(tg, sender_id, message_content):
+        _log_violation(tg, chat_id, sender_id, msg_id, message_content, now, 'c2pass')
         return False
     if not check_condition_3(_get_username(tg, sender_id), message_content):
+        _log_violation(tg, chat_id, sender_id, msg_id, message_content, now, 'c3pass')
         return False
 
-    _log_violation(tg, chat_id, sender_id, msg_id, message_content, now)
+    _log_violation(tg, chat_id, sender_id, msg_id, message_content, now, 'ban')
     if chat_id in DRYRUN_GROUPS:
         return False
 
