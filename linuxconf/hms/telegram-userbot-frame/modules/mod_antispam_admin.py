@@ -7,8 +7,8 @@ import traceback
 from functools import cache
 
 ##################### Configuration Begin ######################
-ENABLED_GROUPS = []
-DRYRUN_GROUPS = [-1001561894350, -1003337407536, -1001224518181, -1001792060257, -1001262613096]
+ENABLED_GROUPS = [-1001561894350]
+DRYRUN_GROUPS = [-1003337407536, -1001224518181, -1001792060257, -1001262613096]
 NEW_MEMBER_AGE = 2 * 24 * 60 * 60
 DRYRUN_LOG_FILE = './antispam_admin_dryrun.log.gi'
 RECOGPT_RELPATH = '../../../files/mybin/lib/recogpt.py'
