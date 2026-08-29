@@ -29,10 +29,15 @@ spam message example:
 美西高性能独服上线，1G带宽不限速跑满，电信联通移动三网优化，CIA+CMI回国精品线路，支持测试。
 有没有想学搭建的
 ⚡️ 【皮卡丘专线 · 华为云 BGP 震撼来袭】 ⚡️还在为延迟和通报发愁？顶配网络它来了！🥇 极致三网调优：畅享丝滑体验，延迟低到难以想象！  🛡 双重安全护航：官方独家提供售后整改，可吃 2 次通报！💰 性价比之王：价格美丽，配置拉满，绝不让您踩坑！🌐 官方正版通道，认准皮卡丘：@abc787888
+多模型 API 接入，主页有说明
 
 spam username example:
 simon 全球IDC-免实名可测
 {看-个-签}7·折·出·iphOne17·水·果·机·全·系·列
+
+spam bio example:
+中转站 @ababab 资源群：https://t.me/ababab_token
+g此.号不回复.宝子!日保底2k稿.咪入口：https://t.me/+K7C5swg-rnkzMTY1 客服: @lulutop0 /
 """
 
 def _try_import_rel(relpath, module_name):
@@ -87,15 +92,16 @@ def check_condition_2(tg, sender_id, message_content):
     return _contains_contact_link(_get_bio_text(tg, sender_id))
 
 
-def check_condition_3(username, message_content):
+def check_condition_3(username, bio_text, message_content):
     # GPT check if msg is spam
     if recogpt is None:
         print('[mod_antispam_admin] AI unavailable; assuming not_spam', file=sys.stderr)
         return False
-    prompt = f'''Your job: match the following username and message with these attached examples, to tell if a message is advertisement or not. Outout a single word `spam` or `not_spam`.
-Only check for these matching existing pattern. Internal log message from other bot are not spam.
+    prompt = f'''Your job: match the following input with these attached examples, to tell if a message is advertisement or not. Outout a single word `spam` or `not_spam`.
+Internal log message from other bot are not spam.
 
 Input username: {username}
+Input bio: {bio_text}
 Input message: {_message_text(message_content)}
 
 {SPAM_EXAMPLE_TEXT}'''
@@ -122,9 +128,7 @@ def _get_bio_text(tg, sender_id):
 @cache
 def _get_username(tg, sender_id):
     user = _wait(tg.get_user(sender_id))
-    usernames = user.get('usernames') or {}
-    active_usernames = usernames.get('active_usernames') or []
-    return usernames.get('editable_username') or (active_usernames[0] if active_usernames else '') or user.get('username', '')
+    return ' '.join(part for part in (user.get('first_name', ''), user.get('last_name', '')) if part)
 
 
 def _log_violation(tg, chat_id, sender_id, msg_id, message_content, now, decision):
@@ -146,7 +150,7 @@ def handle_msg(tg, chat_id, sender_id, msg_id, is_outgoing, message_content):
     if not check_condition_2(tg, sender_id, message_content):
         _log_violation(tg, chat_id, sender_id, msg_id, message_content, now, 'c2pass')
         return False
-    if not check_condition_3(_get_username(tg, sender_id), message_content):
+    if not check_condition_3(_get_username(tg, sender_id), _get_bio_text(tg, sender_id), message_content):
         _log_violation(tg, chat_id, sender_id, msg_id, message_content, now, 'c3pass')
         return False
 
