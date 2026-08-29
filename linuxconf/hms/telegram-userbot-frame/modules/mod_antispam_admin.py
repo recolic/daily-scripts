@@ -122,7 +122,11 @@ Input message: {_message_text(message_content)}
 @cache
 def _get_bio_text(tg, sender_id):
     user_info = _wait(tg.get_user_full_info(sender_id))
-    return user_info.get('bio', {}).get('text', '')
+    bio = user_info.get('bio')
+    if bio is None:
+        print(f'[mod_antispam_admin] invalid user info for user {sender_id}: {json.dumps(user_info, ensure_ascii=False, default=repr)}', file=sys.stderr)
+        return ''
+    return bio.get('text', '')
 
 
 @cache
