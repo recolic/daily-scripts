@@ -194,7 +194,7 @@ if [[ "$op" = "leave" ]] || [[ "$op" = "night" ]]; then
     fi
 fi
 if [[ "$op" != "daemon" ]]; then
-    ps aux | grep 'rwatchdog.sh [d]aemon' || ! echo -e "\033[1;31m ERROR\nERROR\nERROR: rwatchdog daemon is not running. \033[0m"
+    ps aux | grep 'rwatchdog.sh [d]aemon' || ! echo -e "\033[1;31m ERROR\nERROR\nERROR: rwatchdog daemon is not running. \033[0m" || false
     exit $? ########### all non-daemon call exits here
 fi
 

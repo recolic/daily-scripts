@@ -9,10 +9,13 @@ from functools import cache
 ##################### Configuration Begin ######################
 ENABLED_GROUPS = [-1001561894350]
 DRYRUN_GROUPS = [-1003337407536, -1001224518181, -1001792060257, -1001262613096]
-NEW_MEMBER_AGE = 2 * 24 * 60 * 60
+NEW_MEMBER_AGE = 3 * 24 * 60 * 60
+WHITELIST_FILE = './whitelist.gi'
 DRYRUN_LOG_FILE = './antispam_admin_dryrun.log.gi'
 RECOGPT_RELPATH = '../../../files/mybin/lib/recogpt.py'
 ##################### Configuration End ########################
+
+sender_message_counts = {}
 
 SPAM_EXAMPLE_TEXT = """
 spam message example:
@@ -79,7 +82,7 @@ def _message_text(message_content):
 
 
 def check_condition_1(tg, chat_id, sender_id, now):
-    # joined within 2 days
+    # joined within 3 days
     member = _wait(tg.call_method('getChatMember', params={'chat_id': chat_id, 'member_id': {'@type': 'messageSenderUser', 'user_id': sender_id}}))
     joined_at = member.get('joined_chat_date', 0)
     return (not joined_at) or (joined_at <= now and now - joined_at <= NEW_MEMBER_AGE)
@@ -143,9 +146,25 @@ def _log_violation(tg, chat_id, sender_id, msg_id, message_content, now, decisio
         f.write(line + '\n')
 
 
+def handle_telegram_startup(tg):
+    if not os.path.exists(WHITELIST_FILE):
+        return
+    with open(WHITELIST_FILE, encoding='utf-8') as f:
+        sender_message_counts.update((int(line), 3) for line in f if line.strip())
+
+
+def handle_telegram_exit(tg):
+    with open(WHITELIST_FILE, 'w', encoding='utf-8') as f:
+        f.write(''.join(f'{sender_id}\n' for sender_id, count in sorted(sender_message_counts.items()) if count >= 3))
+
+
 def handle_msg(tg, chat_id, sender_id, msg_id, is_outgoing, message_content):
     if is_outgoing or (chat_id not in ENABLED_GROUPS and chat_id not in DRYRUN_GROUPS) or sender_id <= 0:
         return False
+    if sender_message_counts.get(sender_id, 0) >= 3:
+        return False
+
+    sender_message_counts[sender_id] = sender_message_counts.get(sender_id, 0) + 1
 
     now = int(time.time())
     if not check_condition_1(tg, chat_id, sender_id, now):
