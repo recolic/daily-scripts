@@ -128,6 +128,7 @@ function start_vm_if_not_running () {
     # For tracking started instance
     local uuid=`uuidgen --namespace @oid --name "qemu.$name" --sha1`
     g_touched_uuids+=("$uuid")
+    echo "DEBUG: $uuid" 1>&2
 
     # Check if qemu already running for this instance.
     ps aux | grep -F "uuid $uuid" | grep qemu > /dev/null 2>&1 && return 0
@@ -189,6 +190,7 @@ function do_start () {
 }
 
 function do_cleanup () {
+    echo "DEBUG: " " ${g_touched_uuids[*]} "
     # for ps aux every qemu uuid process, kill if not touched.
     ps aux | grep qemu | grep -oE 'uuid [0-9a-fA-F-]{36}' | cut -d ' ' -f 2 | while read -r uuid; do
         if [[ ! " ${g_touched_uuids[*]} " =~ " $uuid " ]]; then
