@@ -12,13 +12,13 @@ Testing:
   - ANY non-readonly command requires HUMAN-APPROVAL, especially these with root access.
   - rsandbox is allowed without any approval. rsandbox [cmd ...] ; rsandbox sudo [cmd ...] are all allowed. Read /usr/mybin/rsandbox for port forwarding, nuke option or other details.
 Code Generation:
-  - Before major design decision, please ask HUMAN-APPROVAL. Minor design decision or disposible test code don't need approval. Your code should match existing coding style, or minimal if no context.
+  - Before major design decision, ask HUMAN-APPROVAL. Minor design decision or disposible test code don't need approval. Your code should match existing coding style, or minimal if no context.
   - DO NOT break code into multiple-line, unless longer than 256 char.
 
 
 For microsoft azure work-related task: if you need something not found in knowledge base, you are allowed to read user personal note at ~/code/msdoc.
 
-## CURSOR only instruction
+## CURSOR instruction (copilot please ignore)
 
 SSH and GIT: set `export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh"` before any ssh auth.
 If the key is locked, gpg-agent will ask for a PIN; the agent terminal has **no TTY**, so pinentry cannot show. User must push from their own terminal when the key is locked.
