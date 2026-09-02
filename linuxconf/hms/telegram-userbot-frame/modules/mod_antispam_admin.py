@@ -15,8 +15,6 @@ DRYRUN_LOG_FILE = './antispam_admin_dryrun.log.gi'
 RECOGPT_RELPATH = '../../../files/mybin/lib/recogpt.py'
 ##################### Configuration End ########################
 
-sender_message_counts = {}
-
 SPAM_EXAMPLE_TEXT = """
 spam message example:
 团队‌缺几​个没事做​‧的兄弟​，下个⁠月‌一起提奔​驰！‍安排到​位⁠，看​煮叶
@@ -42,6 +40,15 @@ spam bio example:
 中转站 @ababab 资源群：https://t.me/ababab_token
 g此.号不回复.宝子!日保底2k稿.咪入口：https://t.me/+K7C5swg-rnkzMTY1 客服: @lulutop0 /
 """
+
+NOTICE_TEMPLATE = '''User ID: __user_id__
+Based on our review, we determined that your account violated Telegram Terms of Service. As a result, your account has been permanently banned.
+We are unable to disclose the specific policies or criteria used to reach this decision.
+To submit an appeal, please contact @pakstv.
+Thank you.'''
+
+# -1 for banned; 0-2 for number of good msg; >2 for whitelisted.
+decision_cache = {}
 
 def _try_import_rel(relpath, module_name):
     path = os.path.join(os.path.dirname(__file__), relpath)
@@ -138,56 +145,58 @@ def _get_username(tg, sender_id):
     return ' '.join(part for part in (user.get('first_name', ''), user.get('last_name', '')) if part)
 
 
-def _log_violation(tg, chat_id, sender_id, msg_id, message_content, now, decision):
+def on_decision(tg, chat_id, sender_id, msg_id, message_content, now, decision):
+    ## 1 - debug log
     entry = {'timestamp': now, 'chat_id': chat_id, 'sender_id': sender_id, 'username': _get_username(tg, sender_id), 'msg_id': msg_id, 'message_text': _message_text(message_content), 'bio_text': _get_bio_text(tg, sender_id), 'decision': decision}
     line = 'ANTISPAM DRYRUN: ' + json.dumps(entry, ensure_ascii=False)
     print(line)
     with open(DRYRUN_LOG_FILE, 'a', encoding='utf-8') as f:
         f.write(line + '\n')
+    ## 2 - action: update cache
+    if decision == 'ban':
+        decision_cache[sender_id] = -1
+    else:
+        decision_cache[sender_id] = decision_cache.get(sender_id, 0) + 1
+    ## 3 - action: ban
+    if decision == 'ban' and chat_id in ENABLED_GROUPS:
+        print(f'DEBUG: deleting spam and permanently banning user: chat={chat_id} user={sender_id} msg={msg_id}')
+        _wait(tg.delete_messages(chat_id, [msg_id]))
+        _wait(tg.call_method('setChatMemberStatus', params={'chat_id': chat_id, 'member_id': {'@type': 'messageSenderUser', 'user_id': sender_id}, 'status': {'@type': 'chatMemberStatusBanned', 'banned_until_date': 0}}))
+        # _wait(tg.send_message(chat_id=chat_id, text=NOTICE_TEMPLATE.replace('__user_id__', str(sender_id))))
 
 
 def handle_telegram_startup(tg):
     if not os.path.exists(WHITELIST_FILE):
         return
     with open(WHITELIST_FILE, encoding='utf-8') as f:
-        sender_message_counts.update((int(line), 3) for line in f if line.strip())
+        decision_cache.update((int(sender_id), decision) for sender_id, decision in json.load(f).items())
 
 
 def handle_telegram_exit(tg):
     with open(WHITELIST_FILE, 'w', encoding='utf-8') as f:
-        f.write(''.join(f'{sender_id}\n' for sender_id, count in sorted(sender_message_counts.items()) if count >= 3))
+        json.dump(decision_cache, f, sort_keys=True)
+
 
 
 def handle_msg(tg, chat_id, sender_id, msg_id, is_outgoing, message_content):
+    now = int(time.time())
     if is_outgoing or (chat_id not in ENABLED_GROUPS and chat_id not in DRYRUN_GROUPS) or sender_id <= 0:
         return False
-    if sender_message_counts.get(sender_id, 0) >= 3:
+    
+    if decision_cache.get(sender_id, 0) >= 3:
         return False
+    if decision_cache.get(sender_id, 0) == -1:
+        on_decision(tg, chat_id, sender_id, msg_id, message_content, now, 'ban')
+        return True
 
-    sender_message_counts[sender_id] = sender_message_counts.get(sender_id, 0) + 1
-
-    now = int(time.time())
     if not check_condition_1(tg, chat_id, sender_id, now):
-        _log_violation(tg, chat_id, sender_id, msg_id, message_content, now, 'c1pass')
+        on_decision(tg, chat_id, sender_id, msg_id, message_content, now, 'c1pass')
         return False
     if not check_condition_2(tg, sender_id, message_content):
-        _log_violation(tg, chat_id, sender_id, msg_id, message_content, now, 'c2pass')
+        on_decision(tg, chat_id, sender_id, msg_id, message_content, now, 'c2pass')
         return False
     if not check_condition_3(_get_username(tg, sender_id), _get_bio_text(tg, sender_id), message_content):
-        _log_violation(tg, chat_id, sender_id, msg_id, message_content, now, 'c3pass')
+        on_decision(tg, chat_id, sender_id, msg_id, message_content, now, 'c3pass')
         return False
-
-    _log_violation(tg, chat_id, sender_id, msg_id, message_content, now, 'ban')
-    if chat_id in DRYRUN_GROUPS:
-        return False
-
-    print(f'DEBUG: deleting spam and permanently banning user: chat={chat_id} user={sender_id} msg={msg_id}')
-    _wait(tg.delete_messages(chat_id, [msg_id]))
-    _wait(tg.call_method('setChatMemberStatus', params={'chat_id': chat_id, 'member_id': {'@type': 'messageSenderUser', 'user_id': sender_id}, 'status': {'@type': 'chatMemberStatusBanned', 'banned_until_date': 0}}))
-    notice = f'''User ID: {sender_id}
-Based on our review, we determined that your account violated Telegram Terms of Service. As a result, your account has been permanently banned.
-We are unable to disclose the specific policies or criteria used to reach this decision.
-To submit an appeal, please contact @pakstv.
-Thank you.'''
-    _wait(tg.send_message(chat_id=chat_id, text=notice))
+    on_decision(tg, chat_id, sender_id, msg_id, message_content, now, 'ban')
     return True
