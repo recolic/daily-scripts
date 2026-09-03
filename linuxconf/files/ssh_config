@@ -8,10 +8,10 @@ host *
     ServerAliveInterval 3
     #LogLevel ERROR
 
-Host tmpgpu
-    HostName 154.64.230.50
-    User root
-    Port 53301
+Host tmpbox
+    HostName 48.209.109.232
+    User r
+    ProxyJump ms.recolic
 
 
 host main.recolic
