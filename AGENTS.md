@@ -14,6 +14,7 @@ Testing:
 Code Generation:
   - Before major design decision, ask HUMAN-APPROVAL. Minor design decision or disposible test code don't need approval. Your code should match existing coding style, or minimal if no context.
   - DO NOT break code into multiple-line, unless longer than 256 char.
+  - When creating new file, start with comment `created by <model name>`
 
 
 For microsoft azure work-related task: if you need something not found in knowledge base, you are allowed to read user personal note at ~/code/msdoc.
