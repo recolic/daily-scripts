@@ -4,11 +4,11 @@ from openai import OpenAI, AzureOpenAI
 def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
 
 all_impl = {
-    'gpt56': lambda: dict(
-        model = "gpt-5.6-sol",
+    'gpt6': lambda: dict(
+        model = "gpt-6-astra",
         client = OpenAI(
             api_key=rsec("GITHUB_EMU_TOKEN"),
-            base_url="http://us1.896444.xyz:25584/v1"
+            base_url=rsec("GITHUB_LLM_API")
         ),
         response_api = True,
         extra_args = dict(reasoning_effort="medium")
@@ -18,7 +18,7 @@ all_impl = {
         model = "gpt-5.6-terra",
         client = OpenAI(
             api_key=rsec("GITHUB_EMU_TOKEN"),
-            base_url="http://us1.896444.xyz:25584/v1"
+            base_url=rsec("GITHUB_LLM_API")
         ),
         response_api = True,
         extra_args = dict(reasoning_effort="medium")
@@ -27,7 +27,7 @@ all_impl = {
         model = "gpt-5.6-luna",
         client = OpenAI(
             api_key=rsec("GITHUB_EMU_TOKEN"),
-            base_url="http://us1.896444.xyz:25584/v1"
+            base_url=rsec("GITHUB_LLM_API")
         ),
         response_api = True,
         extra_args = dict(reasoning_effort="medium")
@@ -94,7 +94,7 @@ all_impl = {
     ),
 }
 # default_impl used by telegram-userbot-frame, update secret in hms.sh
-default_impl = 'gpt56'
+default_impl = 'gpt6'
 
 def impl_list():
     return list(all_impl.keys())
