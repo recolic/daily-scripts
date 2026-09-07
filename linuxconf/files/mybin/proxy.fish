@@ -98,7 +98,7 @@ end
 set node $argv[1]
 set -q argv[2]; and set port $argv[2]; or set port 1080
 
-if not test -e $cache_file || test (math (date +%s) - (stat -c %Y $cache_file)) -gt 604800
+if not test -e $cache_file || test (math (date +%s) - (path mtime $cache_file)) -gt 604800
     echo "cache file not exist or older than 7 days. downloading $cache_file..."
     mkdir -p $HOME/.cache
     download_subs > $cache_file.tmp
