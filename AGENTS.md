@@ -10,7 +10,7 @@ Shell: User has fish, not bash.
 Kusto task: To describe a Kusto table, do not run control cmd, use `table | take 1` instead. Always include cluster+db in your kql.
 Testing: 
   - ANY non-readonly command requires HUMAN-APPROVAL, especially these with root access.
-  - rsandbox is allowed without any approval. rsandbox [cmd ...] ; rsandbox sudo [cmd ...] are all allowed. Read /usr/mybin/rsandbox for port forwarding, nuke option or other details.
+  - rsandbox [cmd ...] ; rsandbox sudo [cmd ...] are allowed without any approval. Read /usr/mybin/rsandbox for port forwarding, nuke option or other details.
 Code Generation:
   - Before major design decision, ask HUMAN-APPROVAL. Minor design decision or disposible test code don't need approval. Your code should match existing coding style, or minimal if no context.
   - DO NOT break code into multiple-line, unless longer than 256 char.
