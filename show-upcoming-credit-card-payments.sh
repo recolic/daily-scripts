@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# GPT 5.5
 set -euo pipefail
 
 cd -- "$(dirname -- "$0")"
