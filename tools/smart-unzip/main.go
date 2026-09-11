@@ -24,7 +24,7 @@ import (
 	"unicode/utf8"
 
 	"golang.org/x/text/encoding/simplifiedchinese"
-	"golang.org/x/text/encoding/unicode"
+	unicodeenc "golang.org/x/text/encoding/unicode"
 )
 
 const clueLimit = 64 << 10
@@ -338,7 +338,9 @@ func (e *engine) ask(prompt string, value any) error {
 func clueText(f *input) (string, error) {
 	if f.Size == 0 || f.Size > clueLimit || f.Kind != "" { return "", nil }
 	b, err := os.ReadFile(f.Path); if err != nil { return "", err }
-	if bytes.HasPrefix(b, []byte{0xff, 0xfe}) || bytes.HasPrefix(b, []byte{0xfe, 0xff}) { b, err = unicode.UTF16(unicode.LittleEndian, unicode.UseBOM).NewDecoder().Bytes(b) } else if !utf8.Valid(b) { b, err = simplifiedchinese.GB18030.NewDecoder().Bytes(b) }
+	if bytes.HasPrefix(b, []byte{0xff, 0xfe}) || bytes.HasPrefix(b, []byte{0xfe, 0xff}) {
+		b, err = unicodeenc.UTF16(unicodeenc.LittleEndian, unicodeenc.UseBOM).NewDecoder().Bytes(b)
+	} else if !utf8.Valid(b) { b, err = simplifiedchinese.GB18030.NewDecoder().Bytes(b) }
 	if err != nil { return "", nil }
 	for _, r := range string(b) { if r == utf8.RuneError || unicode.IsControl(r) && !unicode.IsSpace(r) { return "", nil } }
 	return string(b), nil

@@ -13,5 +13,7 @@ test.exe
 
 *.git-ignored
 *.gi
+*.out
+*.exe
 
 linuxconf/files/fish-config/completions/copilot.fish

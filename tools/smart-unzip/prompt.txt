@@ -1,0 +1,32 @@
+I need a script to decompress obfuscated encrypted archive, that smart enough to  handle all case.
+
+the high-level logic is: script accepts a list of "inputs" + a password. while true {
+    $inputs = go_one_step $inputs[]
+}
+
+for every step, it should try these methods:
+1. treat as multiple single archive, try to extract_single()
+2. treat as split archive, try to extract_split()
+
+then single() has multiple case to try: 
+1. 7z x directly.
+2. zip password might be in either utf8 or gb2312 (ref ~/tmp/h/7zpass.py). rar/7z format doesnt have this issue.
+3. password might be in a txt file (use gpt.py, make a prompt to let it read the txt and give the password)
+4. if there's obfs bytes before zip header, 7z cannot recognize it at all. unzip can handle this case. (but unzip cannot handle encrypt_method=99, for this case, unzip will tell you how many bytes before the zip header, you must strip it manually. maybe a naive function to find zip header + strip obfs if it's easy enough)
+
+split() also has multiple case to try: 
+1. rar zip 7z, these 3 format has different split-archive filename format.
+2. there might be obfs char in some (or all) of these filename. Use gpt.py, make some prompt, to properly rename them.
+
+note for all case:
+1. some of input() file might not be archive at all, such as extra txt, ad, readme, etc. You can tell by size_threshold > 10MB.
+2. filename ext is very unreliable, almost always fake.
+3. 7z is the only decompress tool you may use, since it's strong enough to handle unknown format. use 7z (linux) or 7z.exe (windows) in current dir or PATH basing on auto-detection on startup.
+4. feed the decompress output back as input, so it's a loop because all technic above might be nested. Keep working until no more decompress is possible, then terminate as completed. (if something is known to be corruption or error, exit as error, you know, common sense)
+
+please think carefully about what design to use, before start working on the code. try to make it elegant, make code as short as possible (even if it's not easy)
+use golang.
+
+--------
+
+comment: user input is password text. You (golang) could provide UTF8 bytes and GB2312 bytes and try to use these bytes as password. You know, password accept bytes. right? also, make sure once a file is consumed, remove from worklist (avoid deadloop). If after  a run, trying all methods, the worklist is identical, then it means completion. 10MB cutoff could be adjusted in program.
