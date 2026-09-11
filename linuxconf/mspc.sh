@@ -3,6 +3,7 @@
 lc_include arch-common/* utils/arch-virt.sh
 
 lc_assert_user_is root
+export PATH="$PATH:$(pwd)/files/mybin"
 
 lc_startup () {
     mount --uuid 6bee9d09-ffb9-4728-89cd-26e0f6aeaa12 /extradisk
