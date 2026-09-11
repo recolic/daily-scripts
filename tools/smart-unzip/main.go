@@ -53,10 +53,10 @@ type engine struct {
 
 func main() {
 	var e engine
-	var password string
+	var password, output string
 	var minMB int64
 	flag.StringVar(&password, "p", "", "password text (or ARCHIVE_PASSWORD environment variable)")
-	flag.StringVar(&e.out, "o", "", "new output directory (default: create unpacked-* in current directory)")
+	flag.StringVar(&output, "o", "", "new output directory (default: first input filename + .extracted)")
 	flag.StringVar(&e.gpt, "gpt", "gpt.py", "GPT helper in current directory or PATH; empty disables GPT")
 	flag.StringVar(&e.model, "model", "", "optional gpt.py model alias")
 	flag.Int64Var(&minMB, "min-mb", 10, "probe unknown files above this size in MiB; recognizable archives and volume tails are exempt")
@@ -72,15 +72,35 @@ func main() {
 	var err error
 	if e.seven, err = executable(name); err != nil { fatal(err) }
 	work, err := collect(flag.Args()); if err != nil { fatal(err) }
-	if e.out == "" { e.out, err = os.MkdirTemp(".", "unpacked-") } else { err = os.Mkdir(e.out, 0700) }
+	if output == "" { output = filepath.Base(filepath.Clean(flag.Arg(0)))+".extracted" }
+	output, err = filepath.Abs(output); if err != nil { fatal(err) }
+	if err = os.Mkdir(output, 0700); err != nil { fatal(err) }
+	e.out, err = os.MkdirTemp(".", ".smart-unzip-")
 	if err != nil { fatal(err) }
 	e.out, err = filepath.Abs(e.out); if err != nil { fatal(err) }
 	e.init()
-	fmt.Fprintln(os.Stderr, "Output:", e.out)
+	fmt.Fprintln(os.Stderr, "Output:", output)
 	leaves, err := e.run(work)
-	for _, f := range leaves { fmt.Println(f.Path) }
+	for _, f := range leaves { if saveErr := e.save(output, f); saveErr != nil { fatal(errors.Join(err, saveErr)) }; fmt.Println(f.Path) }
+	if cleanErr := os.RemoveAll(e.out); cleanErr != nil { fatal(errors.Join(err, cleanErr)) }
 	if err != nil { fatal(err) }
-	fmt.Fprintf(os.Stderr, "Completed: %d remaining files. Originals and successful intermediate layers preserved.\n", len(leaves))
+	fmt.Fprintf(os.Stderr, "Completed: %d files. Temporary files cleaned up; originals preserved.\n", len(leaves))
+}
+
+// Every unconsumed leaf is output, even on failure. Move temporary results; copy untouched original inputs.
+func (e *engine) save(output string, f *input) error {
+	rel, err := filepath.Rel(e.out, f.Path); if err != nil { return err }
+	generated := !filepath.IsAbs(rel) && rel != ".." && !strings.HasPrefix(rel, ".."+string(filepath.Separator))
+	name := filepath.Base(f.Path)
+	if generated { _, name, _ = strings.Cut(rel, string(filepath.Separator)) }
+	dest := filepath.Join(output, name)
+	if err := os.MkdirAll(filepath.Dir(dest), 0700); err != nil { return err }
+	for n := 1; ; n++ {
+		_, err := os.Lstat(dest); if errors.Is(err, os.ErrNotExist) { break }; if err != nil { return err }
+		dest = fmt.Sprintf("%s.%d", filepath.Join(output, name), n)
+	}
+	if generated { err = os.Rename(f.Path, dest) } else { err = copyFrom(dest, []*input{f}, 0) }
+	if err == nil { f.Path = dest }; return err
 }
 
 func fatal(err error) { fmt.Fprintln(os.Stderr, "ERROR:", err); os.Exit(1) }
@@ -423,6 +443,7 @@ func (e *engine) run(work []*input) ([]*input, error) {
 		if passwordHelp() { added, err = e.passwordsFrom(append(append([]*input{}, work...), next...)); if err != nil { return append(next, left...), err } }
 		if !added && needHelp {
 			gs, err := e.guessedGroups(left); if err != nil { return append(next, left...), err }; apply(gs)
+			pending = nil; for _, f := range left { if !consumed[f.Path] { pending = append(pending, f) } }; left = pending
 			if passwordHelp() { added, err = e.passwordsFrom(append(append([]*input{}, work...), next...)); if err != nil { return append(next, left...), err } }
 		}
 		if len(consumed) == len(work) && len(next) > 12 { return next, nil }

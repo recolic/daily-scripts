@@ -25,8 +25,10 @@ drive-reco26;-m 8G -smp 2 -vnc :21 -net user,hostfwd=tcp::30480-:22,hostfwd=tcp:
 
 # ioit2024@outlook.com, assigned port 30800-30810
 # service until 2026.05.27, 1month notify
+# cleanup scheduled: 2026-09-15T00:00 UTC
 Tyran_devbox;-m 8G -smp 6 -vnc :18 -net user,hostfwd=tcp::30800-:22   -bios /usr/share/edk2/x64/OVMF.4m.fd
 
 # VM total 24G
 # minecraft server 4G
+# HMS total: 23G + 32G swap
 

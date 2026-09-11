@@ -36,3 +36,9 @@ comment: user input is password text. You (golang) could provide UTF8 bytes and 
 update: 
 1. do not use GPT to parse every txt unless you are getting "invalid password" error from 7z.
 2. if after a single attempt, all input (from previous round) has been consumed, and generated output file count > 12, you also regard as completion.
+3. if succeeded (completed), output should be in "first_filename_basename.extracted" dir, in workdir, and temporary filedir should be cleaned up.
+please organize your dir so everything is in this basename.extracted, and at the end, basename.extracted/tmp is cleaned up and result is moved to basename.extracted/
+(reverted because your change is not minimal. 
+you should have both temp dir and $basename.extracted; when a resulting file is removed from work list (for whatever reason... not like an archive? decompress failed? wrong pass? less than 10M? txt? whatever, UNLESS it was decompressed successfully), you move it to $basename.extracted because it's like an output, not intermediate.
+try to make that change again. simplify the main.go if you can. 
+my only concern is if it would destroy the original dir structure... if that's the case, I would rather you move the "last iteration layer" to that new dir directly, with a single MOVE (of course, make sure not missing anything if some output come from earlier step))
