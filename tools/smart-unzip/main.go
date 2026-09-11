@@ -38,7 +38,7 @@ type input struct {
 	Scanned bool
 }
 type group struct { Scheme string `json:"scheme"`; IDs []int `json:"ids"` }
-type result struct { Files []*input; Known bool; Err error }
+type result struct { Files []*input; Known bool; PasswordError bool; Err error }
 type engine struct {
 	seven, gpt, model, out string
 	minSize int64
@@ -189,6 +189,14 @@ func safeListing(list string) error {
 	return nil
 }
 func summary(s string) string { if len(s) > 1800 { s = s[len(s)-1800:] }; return strings.TrimSpace(s) }
+func passwordError(log string) bool {
+	for _, line := range strings.Split(strings.ToLower(log), "\n") {
+		line = strings.TrimSpace(line)
+		if !strings.HasPrefix(line, "error") && !strings.HasPrefix(line, "cannot open encrypted archive") { continue }
+		if strings.Contains(line, "wrong password") || strings.Contains(line, "invalid password") || strings.Contains(line, "password is incorrect") { return true }
+	}
+	return false
+}
 func (e *engine) extract(archive string, zip bool, key string) result {
 	r := result{}
 	for _, text := range e.passwords {
@@ -199,21 +207,24 @@ func (e *engine) extract(archive string, zip bool, key string) result {
 		for _, raw := range variants { p, err := passwordArgument(raw); if err != nil { r.Err = err; continue }; if !contains(args, p) { args = append(args, p) } }
 		for _, p := range args {
 			cacheKey := key+"\x00"+p
-			if prev, ok := e.attempts[cacheKey]; ok { r.Known = r.Known || prev.Known; if prev.Err != nil { r.Err = prev.Err }; continue }
+			if prev, ok := e.attempts[cacheKey]; ok { r.Known = r.Known || prev.Known; r.PasswordError = r.PasswordError || prev.PasswordError; if prev.Err != nil { r.Err = prev.Err }; continue }
 			list, err := e.sevenCommand("l", p, archive, "")
-			known := strings.Contains(list, "Type = ") || strings.Contains(strings.ToLower(list), "wrong password")
+			badPassword := err != nil && passwordError(list)
+			known := strings.Contains(list, "Type = ") || badPassword
 			// A bare Split handler can concatenate arbitrary data; it isn't proof of successful archive extraction.
 			if strings.Contains(list, "Type = Split") && !strings.Contains(list, "Type = 7z") && !strings.Contains(list, "Type = zip") { err = errors.New("raw volumes require grouping") }
 			if err == nil { err = safeListing(list) }
 			if err == nil {
 				dest, mkerr := os.MkdirTemp(e.out, "layer-"); if mkerr != nil { return result{Known: true, Err: mkerr} }
 				log, xerr := e.sevenCommand("x", p, archive, dest)
+				badPassword = badPassword || xerr != nil && passwordError(log)
 				if xerr == nil {
 					files, walkerr := collect([]string{dest}); if walkerr == nil { return result{Files: files, Known: true} }; xerr = walkerr
 				}
 				_ = os.RemoveAll(dest); err = fmt.Errorf("%w: %s", xerr, summary(log))
 			} else { err = fmt.Errorf("%w: %s", err, summary(list)) }
-			prev := result{Known: known, Err: err}; e.attempts[cacheKey] = prev; r.Known = r.Known || known; r.Err = err
+			prev := result{Known: known, PasswordError: badPassword, Err: err}; e.attempts[cacheKey] = prev
+			r.Known = r.Known || known; r.PasswordError = r.PasswordError || badPassword; r.Err = err
 		}
 	}
 	if r.Err == nil { r.Err = errors.New("no usable password arguments") }; return r
@@ -246,6 +257,7 @@ func (e *engine) single(f *input) result {
 		if err = stageFile(trimmed, f, offset); err != nil { return result{Known: true, Err: err} }
 		trial := e.extract(trimmed, true, fmt.Sprintf("%s@%d", f.Path, offset))
 		if trial.Err == nil { fmt.Fprintf(os.Stderr, "Removed %d ZIP-prefix bytes: %s\n", offset, f.Path); return trial }
+		r.PasswordError = r.PasswordError || trial.PasswordError
 		if trial.Known { r.Known = true; r.Err = trial.Err }
 	}
 	return r
@@ -305,7 +317,7 @@ func (e *engine) split(g group, files []*input) result {
 		for _, off := range f.Offsets {
 			p := filepath.Join(stage, fmt.Sprintf("trimmed-%d", off)); if _, err := os.Stat(p); err == nil { continue }
 			if err := stageFile(p, f, off); err != nil { return result{Known: true, Err: err} }
-			t := e.extract(p, true, fmt.Sprintf("%s@%d", key, off)); if t.Err == nil { return t }; if t.Known { r.Known = true; r.Err = t.Err }
+			t := e.extract(p, true, fmt.Sprintf("%s@%d", key, off)); if t.Err == nil { return t }; r.PasswordError = r.PasswordError || t.PasswordError; if t.Known { r.Known = true; r.Err = t.Err }
 		}
 		return r
 	}
@@ -383,8 +395,10 @@ func (e *engine) guessedGroups(files []*input) ([]group, error) {
 func (e *engine) run(work []*input) ([]*input, error) {
 	for round := 0; round < e.maxRounds; round++ {
 		var left, next []*input; consumed := map[string]bool{}
+		badPasswords := map[string]bool{}
 		for _, f := range work {
 			r := e.single(f)
+			badPasswords[f.Path] = r.PasswordError
 			if r.Err == nil { next = append(next, r.Files...); consumed[f.Path] = true; delete(e.failures, f.Path); fmt.Fprintln(os.Stderr, "Extracted:", f.Path) } else {
 				left = append(left, f); if r.Known { e.failures[f.Path] = r.Err }
 			}
@@ -393,6 +407,7 @@ func (e *engine) run(work []*input) ([]*input, error) {
 			for _, g := range gs {
 				available := true; for _, id := range g.IDs { available = available && !consumed[left[id].Path] }; if !available { continue }
 				r := e.split(g, left)
+				for _, id := range g.IDs { badPasswords[left[id].Path] = badPasswords[left[id].Path] || r.PasswordError }
 				if r.Err != nil { if r.Known { for _, id := range g.IDs { e.failures[left[id].Path] = r.Err } }; continue }
 				next = append(next, r.Files...)
 				for _, id := range g.IDs { consumed[left[id].Path] = true; delete(e.failures, left[id].Path) }
@@ -401,13 +416,16 @@ func (e *engine) run(work []*input) ([]*input, error) {
 		}
 		apply(groups(left))
 		var pending []*input; for _, f := range left { if !consumed[f.Path] { pending = append(pending, f) } }; left = pending
-		// Discover clues only when there is unresolved archive-like data; keep ordinary final documents offline.
+		// Only explicit 7z password errors authorize sending clue text to GPT; filename inference remains independent.
 		needHelp := false; for _, f := range left { needHelp = needHelp || e.failures[f.Path] != nil || f.Size > e.minSize }
 		added := false; var err error
-		if needHelp { added, err = e.passwordsFrom(append(append([]*input{}, work...), next...)); if err != nil { return append(next, left...), err } }
+		passwordHelp := func() bool { for _, f := range left { if !consumed[f.Path] && badPasswords[f.Path] { return true } }; return false }
+		if passwordHelp() { added, err = e.passwordsFrom(append(append([]*input{}, work...), next...)); if err != nil { return append(next, left...), err } }
 		if !added && needHelp {
 			gs, err := e.guessedGroups(left); if err != nil { return append(next, left...), err }; apply(gs)
+			if passwordHelp() { added, err = e.passwordsFrom(append(append([]*input{}, work...), next...)); if err != nil { return append(next, left...), err } }
 		}
+		if len(consumed) == len(work) && len(next) > 12 { return next, nil }
 		for _, f := range left { if !consumed[f.Path] { next = append(next, f) } }
 		if len(consumed) == 0 && !added {
 			var errs []error; for _, f := range next { if err := e.failures[f.Path]; err != nil { errs = append(errs, fmt.Errorf("%s: %w", f.Path, err)) } }

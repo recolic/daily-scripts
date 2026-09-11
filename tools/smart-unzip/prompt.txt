@@ -30,3 +30,9 @@ use golang.
 --------
 
 comment: user input is password text. You (golang) could provide UTF8 bytes and GB2312 bytes and try to use these bytes as password. You know, password accept bytes. right? also, make sure once a file is consumed, remove from worklist (avoid deadloop). If after  a run, trying all methods, the worklist is identical, then it means completion. 10MB cutoff could be adjusted in program.
+
+--------
+
+update: 
+1. do not use GPT to parse every txt unless you are getting "invalid password" error from 7z.
+2. if after a single attempt, all input (from previous round) has been consumed, and generated output file count > 12, you also regard as completion.
