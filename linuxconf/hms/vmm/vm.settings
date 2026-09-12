@@ -17,7 +17,7 @@ lanbox-win  ;win10-tiny10-virtio-uefi.qcow2
 
 # name;options (name will be trimmed, options will be passed as-is)
 #                              :4 reserved for HostVNC
-#lanbox-win  ;-m 4G -smp 4 -vnc :17 -net user,hostfwd=tcp::30473-:3389,hostfwd=tcp::23410-:23410 -bios /usr/share/edk2/x64/OVMF.4m.fd -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time
+lanbox-win  ;-m 4G -smp 4 -vnc :17 -net user,hostfwd=tcp::30473-:3389 -bios /usr/share/edk2/x64/OVMF.4m.fd -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time
 #wintest     ;-m 4G -smp 4 -vnc :19 -net user,hostfwd=tcp::30474-:3389 -bios /usr/share/edk2/x64/OVMF.4m.fd -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time
 playg       ;-m 4G -smp 4 -vnc :19 -net user,hostfwd=tcp::30474-:22 -bios /usr/share/edk2/x64/OVMF.4m.fd
 gitrunner   ;-m 4G -smp 3 -vnc :20 -net user,hostfwd=tcp::30475-:22 -bios /usr/share/edk2/x64/OVMF.4m.fd
@@ -28,7 +28,7 @@ drive-reco26;-m 8G -smp 2 -vnc :21 -net user,hostfwd=tcp::30480-:22,hostfwd=tcp:
 # cleanup scheduled: 2026-09-15T00:00 UTC
 Tyran_devbox;-m 8G -smp 6 -vnc :18 -net user,hostfwd=tcp::30800-:22   -bios /usr/share/edk2/x64/OVMF.4m.fd
 
-# VM total 24G
+# VM total 28G
 # minecraft server 4G
 # HMS total: 23G + 32G swap
 
