@@ -1,0 +1,38 @@
+worklist = all inputs
+global password_candidates = [txt.encode(utf8), txt.encode(gb2312)]
+
+def single_or_multi_extraction (flist):
+    try extraction with password.first
+    if success: return success
+    # hierarchy: zip header err -> other err -> password err
+    # known bug cannot handle: filename too long
+    if hit "Cannot open the file as archive" error AND flist.len == 1:
+        fix "bytes before zip header" case
+        try extraction with password.first
+        if success: return success
+    while hit password error:
+        try extraction with password.next
+        if success: return success
+    if hit password error:
+        password_candidates += (ask GPT for passwords from text clues)
+        try extraction with password.last
+        if success: return success
+    return fail
+
+def handle(node):
+    local local.childs[] # no global state needed
+    more than 12 child? return success
+    foreach node.child, 
+      if < 10MB: ok=2 (final leaf)
+      try extract, if extract succeeded, append results as its child, ok=1.
+    foreach node.child with ok=0:
+      ask gpt to group/rename all remaining childs, into groups
+      for each GPT output group:
+        if multi-extraction succeeds, append results as first_of(them).child, first_of(them).ok=1
+    foreach node.child with ok=1:
+      if child.child.len > 12: ok=2 (final leaf)
+      else: handle(child)
+
+append(inputs) as root.childs
+handle(root)
+
