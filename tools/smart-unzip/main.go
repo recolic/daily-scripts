@@ -219,7 +219,7 @@ func safeListing(list string) error {
 	for _, line := range strings.Split(entries, "\n") {
 		line = strings.TrimSuffix(line, "\r")
 		if strings.HasPrefix(line, "Path = ") && !safePath(strings.TrimPrefix(line, "Path = ")) { return fmt.Errorf("unsafe archive path: %s", line) }
-		if strings.HasPrefix(line, "Symbolic Link = ") || strings.HasPrefix(line, "Hard Link = ") { return errors.New("archive links are not allowed") }
+		if key, target, ok := strings.Cut(line, " = "); ok && (key == "Symbolic Link" || key == "Hard Link") && target != "" { return errors.New("archive links are not allowed") }
 		if strings.HasPrefix(line, "Attributes = ") { for _, field := range strings.Fields(line) { if len(field) >= 10 && strings.ContainsRune("lbcps", rune(field[0])) { return errors.New("archive special files are not allowed") } } }
 	}
 	return nil
