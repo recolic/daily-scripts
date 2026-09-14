@@ -1,0 +1,17 @@
+## install winget
+
+if (-not (Get-Command winget.exe -ErrorAction SilentlyContinue)) {
+    Set-ExecutionPolicy Bypass -Scope Process -Force
+    Install-PackageProvider NuGet -Force | Out-Null
+    Install-Script winget-install -Force
+    winget-install -Force
+}
+
+## install mcp: github/claude-did-this/MCPControl
+
+winget install Microsoft.VisualStudio.2022.BuildTools --override "--wait --passive --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
+winget install Python.Python.3.12
+winget install OpenJS.NodeJS
+npm install -g mcp-control
+
+
