@@ -7,11 +7,12 @@ if (-not (Get-Command winget.exe -ErrorAction SilentlyContinue)) {
     winget-install -Force
 }
 
-## install mcp: github/claude-did-this/MCPControl
+## install mcp: github.com/claude-did-this/MCPControl
 
 winget install Microsoft.VisualStudio.2022.BuildTools --override "--wait --passive --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
 winget install Python.Python.3.12
 winget install OpenJS.NodeJS
+# new window...
 npm install -g mcp-control
 
 
