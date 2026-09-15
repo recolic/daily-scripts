@@ -1,3 +1,4 @@
+(DOESN't WORK. DO NOT FOLLOW)
 ## install winget
 
 if (-not (Get-Command winget.exe -ErrorAction SilentlyContinue)) {
