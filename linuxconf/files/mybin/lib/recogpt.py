@@ -85,10 +85,10 @@ all_impl = {
         extra_args = dict(reasoning_effort="medium")
     ),
     'local': lambda: dict(
-        model = "Qwen3.6-27B",
+        model = "../Qwen3.8-27B-Uncensored-IQ4_XS.gguf",
         client = OpenAI(
             api_key="a",
-            base_url="http://localhost:8001"
+            base_url="http://10.100.100.34:8080"
         ),
         extra_args = dict()
     ),
