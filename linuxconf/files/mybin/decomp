@@ -1,8 +1,9 @@
 #!/bin/bash
-# version 1.08
+# version 1.09
 # update log:
 # 1.06: allow decompress nupkg
 # 1.07: allow decompress tar.zst
+# 1.09: decomp -c bugfix
 
 [[ $1 == '' ]] && echo 'Usage: decompress [-g: use GB2312] [-c: extract to new folder] <files ...>' && exit 1
 
@@ -43,8 +44,9 @@ function _e () {
 }
 
 function _e_to_new () {
+    local abs_path=`realpath "$1"`
     mkdir -p "$1"_ && cd "$1"_ &&
-    _e "../$1" &&
+    _e "$abs_path" &&
     cd - && return 0 || return $?
 }
 
