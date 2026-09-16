@@ -45,9 +45,8 @@ function _e () {
 
 function _e_to_new () {
     local abs_path=`realpath "$1"`
-    mkdir -p "$1"_ && cd "$1"_ &&
-    _e "$abs_path" &&
-    cd - && return 0 || return $?
+    mkdir -p "$1"_ || return $?
+    ( cd "$1"_ && _e "$abs_path" )
 }
 
 arg_create_dir=0
