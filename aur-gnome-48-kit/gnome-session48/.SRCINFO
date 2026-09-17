@@ -2,7 +2,7 @@
 pkgbase = gnome-session48
 	pkgdesc = GNOME 48 session handler for the legacy Shell startup protocol
 	pkgver = 48.0
-	pkgrel = 1
+	pkgrel = 2
 	url = https://gitlab.gnome.org/GNOME/gnome-session
 	arch = x86_64
 	license = GPL-2.0-or-later
@@ -34,7 +34,6 @@ pkgbase = gnome-session48
 	depends = xdg-desktop-portal-gnome
 	provides = gnome-session=48.0
 	conflicts = gnome-session
-	conflicts = gdm>=49
 	source = git+https://gitlab.gnome.org/GNOME/gnome-session.git#tag=48.0
 	b2sums = e7364791aae9fe2be01dc907218b5208eb7cb7aa27e18f34b41502459aab1333327ba0c82511d0021ee20758eb3dace4145be2a6776ee2cc90c8b04d4bcb738d
 

@@ -2,7 +2,7 @@
 
 pkgname=gnome-shell48
 pkgver=48.5
-pkgrel=3
+pkgrel=5
 epoch=1
 pkgdesc='GNOME 48 desktop shell'
 arch=(x86_64)
@@ -27,6 +27,7 @@ prepare() {
   ln -sfn libgnome-volume-control gvc
   git -C gnome-shell apply "$srcdir/libical4.patch"
   if pkg-config --atleast-version=1.85.1 gjs-1.0; then git -C gnome-shell apply "$srcdir/gjs185.patch"; fi
+  sed -i "s|GLib.Variant.new('(a{sv})', \[{}\])|GLib.Variant.new('()', [])|" gnome-shell/js/misc/loginManager.js
 }
 
 build() {

@@ -6,8 +6,8 @@
 ##drive-reco ;ubuntu-24.04-server.img ;200G;r;1
 sharedbox    ;ubuntu-24.04-server.img ;50G;r;1
 tb1 ;ubuntu-24.04-server.img;200G;r;1
-tb2 ;debian-12.img;50G;r;1
-tb3 ;debian-12.img;50G;r;1
+tb2 ;archlinux.img;80G;r;1
+tb3 ;archlinux.img;80G;r;1
 
 ## or init VM from pre-deployed backing image (please put it into data/base/)
 # name;existing_img_fname
@@ -31,9 +31,9 @@ devbox     ;-m 18G -smp 16 -vnc :13 -net user,hostfwd=tcp::30474-:3390,hostfwd=u
 vsbox      ;-m 8G -smp 8 -vnc :17 -net user,hostfwd=tcp::30477-:3389 -bios /usr/share/edk2-ovmf/x64/OVMF.4m.fd -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time
 
 sharedbox   ;-m 2G -smp 2 -vnc :19 -net user,hostfwd=tcp::30479-:22
-tb1 ;-m 12G -smp 6 -vnc :21 -net user,hostfwd=tcp::30491-:22
-#tb2 ;-m 4G -smp 2 -vnc :22 -net user,hostfwd=tcp::30492-:22
-#tb3 ;-m 4G -smp 2 -vnc :23 -net user,hostfwd=tcp::30493-:22
+#tb1 ;-m 12G -smp 6 -vnc :21 -net user,hostfwd=tcp::30491-:22
+tb2 ;-m 12G -smp 6 -vnc :22 -net user,hostfwd=tcp::30492-:22
+#tb3 ;-m 12G -smp 6 -vnc :23 -net user,hostfwd=tcp::30493-:22
 tb4w;-m 4G -smp 4 -vnc :24 -net user,hostfwd=tcp::30494-:3389 -bios /usr/share/edk2-ovmf/x64/OVMF.4m.fd -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time
 
 # total RAM usage: 44G / 46G

@@ -1,0 +1,23 @@
+# created by GitHub Copilot
+
+pkgname=gdm50
+pkgver=50.3
+pkgrel=2
+pkgdesc='GNOME 50 display manager for the GNOME 48 compatibility stack'
+arch=(x86_64)
+url='https://gitlab.gnome.org/GNOME/gdm'
+license=(GPL-2.0-or-later)
+depends=(accountsservice audit bash gdk-pixbuf2 glib2 glibc gnome-session gnome-shell json-glib keyutils libcanberra libgcc libgdm libgudev libxau libxcb pam polkit systemd systemd-libs upower)
+provides=("gdm=$pkgver")
+conflicts=(gdm)
+source=("https://archive.archlinux.org/packages/g/gdm/gdm-$pkgver-1-x86_64.pkg.tar.zst")
+b2sums=('19f6769dded7579342c4e2dbbe17196873094f31f451fa666c0620aa1fc96493982fef744c73c61c9ecac220d6312e675b41cd9d2d37df4abbcc05ce89ec82e3')
+noextract=("gdm-$pkgver-1-x86_64.pkg.tar.zst")
+
+package() {
+  bsdtar -xf "$srcdir/gdm-$pkgver-1-x86_64.pkg.tar.zst" -C "$pkgdir" --exclude .BUILDINFO --exclude .INSTALL --exclude .MTREE --exclude .PKGINFO
+  install -Dm644 /dev/stdin "$pkgdir/usr/lib/systemd/user/gnome-session@gnome-login.target.d/gnome-login.session.conf" <<'END'
+[Unit]
+Requires=org.gnome.Shell.target
+END
+}

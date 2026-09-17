@@ -2,7 +2,7 @@
 pkgbase = gdm48
 	pkgdesc = GNOME 48 display manager and login screen
 	pkgver = 48.0
-	pkgrel = 2
+	pkgrel = 3
 	url = https://gitlab.gnome.org/GNOME/gdm
 	arch = x86_64
 	license = GPL-2.0-or-later
@@ -47,6 +47,7 @@ pkgbase = gdm48
 	optdepends = xorg-server: X session support
 	optdepends = xorg-xhost: X session support
 	optdepends = xorg-xrdb: X session support
+	install = gdm48.install
 	provides = gdm=48.0
 	conflicts = gdm
 	backup = etc/gdm/PostSession/Default

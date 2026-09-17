@@ -1,7 +1,7 @@
 # created by GitHub Copilot
 set -euo pipefail
 [[ -f /.dockerenv && -d /kit ]] || { printf 'Run only in the documented disposable Docker container.\n' >&2; exit 1; }
-packages=(mutter48 gnome-session48 gnome-shell48 gdm48)
+packages=(mutter48 gnome-session48 gnome-shell48 gdm50)
 build_uid=$(stat -c %u /kit)
 [[ $build_uid != 0 ]] || { printf 'The kit must belong to an unprivileged host user.\n' >&2; exit 1; }
 id builder &>/dev/null || useradd -m -u "$build_uid" builder
@@ -9,7 +9,7 @@ mkdir -p /kit/.current
 chown builder:builder /kit/.current
 printf '%s\n' 'Server = https://geo.mirror.pkgbuild.com/$repo/os/$arch' > /etc/pacman.d/mirrorlist
 mapfile -t dependencies < <(awk '$1 ~ /^(depends|makedepends|checkdepends)$/ { print $3 }' /kit/*/.SRCINFO | grep -Ev '^(gnome-shell|gnome-session|mutter|libmutter-16\.so)([<=>]|$)' | sort -u)
-pacman -Syu --needed --noconfirm "${dependencies[@]}" python-dbusmock
+pacman -Syu --needed --noconfirm base-devel "${dependencies[@]}" python-dbusmock
 rm -f /var/cache/pacman/pkg/*.pkg.tar.*
 printf '%s\n' '# created by GitHub Copilot' 'source /etc/makepkg.conf' 'SRCDEST="$GNOME48_SOURCE_DIR"' 'MAKEFLAGS="-j${GNOME48_JOBS:-6}"' 'OPTIONS=("${OPTIONS[@]/#debug/!debug}")' > /tmp/gnome48-makepkg.conf
 
@@ -20,6 +20,7 @@ for package_name in "${packages[@]}"; do
   if cmp -s "/kit/$package_name/PKGBUILD" "$build_dir/PKGBUILD"; then recipe_changed=false; fi
   cp "/kit/$package_name/PKGBUILD" "$build_dir/"
   for patch_file in /kit/"$package_name"/*.patch; do [[ ! -f $patch_file ]] || cp "$patch_file" "$build_dir/"; done
+  for install_file in /kit/"$package_name"/*.install; do [[ ! -f $install_file ]] || cp "$install_file" "$build_dir/"; done
   chown -R builder:builder "$build_dir"
   mapfile -t artifacts < <(runuser -u builder -- env GNOME48_SOURCE_DIR="/kit/$package_name" makepkg --dir "$build_dir" --config /tmp/gnome48-makepkg.conf --packagelist)
   [[ ${#artifacts[@]} == 1 ]] || { printf 'Expected one package from %s.\n' "$package_name" >&2; exit 1; }

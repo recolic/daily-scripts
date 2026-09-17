@@ -1,0 +1,10 @@
+# created by GitHub Copilot
+
+post_install() {
+  chown 120:120 var/lib/gdm
+  chmod 1770 var/lib/gdm
+}
+
+post_upgrade() {
+  post_install
+}

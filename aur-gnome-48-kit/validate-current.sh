@@ -2,7 +2,7 @@
 set -euo pipefail
 [[ -f /.dockerenv && -d /kit ]] || { printf 'Run only inside the documented disposable Docker container.\n' >&2; exit 1; }
 shopt -s nullglob
-packages=(mutter48 gnome-session48 gnome-shell48 gdm48)
+packages=(mutter48 gnome-session48 gnome-shell48 gdm50)
 archives=()
 mkdir -p /tmp/gnome48-repo /tmp/gnome48-db /tmp/gnome48-cache
 cp -a "${GNOME48_PACMAN_DB:-/var/lib/pacman}/local" /tmp/gnome48-db/

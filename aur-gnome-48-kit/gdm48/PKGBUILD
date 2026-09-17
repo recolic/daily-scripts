@@ -2,7 +2,7 @@
 
 pkgname=gdm48
 pkgver=48.0
-pkgrel=2
+pkgrel=3
 pkgdesc='GNOME 48 display manager and login screen'
 arch=(x86_64)
 url='https://gitlab.gnome.org/GNOME/gdm'
@@ -13,6 +13,7 @@ checkdepends=(check)
 optdepends=('fprintd: Fingerprint authentication' 'xorg-server: X session support' 'xorg-xhost: X session support' 'xorg-xrdb: X session support')
 provides=("gdm=$pkgver")
 conflicts=(gdm)
+install=gdm48.install
 backup=(etc/gdm/PostSession/Default etc/gdm/PreSession/Default etc/gdm/Xsession etc/gdm/custom.conf etc/pam.d/gdm-autologin etc/pam.d/gdm-fingerprint etc/pam.d/gdm-launch-environment etc/pam.d/gdm-password etc/pam.d/gdm-smartcard)
 _arch_source='https://gitlab.archlinux.org/archlinux/packaging/packages/gdm/-/raw/48.0-2'
 source=("git+$url.git#tag=$pkgver" "$_arch_source/0001-Xsession-Don-t-start-ssh-agent-by-default.patch" "$_arch_source/0002-gdm-settings-utils-rename-variable-to-fix-build-with.patch")

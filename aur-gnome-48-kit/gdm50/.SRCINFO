@@ -1,0 +1,36 @@
+# created by GitHub Copilot
+pkgbase = gdm50
+	pkgdesc = GNOME 50 display manager for the GNOME 48 compatibility stack
+	pkgver = 50.3
+	pkgrel = 2
+	url = https://gitlab.gnome.org/GNOME/gdm
+	arch = x86_64
+	license = GPL-2.0-or-later
+	depends = accountsservice
+	depends = audit
+	depends = bash
+	depends = gdk-pixbuf2
+	depends = glib2
+	depends = glibc
+	depends = gnome-session
+	depends = gnome-shell
+	depends = json-glib
+	depends = keyutils
+	depends = libcanberra
+	depends = libgcc
+	depends = libgdm
+	depends = libgudev
+	depends = libxau
+	depends = libxcb
+	depends = pam
+	depends = polkit
+	depends = systemd
+	depends = systemd-libs
+	depends = upower
+	provides = gdm=50.3
+	conflicts = gdm
+	noextract = gdm-50.3-1-x86_64.pkg.tar.zst
+	source = https://archive.archlinux.org/packages/g/gdm/gdm-50.3-1-x86_64.pkg.tar.zst
+	b2sums = 19f6769dded7579342c4e2dbbe17196873094f31f451fa666c0620aa1fc96493982fef744c73c61c9ecac220d6312e675b41cd9d2d37df4abbcc05ce89ec82e3
+
+pkgname = gdm50

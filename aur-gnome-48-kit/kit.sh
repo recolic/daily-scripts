@@ -1,7 +1,7 @@
 # created by GitHub Copilot
 set -euo pipefail
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
-packages=(mutter48 gnome-session48 gnome-shell48 gdm48)
+packages=(mutter48 gnome-session48 gnome-shell48 gdm50)
 
 srcinfo() {
   printf '# created by GitHub Copilot\n'
