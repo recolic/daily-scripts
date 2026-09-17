@@ -1,0 +1,16 @@
+# created by GitHub Copilot
+/.current/
+/.repo/
+/*/src/
+/*/pkg/
+/*/*.pkg.tar.*
+/*/*.src.tar.*
+/*/*.log
+/mutter48/mutter/
+/mutter48/gvdb/
+/gnome-shell48/gnome-shell/
+/gnome-shell48/libgnome-volume-control/
+/gnome-shell48/jasmine-gjs/
+/gnome-session48/gnome-session/
+/gdm48/gdm/
+/gdm48/*.patch

@@ -1,0 +1,68 @@
+# created by GitHub Copilot
+pkgbase = gdm48
+	pkgdesc = GNOME 48 display manager and login screen
+	pkgver = 48.0
+	pkgrel = 2
+	url = https://gitlab.gnome.org/GNOME/gdm
+	arch = x86_64
+	license = GPL-2.0-or-later
+	checkdepends = check
+	makedepends = dconf
+	makedepends = docbook-xsl
+	makedepends = git
+	makedepends = glib2-devel
+	makedepends = gobject-introspection
+	makedepends = meson
+	makedepends = plymouth
+	makedepends = yelp-tools
+	makedepends = xorg-server
+	makedepends = xorg-xhost
+	makedepends = xorg-xrdb
+	depends = accountsservice
+	depends = audit
+	depends = bash
+	depends = gcc-libs
+	depends = gdk-pixbuf2
+	depends = glib2
+	depends = glibc
+	depends = gnome-session>=48
+	depends = gnome-session<49
+	depends = gnome-shell>=1:48
+	depends = gnome-shell<1:49
+	depends = gtk3
+	depends = json-glib
+	depends = keyutils
+	depends = libcanberra
+	depends = libgdm
+	depends = libgudev
+	depends = libx11
+	depends = libxau
+	depends = libxcb
+	depends = libxdmcp
+	depends = pam
+	depends = systemd
+	depends = systemd-libs
+	depends = upower
+	optdepends = fprintd: Fingerprint authentication
+	optdepends = xorg-server: X session support
+	optdepends = xorg-xhost: X session support
+	optdepends = xorg-xrdb: X session support
+	provides = gdm=48.0
+	conflicts = gdm
+	backup = etc/gdm/PostSession/Default
+	backup = etc/gdm/PreSession/Default
+	backup = etc/gdm/Xsession
+	backup = etc/gdm/custom.conf
+	backup = etc/pam.d/gdm-autologin
+	backup = etc/pam.d/gdm-fingerprint
+	backup = etc/pam.d/gdm-launch-environment
+	backup = etc/pam.d/gdm-password
+	backup = etc/pam.d/gdm-smartcard
+	source = git+https://gitlab.gnome.org/GNOME/gdm.git#tag=48.0
+	source = https://gitlab.archlinux.org/archlinux/packaging/packages/gdm/-/raw/48.0-2/0001-Xsession-Don-t-start-ssh-agent-by-default.patch
+	source = https://gitlab.archlinux.org/archlinux/packaging/packages/gdm/-/raw/48.0-2/0002-gdm-settings-utils-rename-variable-to-fix-build-with.patch
+	b2sums = d08d2137f630999b2f36bd8b798805e145fd7350fc4a092056cfdddd2170ae57b3b17a3a8f44f4c08a7e527a165fdce0dfa7a934188bc487d2a6d5bd848497b0
+	b2sums = f7e868fdd7cc121433de1572583eb728f4d186cd4f52c6d6c8f2ccf4a3cf781144ff71f704f13571ddb97a1ff4ec55cfa3df25d38737ad19da21e84ddc2d3ee4
+	b2sums = c704138b5f6be3ebb7d6606a78d2008cff1116bb033a0ba531b21e2b0cfc7c631c7c0720aa35694c1f0e36d9d6b81e9186f8e3f9fa12e885fe522cfcd2d98d63
+
+pkgname = gdm48

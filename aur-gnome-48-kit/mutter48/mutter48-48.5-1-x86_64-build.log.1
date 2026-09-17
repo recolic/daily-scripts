@@ -1,0 +1,1113 @@
++ exec meson setup --prefix /usr --libexecdir lib --sbindir bin --buildtype plain --auto-features enabled --wrap-mode nodownload -D b_pie=true -D python.bytecompile=1 mutter build -D docs=false -D egl_device=true -D installed_tests=false -D tests=disabled -D wayland_eglstream=true --wrap-mode=nofallback
+The Meson build system
+Version: 1.9.0
+Source dir: /home/recolic/sh/aur-gnome-48-kit/mutter48/src/mutter
+Build dir: /home/recolic/sh/aur-gnome-48-kit/mutter48/src/build
+Build type: native build
+Project name: mutter
+Project version: 48.5
+C compiler for the host machine: cc (gcc 15.2.1 "cc (GCC) 15.2.1 20250813")
+C linker for the host machine: cc ld.bfd 2.45.0
+Host machine cpu family: x86_64
+Host machine cpu: x86_64
+Compiler for C supports link arguments -Wl,--disable-new-dtags: YES 
+
+Executing subproject gvdb 
+
+gvdb| Project name: gvdb
+gvdb| Project version: 0.0
+gvdb| C compiler for the host machine: cc (gcc 15.2.1 "cc (GCC) 15.2.1 20250813")
+gvdb| C linker for the host machine: cc ld.bfd 2.45.0
+gvdb| Found pkg-config: YES (/usr/bin/pkg-config) 2.5.1
+gvdb| Run-time dependency glib-2.0 found: YES 2.84.4
+gvdb| Run-time dependency gio-2.0 found: YES 2.84.4
+gvdb| Build targets in project: 2
+gvdb| Subproject gvdb finished.
+
+Library m found: YES
+Run-time dependency graphene-gobject-1.0 found: YES 1.10.8
+Run-time dependency gdk-pixbuf-2.0 found: YES 2.42.12
+Run-time dependency cairo found: YES 1.18.4
+Run-time dependency pixman-1 found: YES 0.46.4
+Run-time dependency gsettings-desktop-schemas found: YES 48.0
+Dependency glib-2.0 found: YES 2.84.4 (cached)
+Run-time dependency gio-unix-2.0 found: YES 2.84.4
+Dependency gio-unix-2.0 found: YES 2.84.4 (cached)
+Run-time dependency gobject-2.0 found: YES 2.84.4
+Dependency gobject-2.0 found: YES 2.84.4 (cached)
+Run-time dependency gmodule-no-export-2.0 found: YES 2.84.4
+Run-time dependency gnome-settings-daemon found: YES 48.1
+Run-time dependency xkbcommon found: YES 1.11.0
+Run-time dependency atk found: YES 2.56.4
+Run-time dependency colord found: YES 1.4.8
+Run-time dependency lcms2 found: YES 2.17
+Run-time dependency libeis-1.0 found: YES 1.5.0
+Run-time dependency libei-1.0 found: YES 1.5.0
+Dependency gvdb found: YES 0.0 (overridden)
+Run-time dependency libdisplay-info found: YES 0.2.0
+Run-time dependency pango found: YES 1.56.4
+Run-time dependency pangocairo found: YES 1.56.4
+Run-time dependency harfbuzz found: YES 11.5.0
+Run-time dependency fribidi found: YES 1.0.16
+Run-time dependency gtk4 found: YES 4.18.6
+Run-time dependency x11 found: YES 1.8.12
+Run-time dependency xcomposite found: YES 0.4.6
+Run-time dependency xcursor found: YES 1.2.3
+Run-time dependency xdamage found: YES 1.1.6
+Run-time dependency xext found: YES 1.3.6
+Run-time dependency xfixes found: YES 6.0.2
+Run-time dependency xi found: YES 1.8.2
+Run-time dependency xkeyboard-config found: YES 2.45
+Run-time dependency x11-xcb found: YES 1.8.12
+Run-time dependency xrandr found: YES 1.5.4
+Run-time dependency xcb-res found: YES 1.17.0
+Run-time dependency xinerama found: YES 1.1.5
+Run-time dependency xau found: YES 1.0.12
+Run-time dependency ice found: YES 1.1.2
+Run-time dependency xcb-randr found: YES 1.17.0
+Run-time dependency xkbcommon-x11 found: YES 1.11.0
+Run-time dependency xkbfile found: YES 1.1.3
+Run-time dependency xtst found: YES 1.2.5
+Run-time dependency gnome-desktop-4 found: YES 44.4
+Run-time dependency libcanberra found: YES 0.30
+Run-time dependency gl found: YES 1.2
+Run-time dependency egl found: YES 1.5
+Run-time dependency glesv2 found: YES 3.2
+Run-time dependency wayland-server found: YES 1.24.0
+Run-time dependency wayland-client found: YES 1.24.0
+Run-time dependency wayland-cursor found: YES 1.24.0
+Run-time dependency wayland-protocols found: YES 1.45
+Run-time dependency wayland-egl found: YES 18.1.0
+Run-time dependency libsystemd found: YES 257
+Run-time dependency libudev found: YES 257
+Run-time dependency gudev-1.0 found: YES 238
+Run-time dependency udev found: YES 257
+Run-time dependency gbm found: YES 25.2.2-arch1.2
+Run-time dependency libinput found: YES 1.29.1
+Run-time dependency libdrm found: YES 2.4.125
+Checking for type "struct drm_plane_size_hint" with dependency libdrm: YES 
+Run-time dependency wayland-eglstream-protocols found: YES 1.1.20
+Library dl found: YES
+Run-time dependency sm found: YES 1.2.6
+Run-time dependency libwacom found: YES 2.16.1
+Checking for function "libwacom_get_num_rings" with dependency libwacom: YES 
+Run-time dependency libstartup-notification-1.0 found: YES 0.12
+Run-time dependency libpipewire-0.3 found: YES 1.4.8
+Run-time dependency gobject-introspection-1.0 found: YES 1.84.0
+Checking if "timerfd_create(2) system call" links: YES 
+Checking for function "malloc_trim" : YES 
+Run-time dependency sysprof-capture-4 found: YES 48.1
+Run-time dependency sysprof-6 found: YES 48.1
+Checking for function "ffs" : YES 
+Checking for function "clz" : YES 
+Checking for function "memmem" : YES 
+Has header "sys/eventfd.h" : YES 
+Header "sys/prctl.h" has symbol "prctl" : YES 
+Run-time dependency xwayland found: YES 24.1.8
+Header "sys/random.h" has symbol "getrandom" : YES 
+Checking for function "mkostemp" : YES 
+Checking for function "posix_fallocate" : YES 
+Checking for function "memfd_create" : YES 
+Configuring config.h using configuration
+Dependency gobject-introspection-1.0 found: YES 1.84.0 (cached)
+Dependency gobject-introspection-1.0 found: YES 1.84.0 (cached)
+Program /usr/bin/g-ir-scanner found: YES (/usr/bin/g-ir-scanner)
+Dependency gobject-introspection-1.0 found: YES 1.84.0 (cached)
+Program /usr/bin/g-ir-compiler found: YES (/usr/bin/g-ir-compiler)
+Dependency glib-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/glib-mkenums found: YES (/usr/bin/glib-mkenums)
+Dependency glib-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/glib-mkenums found: YES (/usr/bin/glib-mkenums)
+Dependency glib-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/glib-mkenums found: YES (/usr/bin/glib-mkenums)
+Dependency glib-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/glib-mkenums found: YES (/usr/bin/glib-mkenums)
+Dependency glib-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/glib-genmarshal found: YES (/usr/bin/glib-genmarshal)
+Program msgfmt found: YES (/usr/bin/msgfmt)
+Configuring org.gnome.mutter.gschema.xml using configuration
+Configuring org.gnome.mutter.wayland.gschema.xml using configuration
+Run-time dependency bash-completion found: YES 2.16.0
+Program register-python-argcomplete found: YES (/usr/bin/register-python-argcomplete)
+Program gdctl found: YES (/home/recolic/sh/aur-gnome-48-kit/mutter48/src/mutter/tools/gdctl)
+Program get-state.py found: YES (/home/recolic/sh/aur-gnome-48-kit/mutter48/src/mutter/tools/get-state.py)
+Dependency glib-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/glib-mkenums found: YES (/usr/bin/glib-mkenums)
+Dependency glib-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/glib-mkenums found: YES (/usr/bin/glib-mkenums)
+Program cvt found: YES (/usr/bin/cvt)
+Program backends/native/gen-default-modes.py found: YES (/home/recolic/sh/aur-gnome-48-kit/mutter48/src/mutter/src/backends/native/gen-default-modes.py)
+Dependency gio-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/gdbus-codegen found: YES (/usr/bin/gdbus-codegen)
+Dependency gio-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/gdbus-codegen found: YES (/usr/bin/gdbus-codegen)
+Dependency gio-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/gdbus-codegen found: YES (/usr/bin/gdbus-codegen)
+Dependency gio-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/gdbus-codegen found: YES (/usr/bin/gdbus-codegen)
+Dependency gio-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/gdbus-codegen found: YES (/usr/bin/gdbus-codegen)
+Dependency gio-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/gdbus-codegen found: YES (/usr/bin/gdbus-codegen)
+Dependency gio-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/gdbus-codegen found: YES (/usr/bin/gdbus-codegen)
+Dependency gio-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/gdbus-codegen found: YES (/usr/bin/gdbus-codegen)
+Dependency gio-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/gdbus-codegen found: YES (/usr/bin/gdbus-codegen)
+Dependency gio-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/gdbus-codegen found: YES (/usr/bin/gdbus-codegen)
+Dependency gio-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/gdbus-codegen found: YES (/usr/bin/gdbus-codegen)
+Dependency gio-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/gdbus-codegen found: YES (/usr/bin/gdbus-codegen)
+Dependency gio-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/gdbus-codegen found: YES (/usr/bin/gdbus-codegen)
+Dependency gio-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/gdbus-codegen found: YES (/usr/bin/gdbus-codegen)
+Dependency gio-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/gdbus-codegen found: YES (/usr/bin/gdbus-codegen)
+Program wayland-scanner found: YES (/usr/bin/wayland-scanner)
+Dependency glib-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/glib-mkenums found: YES (/usr/bin/glib-mkenums)
+Dependency glib-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/glib-mkenums found: YES (/usr/bin/glib-mkenums)
+Program msgfmt found: YES (/usr/bin/msgfmt)
+Program msginit found: YES (/usr/bin/msginit)
+Program msgmerge found: YES (/usr/bin/msgmerge)
+Program xgettext found: YES (/usr/bin/xgettext)
+Program rst2man found: YES (/usr/bin/rst2man)
+Dependency gio-2.0 found: YES 2.84.4 (cached)
+Program /usr/bin/glib-compile-schemas found: YES (/usr/bin/glib-compile-schemas)
+Build targets in project: 261
+
+mutter 48.5
+
+  Directories
+    prefix                       : /usr
+    libexecdir                   : /usr/lib
+    pkgdatadir                   : /usr/share/mutter-16
+    mandir                       : /usr/share/man
+
+  Build Configuration
+    buildtype                    : plain
+    debug                        : false
+
+  Shell integration
+    Bash completion              : true
+
+  Rendering APIs
+    OpenGL                       : true
+    GLES2                        : true
+    EGL                          : true
+    GLX                          : true
+
+  Options
+    Wayland                      : true
+    Wayland EGLStream            : true
+    X11                          : true
+    XWayland                     : true
+    Native Backend               : true
+    EGL Device                   : true
+    Remote desktop               : true
+    libgnome-desktop             : true
+    Sound player                 : true
+    gudev                        : true
+    Wacom                        : true
+    SM                           : true
+    Fonts                        : true
+    Startup notification         : true
+    Introspection                : true
+    Documentation                : false
+    Profiler                     : true
+    Xwayland initfd              : true
+    Xwayland listenfd            : true
+    Xwayland terminate delay     : true
+    Xwayland byte-swapped clients: true
+    Xwayland enable EI portal    : true
+
+  Tests
+    Enabled                      : false
+    Mutter tests                 : false
+    Cogl tests                   : false
+    Clutter tests                : false
+    KVM tests                    : false
+    X11 backend                  : false
+    Installed tests              : false
+    Coverage                     : false
+
+  Subprojects
+    gvdb                         : YES
+
+  User defined options
+    auto_features                : enabled
+    b_pie                        : true
+    buildtype                    : plain
+    docs                         : false
+    egl_device                   : true
+    installed_tests              : false
+    libexecdir                   : lib
+    prefix                       : /usr
+    python.bytecompile           : 1
+    sbindir                      : bin
+    tests                        : disabled
+    wayland_eglstream            : true
+    wrap_mode                    : nofallback
+
+Found ninja-1.12.1 at /usr/bin/ninja
+Generating targets:   0%|          | 0/261 eta ?Generating targets:  58%|█████▊    | 152/261 eta 00:00                                                      Writing build.ninja:   0%|          | 0/907 eta ?                                                 ninja: Entering directory `/home/recolic/sh/aur-gnome-48-kit/mutter48/src/build'
+[1/839] Compiling C object mtk/mtk/libmutter-mtk-16.so.0.0.0.p/mtk-monitor-transform.c.o
+[2/839] Compiling C object mtk/mtk/libmutter-mtk-16.so.0.0.0.p/mtk-rectangle.c.o
+[3/839] Compiling C object mtk/mtk/libmutter-mtk-16.so.0.0.0.p/mtk-utils.c.o
+[4/839] Compiling C object mtk/mtk/libmutter-mtk-16.so.0.0.0.p/mtk-x11-errors.c.o
+[5/839] Compiling C object mtk/mtk/libmutter-mtk-16.so.0.0.0.p/mtk-region.c.o
+[6/839] Linking target mtk/mtk/libmutter-mtk-16.so.0.0.0
+[7/839] Generating GObject enum file cogl/cogl/cogl-enum-types.h (wrapped by meson to capture output)
+[8/839] Generating symbol file mtk/mtk/libmutter-mtk-16.so.0.0.0.p/libmutter-mtk-16.so.0.0.0.symbols
+[9/839] Generating GObject enum file cogl/cogl/cogl-enum-types.c (wrapped by meson to capture output)
+[10/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/driver_nop_cogl-driver-nop.c.o
+[11/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/meson-generated_.._cogl-enum-types.c.o
+[12/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/driver_gl_cogl-attribute-gl.c.o
+[13/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/driver_gl_cogl-bitmap-gl.c.o
+[14/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/driver_gl_cogl-buffer-impl-gl.c.o
+[15/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/driver_gl_cogl-clip-stack-gl.c.o
+[16/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/driver_gl_cogl-driver-gl.c.o
+[17/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/driver_gl_cogl-framebuffer-gl.c.o
+[18/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/driver_gl_cogl-gl-framebuffer-back.c.o
+[19/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/driver_gl_cogl-gl-framebuffer-fbo.c.o
+[20/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/driver_gl_cogl-pipeline-gl.c.o
+[21/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/driver_gl_cogl-pipeline-fragend-glsl.c.o
+[22/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/driver_gl_cogl-pipeline-progend-glsl.c.o
+[23/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/driver_gl_cogl-pipeline-vertend-glsl.c.o
+[24/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/driver_gl_cogl-texture-2d-gl.c.o
+[25/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/driver_gl_cogl-texture-driver-gl.c.o
+[26/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/driver_gl_cogl-texture-gl.c.o
+[27/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/driver_gl_cogl-util-gl.c.o
+[28/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/driver_gl_gl3_cogl-driver-gl3.c.o
+[29/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/driver_gl_gl3_cogl-texture-driver-gl3.c.o
+[30/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/driver_gl_gles2_cogl-driver-gles2.c.o
+[31/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/driver_gl_gles2_cogl-texture-driver-gles2.c.o
+[32/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-atlas-texture.c.o
+[33/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-atlas.c.o
+[34/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-attribute-buffer.c.o
+[35/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-attribute.c.o
+[36/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-bitmap.c.o
+[37/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-bitmask.c.o
+[38/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-blend-string.c.o
+[39/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-blit.c.o
+[40/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-boxed-value.c.o
+[41/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-buffer.c.o
+[42/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-buffer-impl.c.o
+[43/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-clip-stack.c.o
+[44/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-closure-list.c.o
+[45/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-color.c.o
+[46/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-context.c.o
+[47/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-cpu-caps.c.o
+[48/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-debug.c.o
+[49/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-depth-state.c.o
+[50/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-display.c.o
+[51/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-dma-buf-handle.c.o
+[52/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-driver.c.o
+[53/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-feature-private.c.o
+[54/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-frame-info.c.o
+[55/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-framebuffer-driver.c.o
+[56/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-framebuffer.c.o
+[57/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-glib-source.c.o
+[58/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-graphene.c.o
+[59/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-half-float.c.o
+[60/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-index-buffer.c.o
+[61/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-indices.c.o
+[62/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-journal.c.o
+[63/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-list.c.o
+[64/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-magazine.c.o
+[65/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-matrix-stack.c.o
+[66/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-memory-stack.c.o
+[67/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-bitmap-conversion.c.o
+[68/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-meta-texture.c.o
+[69/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-offscreen.c.o
+[70/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-pipeline-cache.c.o
+[71/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-onscreen.c.o
+[72/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-pipeline-debug.c.o
+[73/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-pipeline-hash-table.c.o
+[74/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-pipeline-layer.c.o
+[75/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-pipeline-layer-state.c.o
+[76/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-pipeline-snippet.c.o
+[77/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-pipeline-state.c.o
+[78/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-pixel-buffer.c.o
+[79/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-pixel-format.c.o
+[80/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-point-in-poly.c.o
+[81/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-pipeline.c.o
+[82/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-primitive.c.o
+[83/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-primitives.c.o
+[84/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-profile.c.o
+[85/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-rectangle-map.c.o
+[86/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-renderer.c.o
+[87/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-sampler-cache.c.o
+[88/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-scanout.c.o
+[89/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-snippet.c.o
+[90/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-spans.c.o
+[91/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-soft-float.c.o
+[92/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-sub-texture.c.o
+[93/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-texture-2d-sliced.c.o
+[94/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-texture-2d.c.o
+[95/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-texture-driver.c.o
+[96/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-trace.c.o
+[97/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-texture.c.o
+[98/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl.c.o
+[99/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/deprecated_cogl-shader.c.o
+[100/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/deprecated_cogl-program.c.o
+[101/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-x11-onscreen.c.o
+[102/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/winsys_cogl-winsys.c.o
+[103/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/cogl-xlib-renderer.c.o
+[104/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/winsys_cogl-texture-pixmap-x11.c.o
+[105/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/winsys_cogl-onscreen-glx.c.o
+[106/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/winsys_cogl-winsys-glx.c.o
+[107/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/winsys_cogl-onscreen-egl.c.o
+[108/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/winsys_cogl-onscreen-xlib.c.o
+[109/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/winsys_cogl-winsys-egl.c.o
+[110/839] Generating GObject enum file clutter/clutter/clutter-enum-types.h (wrapped by meson to capture output)
+[111/839] Generating glib marshaller header clutter/clutter/clutter-marshal_h
+[112/839] Compiling C object cogl/cogl/libmutter-cogl-16.so.0.0.0.p/winsys_cogl-winsys-egl-x11.c.o
+[113/839] Linking target cogl/cogl/libmutter-cogl-16.so.0.0.0
+[114/839] Generating glib marshaller source clutter/clutter/clutter-marshal_c
+[115/839] Generating GObject enum file clutter/clutter/clutter-enum-types.c (wrapped by meson to capture output)
+[116/839] Generating symbol file cogl/cogl/libmutter-cogl-16.so.0.0.0.p/libmutter-cogl-16.so.0.0.0.symbols
+[117/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/meson-generated_.._clutter-enum-types.c.o
+[118/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/meson-generated_.._clutter-marshal.c.o
+[119/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-accessibility.c.o
+[120/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-action.c.o
+[121/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-actor-box.c.o
+[122/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-actor-accessible.c.o
+[123/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-actor-meta.c.o
+[124/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-align-constraint.c.o
+[125/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-animatable.c.o
+[126/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-backend.c.o
+[127/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-base-types.c.o
+[128/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-bind-constraint.c.o
+[129/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-binding-pool.c.o
+[130/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-bin-layout.c.o
+[131/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-blur.c.o
+[132/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-blur-effect.c.o
+[133/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-actor.c.o
+In function ‘_clutter_actor_draw_paint_volume’,
+    inlined from ‘clutter_actor_paint’ at ../mutter/clutter/clutter/clutter-actor.c:3667:5:
+../mutter/clutter/clutter/clutter-actor.c:3128:7: warning: ‘width’ may be used uninitialized [-Wmaybe-uninitialized]
+ 3128 |       clutter_paint_volume_set_width (&fake_pv, width);
+      |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../mutter/clutter/clutter/clutter-actor.c: In function ‘clutter_actor_paint’:
+../mutter/clutter/clutter/clutter-actor.c:3121:14: note: ‘width’ was declared here
+ 3121 |       gfloat width, height;
+      |              ^~~~~
+In function ‘_clutter_actor_draw_paint_volume’,
+    inlined from ‘clutter_actor_paint’ at ../mutter/clutter/clutter/clutter-actor.c:3667:5:
+../mutter/clutter/clutter/clutter-actor.c:3129:7: warning: ‘height’ may be used uninitialized [-Wmaybe-uninitialized]
+ 3129 |       clutter_paint_volume_set_height (&fake_pv, height);
+      |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../mutter/clutter/clutter/clutter-actor.c: In function ‘clutter_actor_paint’:
+../mutter/clutter/clutter/clutter-actor.c:3121:21: note: ‘height’ was declared here
+ 3121 |       gfloat width, height;
+      |                     ^~~~~~
+In file included from /usr/lib/glib-2.0/include/glibconfig.h:9,
+                 from /usr/include/glib-2.0/glib/gtypes.h:34,
+                 from /usr/include/glib-2.0/glib/galloca.h:34,
+                 from /usr/include/glib-2.0/glib.h:32,
+                 from /usr/include/glib-2.0/gobject/gbinding.h:30,
+                 from /usr/include/glib-2.0/glib-object.h:24,
+                 from /usr/include/glib-2.0/gobject/gvaluecollector.h:25,
+                 from ../mutter/clutter/clutter/clutter-actor.c:484:
+In function ‘clutter_actor_iter_next’,
+    inlined from ‘clutter_actor_remove_all_children’ at ../mutter/clutter/clutter/clutter-actor.c:11485:10:
+../mutter/clutter/clutter/clutter-actor.c:16218:44: warning: ‘*(RealActorIter *)((char *)&iter + offsetof(ClutterActorIter, dummy1)).root’ may be used uninitialized [-Wmaybe-uninitialized]
+16218 |   g_return_val_if_fail (ri->age == ri->root->priv->age, FALSE);
+      |                                    ~~~~~~~~^~~~~~
+/usr/include/glib-2.0/glib/gmacros.h:1243:8: note: in definition of macro ‘_G_BOOLEAN_EXPR_IMPL’
+ 1243 |    if (expr)                                    \
+      |        ^~~~
+/usr/include/glib-2.0/glib/gmacros.h:1248:43: note: in expansion of macro ‘_G_BOOLEAN_EXPR’
+ 1248 | #define G_LIKELY(expr) (__builtin_expect (_G_BOOLEAN_EXPR(expr), 1))
+      |                                           ^~~~~~~~~~~~~~~
+/usr/include/glib-2.0/glib/gmessages.h:664:9: note: in expansion of macro ‘G_LIKELY’
+  664 |     if (G_LIKELY (expr)) \
+      |         ^~~~~~~~
+../mutter/clutter/clutter/clutter-actor.c:16218:3: note: in expansion of macro ‘g_return_val_if_fail’
+16218 |   g_return_val_if_fail (ri->age == ri->root->priv->age, FALSE);
+      |   ^~~~~~~~~~~~~~~~~~~~
+../mutter/clutter/clutter/clutter-actor.c: In function ‘clutter_actor_remove_all_children’:
+../mutter/clutter/clutter/clutter-actor.c:11475:20: note: ‘*(RealActorIter *)((char *)&iter + offsetof(ClutterActorIter, dummy1)).root’ was declared here
+11475 |   ClutterActorIter iter;
+      |                    ^~~~
+In function ‘clutter_actor_iter_next’,
+    inlined from ‘clutter_actor_remove_all_children’ at ../mutter/clutter/clutter/clutter-actor.c:11485:10:
+/usr/include/glib-2.0/glib/gmacros.h:1243:7: warning: ‘*(RealActorIter *)((char *)&iter + offsetof(ClutterActorIter, dummy1)).age’ may be used uninitialized [-Wmaybe-uninitialized]
+ 1243 |    if (expr)                                    \
+      |       ^
+/usr/include/glib-2.0/glib/gmacros.h:1247:31: note: in expansion of macro ‘_G_BOOLEAN_EXPR_IMPL’
+ 1247 | #define _G_BOOLEAN_EXPR(expr) _G_BOOLEAN_EXPR_IMPL (__COUNTER__, expr)
+      |                               ^~~~~~~~~~~~~~~~~~~~
+/usr/include/glib-2.0/glib/gmacros.h:1248:43: note: in expansion of macro ‘_G_BOOLEAN_EXPR’
+ 1248 | #define G_LIKELY(expr) (__builtin_expect (_G_BOOLEAN_EXPR(expr), 1))
+      |                                           ^~~~~~~~~~~~~~~
+/usr/include/glib-2.0/glib/gmessages.h:664:9: note: in expansion of macro ‘G_LIKELY’
+  664 |     if (G_LIKELY (expr)) \
+      |         ^~~~~~~~
+../mutter/clutter/clutter/clutter-actor.c:16218:3: note: in expansion of macro ‘g_return_val_if_fail’
+16218 |   g_return_val_if_fail (ri->age == ri->root->priv->age, FALSE);
+      |   ^~~~~~~~~~~~~~~~~~~~
+../mutter/clutter/clutter/clutter-actor.c: In function ‘clutter_actor_remove_all_children’:
+../mutter/clutter/clutter/clutter-actor.c:11475:20: note: ‘*(RealActorIter *)((char *)&iter + offsetof(ClutterActorIter, dummy1)).age’ was declared here
+11475 |   ClutterActorIter iter;
+      |                    ^~~~
+../mutter/clutter/clutter/clutter-actor.c: In function ‘clutter_actor_allocate_preferred_size’:
+../mutter/clutter/clutter/clutter-actor.c:12870:31: warning: ‘natural_width’ may be used uninitialized [-Wmaybe-uninitialized]
+12870 |   actor_box.x2 = actor_box.x1 + natural_width;
+      |                  ~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+../mutter/clutter/clutter/clutter-actor.c:12858:10: note: ‘natural_width’ was declared here
+12858 |   gfloat natural_width, natural_height;
+      |          ^~~~~~~~~~~~~
+../mutter/clutter/clutter/clutter-actor.c:12871:31: warning: ‘natural_height’ may be used uninitialized [-Wmaybe-uninitialized]
+12871 |   actor_box.y2 = actor_box.y1 + natural_height;
+      |                  ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+../mutter/clutter/clutter/clutter-actor.c:12858:25: note: ‘natural_height’ was declared here
+12858 |   gfloat natural_width, natural_height;
+      |                         ^~~~~~~~~~~~~~
+[134/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-box-layout.c.o
+[135/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-brightness-contrast-effect.c.o
+[136/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-click-action.c.o
+[137/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-clone.c.o
+[138/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-color-manager.c.o
+[139/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-color-state.c.o
+[140/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-color-state-params.c.o
+[141/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-colorize-effect.c.o
+[142/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-constraint.c.o
+[143/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-content.c.o
+[144/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-damage-history.c.o
+[145/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-context.c.o
+[146/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-deform-effect.c.o
+[147/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-desaturate-effect.c.o
+[148/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-effect.c.o
+[149/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-fixed-layout.c.o
+[150/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-event.c.o
+[151/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-flatten-effect.c.o
+[152/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-flow-layout.c.o
+[153/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-frame-clock.c.o
+../mutter/clutter/clutter/clutter-frame-clock.c: In function ‘maybe_update_longterm_max_duration_us’:
+../mutter/clutter/clutter/clutter-frame-clock.c:402:15: warning: variable ‘old_duration_us’ set but not used [-Wunused-but-set-variable]
+  402 |       int64_t old_duration_us;
+      |               ^~~~~~~~~~~~~~~
+../mutter/clutter/clutter/clutter-frame-clock.c: In function ‘clutter_frame_clock_dispatch’:
+../mutter/clutter/clutter/clutter-frame-clock.c:1425:11: warning: variable ‘prev_dispatch_interval_us’ set but not used [-Wunused-but-set-variable]
+ 1425 |   int64_t prev_dispatch_interval_us = 0;
+      |           ^~~~~~~~~~~~~~~~~~~~~~~~~
+../mutter/clutter/clutter/clutter-frame-clock.c: At top level:
+../mutter/clutter/clutter/clutter-frame-clock.c:169:1: warning: ‘clutter_frame_clock_state_to_string’ defined but not used [-Wunused-function]
+  169 | clutter_frame_clock_state_to_string (ClutterFrameClockState state)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /usr/lib/glib-2.0/include/glibconfig.h:9,
+                 from /usr/include/glib-2.0/glib/gtypes.h:34,
+                 from /usr/include/glib-2.0/glib/galloca.h:34,
+                 from /usr/include/glib-2.0/glib.h:32,
+                 from ../mutter/clutter/clutter/clutter-frame-clock.h:24,
+                 from ../mutter/clutter/clutter/clutter-frame-clock.c:20:
+In function ‘clutter_frame_clock_schedule_update_later’,
+    inlined from ‘maybe_reschedule_update.part.0’ at ../mutter/clutter/clutter/clutter-frame-clock.c:382:7:
+../mutter/clutter/clutter/clutter-frame-clock.c:1307:45: warning: ‘next_presentation_time_us’ may be used uninitialized [-Wmaybe-uninitialized]
+ 1307 |   g_warn_if_fail (next_presentation_time_us != -1);
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+/usr/include/glib-2.0/glib/gmacros.h:1243:8: note: in definition of macro ‘_G_BOOLEAN_EXPR_IMPL’
+ 1243 |    if (expr)                                    \
+      |        ^~~~
+/usr/include/glib-2.0/glib/gmacros.h:1248:43: note: in expansion of macro ‘_G_BOOLEAN_EXPR’
+ 1248 | #define G_LIKELY(expr) (__builtin_expect (_G_BOOLEAN_EXPR(expr), 1))
+      |                                           ^~~~~~~~~~~~~~~
+/usr/include/glib-2.0/glib/gmessages.h:562:8: note: in expansion of macro ‘G_LIKELY’
+  562 |     if G_LIKELY (expr) ; \
+      |        ^~~~~~~~
+../mutter/clutter/clutter/clutter-frame-clock.c:1307:3: note: in expansion of macro ‘g_warn_if_fail’
+ 1307 |   g_warn_if_fail (next_presentation_time_us != -1);
+      |   ^~~~~~~~~~~~~~
+../mutter/clutter/clutter/clutter-frame-clock.c: In function ‘maybe_reschedule_update.part.0’:
+../mutter/clutter/clutter/clutter-frame-clock.c:1250:11: note: ‘next_presentation_time_us’ declared here
+ 1250 |   int64_t next_presentation_time_us;
+      |           ^~~~~~~~~~~~~~~~~~~~~~~~~
+[154/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-frame.c.o
+[155/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-gesture-action.c.o
+../mutter/clutter/clutter/clutter-gesture-action.c: In function ‘clutter_gesture_action_get_velocity’:
+../mutter/clutter/clutter/clutter-gesture-action.c:1042:51: warning: ‘d_x’ may be used uninitialized [-Wmaybe-uninitialized]
+ 1042 |     *velocity_x = d_t > FLOAT_EPSILON ? d_x / d_t : 0;
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+../mutter/clutter/clutter/clutter-gesture-action.c:1025:10: note: ‘d_x’ was declared here
+ 1025 |   gfloat d_x, d_y, distance, velocity;
+      |          ^~~
+../mutter/clutter/clutter/clutter-gesture-action.c:1045:51: warning: ‘d_y’ may be used uninitialized [-Wmaybe-uninitialized]
+ 1045 |     *velocity_y = d_t > FLOAT_EPSILON ? d_y / d_t : 0;
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+../mutter/clutter/clutter/clutter-gesture-action.c:1025:15: note: ‘d_y’ was declared here
+ 1025 |   gfloat d_x, d_y, distance, velocity;
+      |               ^~~
+In function ‘gesture_unregister_point’,
+    inlined from ‘clutter_gesture_action_handle_event’ at ../mutter/clutter/clutter/clutter-gesture-action.c:493:9:
+../mutter/clutter/clutter/clutter-gesture-action.c:227:3: warning: ‘position’ may be used uninitialized [-Wmaybe-uninitialized]
+  227 |   g_array_remove_index (priv->points, position);
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../mutter/clutter/clutter/clutter-gesture-action.c: In function ‘clutter_gesture_action_handle_event’:
+../mutter/clutter/clutter/clutter-gesture-action.c:360:8: note: ‘position’ was declared here
+  360 |   gint position;
+      |        ^~~~~~~~
+[156/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-gesture.c.o
+../mutter/clutter/clutter/clutter-gesture.c: In function ‘debug_message’:
+../mutter/clutter/clutter/clutter-gesture.c:185:19: warning: variable ‘name’ set but not used [-Wunused-but-set-variable]
+  185 |       const char *name;
+      |                   ^~~~
+[157/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-grab.c.o
+[158/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-input-device.c.o
+[159/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-input-device-tool.c.o
+[160/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-grid-layout.c.o
+[161/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-input-focus.c.o
+[162/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-input-method.c.o
+[163/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-input-only-action.c.o
+[164/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-input-pointer-a11y.c.o
+[165/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-input-only-actor.c.o
+[166/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-virtual-input-device.c.o
+[167/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-interval-progress.c.o
+[168/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-interval.c.o
+[169/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-keyframe-transition.c.o
+[170/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-keymap.c.o
+[171/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-keysyms-table.c.o
+[172/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-keyval.c.o
+[173/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-layout-manager.c.o
+[174/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-layout-meta.c.o
+[175/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-offscreen-effect.c.o
+[176/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-main.c.o
+[177/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-page-turn-effect.c.o
+[178/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-paint-context.c.o
+[179/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-paint-node.c.o
+[180/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-paint-nodes.c.o
+[181/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-pick-context.c.o
+[182/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-pan-action.c.o
+[183/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-pipeline-cache.c.o
+[184/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-pick-stack.c.o
+[185/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-rotate-action.c.o
+[186/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-property-transition.c.o
+[187/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-settings.c.o
+../mutter/clutter/clutter/clutter-settings.c: In function ‘clutter_settings_update_font_options’:
+../mutter/clutter/clutter/clutter-settings.c:128:48: warning: variable ‘clutter_font_subpixel_order’ set but not used [-Wunused-but-set-variable]
+  128 |   const char *clutter_font_hint_style = NULL, *clutter_font_subpixel_order = NULL;
+      |                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+../mutter/clutter/clutter/clutter-settings.c:128:15: warning: variable ‘clutter_font_hint_style’ set but not used [-Wunused-but-set-variable]
+  128 |   const char *clutter_font_hint_style = NULL, *clutter_font_subpixel_order = NULL;
+      |               ^~~~~~~~~~~~~~~~~~~~~~~
+[188/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-seat.c.o
+[189/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-shader-effect.c.o
+[190/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-shader-types.c.o
+[191/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-swipe-action.c.o
+[192/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-snap-constraint.c.o
+[193/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-stage-accessible.c.o
+[194/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-stage-manager-accessible.c.o
+[195/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-stage-manager.c.o
+[196/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-stage.c.o
+../mutter/clutter/clutter/clutter-stage.c: In function ‘clutter_stage_notify_grab_on_pointer_entry’:
+../mutter/clutter/clutter/clutter-stage.c:3656:24: warning: unused variable ‘priv’ [-Wunused-variable]
+ 3656 |   ClutterStagePrivate *priv = clutter_stage_get_instance_private (stage);
+      |                        ^~~~
+[197/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-stage-view.c.o
+[198/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-stage-window.c.o
+[199/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-tap-action.c.o
+[200/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-texture-content.c.o
+[201/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-transition-group.c.o
+[202/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-transition.c.o
+[203/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-util.c.o
+[204/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-timeline.c.o
+[205/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-paint-volume.c.o
+[206/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-zoom-action.c.o
+[207/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/pango_clutter-pango-display-list.c.o
+[208/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/pango_clutter-pango-glyph-cache.c.o
+[209/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/pango_clutter-pango-pipeline-cache.c.o
+[210/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/pango_clutter-pango-render.c.o
+[211/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/pango_clutter-text-accessible.c.o
+[212/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/pango_clutter-text-buffer.c.o
+[213/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/pango_clutter-text-node.c.o
+[214/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/pango_clutter-text.c.o
+[215/839] Generating GObject enum file src/meta-private-enum-types.h (wrapped by meson to capture output)
+[216/839] Generating GObject enum file src/meta/meta-enum-types.h (wrapped by meson to capture output)
+[217/839] Compiling C object clutter/clutter/libmutter-clutter-16.so.0.0.0.p/clutter-easing.c.o
+[218/839] Linking target clutter/clutter/libmutter-clutter-16.so.0.0.0
+[219/839] Generating GObject enum file src/meta-private-enum-types.c (wrapped by meson to capture output)
+[220/839] Generating mtk/mtk/Mtk-16.gir with a custom command (wrapped by meson to set env)
+[221/839] Generating gdbus source src/meta-dbus-a11y.c
+[222/839] Generating gdbus header src/meta-dbus-a11y.h
+[223/839] Generating gdbus source src/meta-dbus-display-config.c
+[224/839] Generating gdbus header src/meta-dbus-display-config.h
+[225/839] Generating gdbus source src/meta-dbus-idle-monitor.c
+[226/839] Generating gdbus header src/meta-dbus-idle-monitor.h
+[227/839] Generating gdbus source src/meta-dbus-input-capture.c
+[228/839] Generating src/meta-default-modes with a custom command
+[229/839] Generating gdbus header src/meta-dbus-input-capture.h
+[230/839] Generating gdbus source src/meta-dbus-input-mapping.c
+[231/839] Generating gdbus header src/meta-dbus-input-mapping.h
+[232/839] Generating gdbus source src/meta-dbus-service-channel.c
+[233/839] Generating gdbus header src/meta-dbus-service-channel.h
+[234/839] Generating gdbus source src/meta-dbus-debug-control.c
+[235/839] Generating gdbus header src/meta-dbus-debug-control.h
+[236/839] Generating gdbus source src/meta-dbus-x11.c
+[237/839] Generating gdbus header src/meta-dbus-x11.h
+[238/839] Generating gdbus header src/meta-dbus-login1.h
+[239/839] Generating gdbus source src/meta-dbus-login1.c
+[240/839] Generating gdbus source src/meta-dbus-sysprof3-profiler.c
+[241/839] Generating gdbus header src/meta-dbus-sysprof3-profiler.h
+[242/839] Generating gdbus source src/meta-dbus-remote-desktop.c
+[243/839] Generating gdbus header src/meta-dbus-remote-desktop.h
+[244/839] Generating gdbus source src/meta-dbus-screen-cast.c
+[245/839] Generating gdbus header src/meta-dbus-screen-cast.h
+[246/839] Generating gdbus source src/meta-dbus-rtkit1.c
+[247/839] Generating gdbus header src/meta-dbus-rtkit1.h
+[248/839] Generating gdbus source src/meta-dbus-gsd-color.c
+[249/839] Generating gdbus header src/meta-dbus-gsd-color.h
+[250/839] Generating gdbus source src/meta-dbus-gsd-power-screen.c
+[251/839] Generating gdbus header src/meta-dbus-gsd-power-screen.h
+[252/839] Generating src/color-management-v1 source with a custom command
+[253/839] Generating src/color-management-v1 server header with a custom command
+[254/839] Generating src/commit-timing-v1 server header with a custom command
+[255/839] Generating src/commit-timing-v1 source with a custom command
+[256/839] Generating src/cursor-shape-v1 source with a custom command
+[257/839] Generating src/cursor-shape-v1 server header with a custom command
+[258/839] Generating src/drm-lease-v1 server header with a custom command
+[259/839] Generating src/drm-lease-v1 source with a custom command
+[260/839] Generating src/fractional-scale-v1 source with a custom command
+[261/839] Generating src/fractional-scale-v1 server header with a custom command
+[262/839] Generating src/fifo-v1 source with a custom command
+[263/839] Generating src/fifo-v1 server header with a custom command
+[264/839] Generating src/gtk-shell source with a custom command
+[265/839] Generating src/gtk-shell server header with a custom command
+[266/839] Generating src/idle-inhibit-unstable-v1 source with a custom command
+[267/839] Generating src/idle-inhibit-unstable-v1 server header with a custom command
+[268/839] Generating src/keyboard-shortcuts-inhibit-unstable-v1 server header with a custom command
+[269/839] Generating src/keyboard-shortcuts-inhibit-unstable-v1 source with a custom command
+[270/839] Generating src/linux-dmabuf-v1 source with a custom command
+[271/839] Generating src/linux-dmabuf-v1 server header with a custom command
+[272/839] Generating src/linux-drm-syncobj-v1 source with a custom command
+[273/839] Generating src/linux-drm-syncobj-v1 server header with a custom command
+[274/839] Generating src/pointer-constraints-unstable-v1 source with a custom command
+[275/839] Generating src/pointer-constraints-unstable-v1 server header with a custom command
+[276/839] Generating src/pointer-gestures-unstable-v1 source with a custom command
+[277/839] Generating src/pointer-gestures-unstable-v1 server header with a custom command
+[278/839] Generating src/presentation-time source with a custom command
+[279/839] Generating src/presentation-time server header with a custom command
+[280/839] Generating src/primary-selection-unstable-v1 server header with a custom command
+[281/839] Generating src/primary-selection-unstable-v1 source with a custom command
+[282/839] Generating src/relative-pointer-unstable-v1 source with a custom command
+[283/839] Generating src/relative-pointer-unstable-v1 server header with a custom command
+[284/839] Generating src/session-management-v1 server header with a custom command
+[285/839] Generating src/session-management-v1 source with a custom command
+[286/839] Generating src/single-pixel-buffer-v1 source with a custom command
+[287/839] Generating src/single-pixel-buffer-v1 server header with a custom command
+[288/839] Generating src/tablet-unstable-v2 source with a custom command
+[289/839] Generating src/tablet-unstable-v2 server header with a custom command
+[290/839] Generating src/text-input-unstable-v3 source with a custom command
+[291/839] Generating src/text-input-unstable-v3 server header with a custom command
+[292/839] Generating src/viewporter source with a custom command
+[293/839] Generating src/viewporter server header with a custom command
+[294/839] Generating src/xdg-activation-v1 server header with a custom command
+[295/839] Generating src/xdg-activation-v1 source with a custom command
+[296/839] Generating src/xdg-dialog-v1 server header with a custom command
+[297/839] Generating src/xdg-dialog-v1 source with a custom command
+[298/839] Generating src/xdg-foreign-unstable-v1 source with a custom command
+[299/839] Generating src/xdg-foreign-unstable-v1 server header with a custom command
+[300/839] Generating src/xdg-foreign-unstable-v2 source with a custom command
+[301/839] Generating src/xdg-foreign-unstable-v2 server header with a custom command
+[302/839] Generating src/xdg-output-unstable-v1 source with a custom command
+[303/839] Generating src/xdg-output-unstable-v1 server header with a custom command
+[304/839] Generating src/xdg-shell source with a custom command
+[305/839] Generating src/xdg-shell server header with a custom command
+[306/839] Generating src/xdg-system-bell-v1 server header with a custom command
+[307/839] Generating src/xdg-system-bell-v1 source with a custom command
+[308/839] Generating src/xdg-toplevel-drag-v1 source with a custom command
+[309/839] Generating src/xdg-toplevel-drag-v1 server header with a custom command
+[310/839] Generating src/xwayland-keyboard-grab-unstable-v1 source with a custom command
+[311/839] Generating src/xwayland-keyboard-grab-unstable-v1 server header with a custom command
+[312/839] Generating src/wayland-eglstream-controller server header with a custom command
+[313/839] Generating src/wayland-eglstream-controller source with a custom command
+[314/839] Generating src/mutter-x11-interop server header with a custom command
+[315/839] Generating src/mutter-x11-interop source with a custom command
+[316/839] Generating GObject enum file src/meta/meta-enum-types.c (wrapped by meson to capture output)
+[317/839] Compiling C object src/third_party/libxcursor.a.p/xcursor_xcursor.c.o
+[318/839] Generating symbol file clutter/clutter/libmutter-clutter-16.so.0.0.0.p/libmutter-clutter-16.so.0.0.0.symbols
+[319/839] Linking static target src/third_party/libxcursor.a
+[320/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._meta-private-enum-types.c.o
+[321/839] Generating cogl/cogl/Cogl-16.gir with a custom command (wrapped by meson to set env)
+[322/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._meta-dbus-a11y.c.o
+[323/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._meta-dbus-idle-monitor.c.o
+[324/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._meta-dbus-display-config.c.o
+[325/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._meta-dbus-input-mapping.c.o
+[326/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._meta-dbus-input-capture.c.o
+[327/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._meta-dbus-service-channel.c.o
+[328/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._meta-dbus-x11.c.o
+[329/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._meta-dbus-debug-control.c.o
+[330/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._meta-dbus-sysprof3-profiler.c.o
+[331/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._meta-dbus-remote-desktop.c.o
+[332/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._meta-dbus-screen-cast.c.o
+[333/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._meta-dbus-rtkit1.c.o
+[334/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._meta-dbus-login1.c.o
+[335/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._meta-dbus-gsd-color.c.o
+[336/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._color-management-v1-protocol.c.o
+[337/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._commit-timing-v1-protocol.c.o
+[338/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._meta-dbus-gsd-power-screen.c.o
+[339/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._cursor-shape-v1-protocol.c.o
+[340/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._drm-lease-v1-protocol.c.o
+[341/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._fractional-scale-v1-protocol.c.o
+[342/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._fifo-v1-protocol.c.o
+[343/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._gtk-shell-protocol.c.o
+[344/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._idle-inhibit-unstable-v1-protocol.c.o
+[345/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._keyboard-shortcuts-inhibit-unstable-v1-protocol.c.o
+[346/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._linux-dmabuf-v1-protocol.c.o
+[347/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._linux-drm-syncobj-v1-protocol.c.o
+[348/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._pointer-constraints-unstable-v1-protocol.c.o
+[349/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._pointer-gestures-unstable-v1-protocol.c.o
+[350/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._presentation-time-protocol.c.o
+[351/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._primary-selection-unstable-v1-protocol.c.o
+[352/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._relative-pointer-unstable-v1-protocol.c.o
+[353/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._session-management-v1-protocol.c.o
+[354/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._single-pixel-buffer-v1-protocol.c.o
+[355/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._tablet-unstable-v2-protocol.c.o
+[356/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._text-input-unstable-v3-protocol.c.o
+[357/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._viewporter-protocol.c.o
+[358/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._xdg-activation-v1-protocol.c.o
+[359/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._xdg-dialog-v1-protocol.c.o
+[360/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._xdg-foreign-unstable-v1-protocol.c.o
+[361/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._xdg-foreign-unstable-v2-protocol.c.o
+[362/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._xdg-output-unstable-v1-protocol.c.o
+[363/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._xdg-shell-protocol.c.o
+[364/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._xdg-system-bell-v1-protocol.c.o
+[365/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._xdg-toplevel-drag-v1-protocol.c.o
+[366/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._xwayland-keyboard-grab-unstable-v1-protocol.c.o
+[367/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._wayland-eglstream-controller-protocol.c.o
+[368/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._mutter-x11-interop-protocol.c.o
+[369/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_edid-parse.c.o
+[370/839] Compiling C object src/libmutter-16.so.0.0.0.p/meson-generated_.._meta_meta-enum-types.c.o
+[371/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-a11y-manager.c.o
+[372/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-backend.c.o
+[373/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-barrier.c.o
+[374/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-color-manager.c.o
+[375/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-color-device.c.o
+[376/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-color-profile.c.o
+[377/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-color-store.c.o
+[378/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-crtc-mode.c.o
+[379/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-crtc.c.o
+[380/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-cursor.c.o
+[381/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-cursor-renderer.c.o
+[382/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-cursor-sprite-xcursor.c.o
+[383/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-cursor-tracker.c.o
+[384/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-dbus-access-checker.c.o
+[385/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-dbus-session-watcher.c.o
+[386/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-dbus-session-manager.c.o
+[387/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-dbus-utils.c.o
+[388/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-fd-source.c.o
+[389/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-gpu.c.o
+[390/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-idle-monitor.c.o
+[391/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-idle-manager.c.o
+[392/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-input-capture.c.o
+[393/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-input-device.c.o
+[394/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-input-capture-session.c.o
+[395/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-input-mapper.c.o
+[396/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-input-settings.c.o
+[397/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-input-settings-dummy.c.o
+[398/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-keymap-utils.c.o
+[399/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-logical-monitor.c.o
+[400/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-monitor.c.o
+[401/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-monitor-config-manager.c.o
+[402/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-monitor-config-utils.c.o
+[403/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-monitor-config-store.c.o
+[404/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-monitor-manager-dummy.c.o
+[405/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-monitor-manager.c.o
+[406/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-orientation-manager.c.o
+[407/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-output.c.o
+[408/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-pointer-constraint.c.o
+[409/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-remote-access-controller.c.o
+[410/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-renderdoc.c.o
+[411/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-renderer.c.o
+[412/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-renderer-view.c.o
+[413/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-screen-cast-window.c.o
+[414/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-settings.c.o
+[415/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-stage.c.o
+[416/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-stage-impl.c.o
+[417/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-stage-view.c.o
+[418/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-viewport-info.c.o
+[419/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-virtual-monitor.c.o
+[420/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_clutter-utils.c.o
+[421/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_cogl-utils.c.o
+[422/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_compositor.c.o
+[423/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_edge-resistance.c.o
+[424/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-background-actor.c.o
+[425/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-background-content.c.o
+[426/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-background.c.o
+[427/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-background-group.c.o
+[428/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-background-image.c.o
+[429/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-compositor-server.c.o
+[430/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-compositor-view.c.o
+[431/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-cullable.c.o
+[432/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-dnd-actor.c.o
+[433/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-dnd.c.o
+[434/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-feedback-actor.c.o
+[435/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-later.c.o
+[436/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-module.c.o
+[437/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-multi-texture.c.o
+[438/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-multi-texture-format.c.o
+[439/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-plugin.c.o
+[440/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-plugin-manager.c.o
+[441/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-surface-actor.c.o
+[442/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-shaped-texture.c.o
+[443/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-texture-mipmap.c.o
+[444/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-window-actor.c.o
+[445/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-window-drag.c.o
+[446/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-window-group.c.o
+[447/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_bell.c.o
+[448/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_boxes.c.o
+[449/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_constraints.c.o
+[450/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_delete.c.o
+[451/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_events.c.o
+[452/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_display.c.o
+[453/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_keybindings.c.o
+[454/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-accel-parse.c.o
+[455/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-border.c.o
+[456/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-anonymous-file.c.o
+[457/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-clipboard-manager.c.o
+[458/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-close-dialog.c.o
+[459/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-context-main.c.o
+[460/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-context.c.o
+[461/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-debug-control.c.o
+[462/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-fraction.c.o
+[463/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-gesture-tracker.c.o
+[464/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-inhibit-shortcuts-dialog.c.o
+[465/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-inhibit-shortcuts-dialog-default.c.o
+[466/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-launch-context.c.o
+[467/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-pad-action-mapper.c.o
+[468/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-selection.c.o
+[469/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-selection-source.c.o
+[470/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-selection-source-memory.c.o
+[471/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-session-manager.c.o
+In file included from /usr/lib/glib-2.0/include/glibconfig.h:9,
+                 from /usr/include/glib-2.0/glib/gtypes.h:34,
+                 from /usr/include/glib-2.0/glib/galloca.h:34,
+                 from /usr/include/glib-2.0/glib.h:32,
+                 from /usr/include/glib-2.0/gobject/gbinding.h:30,
+                 from /usr/include/glib-2.0/glib-object.h:24,
+                 from ../mutter/src/core/meta-session-state.h:22,
+                 from ../mutter/src/core/meta-session-manager.h:24,
+                 from ../mutter/src/core/meta-session-manager.c:22:
+In function ‘glib_auto_cleanup_GStrv’,
+    inlined from ‘snapshot_gvdb_recursively’ at ../mutter/src/core/meta-session-manager.c:375:22:
+/usr/include/glib-2.0/glib/gmacros.h:1386:89: warning: ‘names’ may be used uninitialized [-Wmaybe-uninitialized]
+ 1386 |   static G_GNUC_UNUSED inline void _GLIB_AUTO_FUNC_NAME(TypeName) (TypeName *_ptr) { if (*_ptr != none) (func) (*_ptr); }     \
+      |                                                                                         ^
+/usr/include/glib-2.0/glib/glib-autocleanups.h:103:1: note: in expansion of macro ‘G_DEFINE_AUTO_CLEANUP_FREE_FUNC’
+  103 | G_DEFINE_AUTO_CLEANUP_FREE_FUNC(GStrv, g_strfreev, NULL)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../mutter/src/core/meta-session-manager.c: In function ‘snapshot_gvdb_recursively’:
+../mutter/src/core/meta-session-manager.c:375:22: note: ‘names’ was declared here
+  375 |       g_auto (GStrv) names;
+      |                      ^~~~~
+In function ‘glib_auto_cleanup_GStrv’,
+    inlined from ‘meta_session_data_save’ at ../mutter/src/core/meta-session-manager.c:430:22:
+/usr/include/glib-2.0/glib/gmacros.h:1386:105: warning: ‘names’ may be used uninitialized [-Wmaybe-uninitialized]
+ 1386 |   static G_GNUC_UNUSED inline void _GLIB_AUTO_FUNC_NAME(TypeName) (TypeName *_ptr) { if (*_ptr != none) (func) (*_ptr); }     \
+      |                                                                                                         ^~~~~~~~~~~~~~
+/usr/include/glib-2.0/glib/glib-autocleanups.h:103:1: note: in expansion of macro ‘G_DEFINE_AUTO_CLEANUP_FREE_FUNC’
+  103 | G_DEFINE_AUTO_CLEANUP_FREE_FUNC(GStrv, g_strfreev, NULL)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../mutter/src/core/meta-session-manager.c: In function ‘meta_session_data_save’:
+../mutter/src/core/meta-session-manager.c:430:22: note: ‘names’ was declared here
+  430 |       g_auto (GStrv) names;
+      |                      ^~~~~
+[472/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-session-state.c.o
+[473/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-sound-player.c.o
+[474/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-tablet-action-mapper.c.o
+[475/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-tool-action-mapper.c.o
+[476/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-window-config.c.o
+[477/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-workspace-manager.c.o
+[478/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_place.c.o
+[479/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_restart.c.o
+[480/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_prefs.c.o
+[481/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_stack.c.o
+[482/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_stack-tracker.c.o
+[483/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_startup-notification.c.o
+[484/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_util.c.o
+[485/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_workspace.c.o
+[486/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_cm_meta-backend-x11-cm.c.o
+[487/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_cm_meta-cursor-sprite-xfixes.c.o
+[488/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_window.c.o
+[489/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_cm_meta-renderer-x11-cm.c.o
+[490/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_meta-backend-x11.c.o
+[491/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_meta-barrier-x11.c.o
+[492/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_meta-clutter-backend-x11.c.o
+[493/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_meta-color-manager-x11.c.o
+[494/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_meta-crtc-xrandr.c.o
+[495/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_meta-cursor-renderer-x11.c.o
+[496/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_meta-cursor-tracker-x11.c.o
+[497/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_meta-event-x11.c.o
+[498/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_meta-gpu-xrandr.c.o
+[499/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_meta-input-device-x11.c.o
+[500/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_meta-input-device-tool-x11.c.o
+[501/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_meta-input-settings-x11.c.o
+[502/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_meta-seat-x11.c.o
+[503/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_meta-keymap-x11.c.o
+[504/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_meta-monitor-manager-xrandr.c.o
+[505/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_meta-output-xrandr.c.o
+[506/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_meta-renderer-x11.c.o
+[507/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_meta-stage-x11.c.o
+[508/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_meta-virtual-input-device-x11.c.o
+[509/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_meta-xkb-a11y-x11.c.o
+[510/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_nested_meta-backend-x11-nested.c.o
+[511/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_nested_meta-cursor-renderer-x11-nested.c.o
+[512/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_nested_meta-stage-x11-nested.c.o
+[513/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_x11_nested_meta-renderer-x11-nested.c.o
+[514/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-compositor-x11.c.o
+[515/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-surface-actor-x11.c.o
+[516/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-sync-ring.c.o
+[517/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-window-actor-x11.c.o
+[518/839] Compiling C object src/libmutter-16.so.0.0.0.p/x11_events.c.o
+[519/839] Compiling C object src/libmutter-16.so.0.0.0.p/x11_group-props.c.o
+[520/839] Compiling C object src/libmutter-16.so.0.0.0.p/x11_meta-selection-source-x11.c.o
+[521/839] Compiling C object src/libmutter-16.so.0.0.0.p/x11_meta-shadow-factory.c.o
+[522/839] Compiling C object src/libmutter-16.so.0.0.0.p/x11_meta-startup-notification-x11.c.o
+[523/839] Compiling C object src/libmutter-16.so.0.0.0.p/x11_meta-window-shape.c.o
+[524/839] Compiling C object src/libmutter-16.so.0.0.0.p/x11_meta-sync-counter.c.o
+[525/839] Compiling C object src/libmutter-16.so.0.0.0.p/x11_meta-x11-event-source.c.o
+[526/839] Compiling C object src/libmutter-16.so.0.0.0.p/x11_meta-x11-frame.c.o
+[527/839] Compiling C object src/libmutter-16.so.0.0.0.p/x11_meta-x11-display.c.o
+[528/839] Compiling C object src/libmutter-16.so.0.0.0.p/x11_meta-x11-group.c.o
+[529/839] Compiling C object src/libmutter-16.so.0.0.0.p/x11_meta-x11-keybindings.c.o
+[530/839] Compiling C object src/libmutter-16.so.0.0.0.p/x11_meta-x11-selection.c.o
+[531/839] Compiling C object src/libmutter-16.so.0.0.0.p/x11_meta-x11-selection-input-stream.c.o
+[532/839] Compiling C object src/libmutter-16.so.0.0.0.p/x11_meta-x11-selection-output-stream.c.o
+[533/839] Compiling C object src/libmutter-16.so.0.0.0.p/x11_meta-x11-stack.c.o
+[534/839] Compiling C object src/libmutter-16.so.0.0.0.p/x11_session.c.o
+[535/839] Compiling C object src/libmutter-16.so.0.0.0.p/x11_window-props.c.o
+[536/839] Compiling C object src/libmutter-16.so.0.0.0.p/x11_xprops.c.o
+[537/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_native_meta-render-device-egl-stream.c.o
+[538/839] Compiling C object src/libmutter-16.so.0.0.0.p/x11_window-x11.c.o
+[539/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-gles3.c.o
+[540/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-egl.c.o
+[541/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-eis.c.o
+[542/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-eis-viewport.c.o
+[543/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-remote-desktop.c.o
+[544/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-eis-client.c.o
+[545/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-screen-cast.c.o
+[546/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-remote-desktop-session.c.o
+[547/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-screen-cast-area-stream.c.o
+[548/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-screen-cast-area-stream-src.c.o
+[549/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-screen-cast-monitor-stream.c.o
+[550/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-screen-cast-monitor-stream-src.c.o
+[551/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-screen-cast-virtual-stream-src.c.o
+[552/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-screen-cast-virtual-stream.c.o
+[553/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-screen-cast-window-stream-src.c.o
+[554/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-screen-cast-window-stream.c.o
+[555/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-screen-cast-session.c.o
+[556/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-screen-cast-stream.c.o
+[557/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-selection-source-remote.c.o
+[558/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-surface-actor-wayland.c.o
+[559/839] Compiling C object src/libmutter-16.so.0.0.0.p/compositor_meta-window-actor-wayland.c.o
+[560/839] Compiling C object src/libmutter-16.so.0.0.0.p/core_meta-service-channel.c.o
+[561/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-cursor-sprite-wayland.c.o
+[562/839] Compiling C object src/libmutter-16.so.0.0.0.p/backends_meta-screen-cast-stream-src.c.o
+[563/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-pointer-lock-wayland.c.o
+[564/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-pointer-confinement-wayland.c.o
+[565/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-selection-source-wayland.c.o
+[566/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-activation.c.o
+[567/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-actor-surface.c.o
+[568/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-buffer.c.o
+[569/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland.c.o
+[570/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-client.c.o
+[571/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-commit-timing.c.o
+[572/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-color-management.c.o
+[573/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-cursor-shape.c.o
+[574/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-fifo.c.o
+[575/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-cursor-surface.c.o
+[576/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-data-device.c.o
+[577/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-data-device-primary.c.o
+[578/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-data-offer.c.o
+[579/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-data-offer-primary.c.o
+[580/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-data-source-primary.c.o
+[581/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-data-source.c.o
+[582/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-dnd-surface.c.o
+[583/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-dma-buf.c.o
+[584/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-filter-manager.c.o
+[585/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-fractional-scale.c.o
+[586/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-gtk-shell.c.o
+[587/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-idle-inhibit.c.o
+[588/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-inhibit-shortcuts.c.o
+[589/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-inhibit-shortcuts-dialog.c.o
+[590/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-input.c.o
+[591/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-input-device.c.o
+[592/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-keyboard.c.o
+[593/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-legacy-xdg-foreign.c.o
+[594/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-linux-drm-syncobj.c.o
+[595/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-outputs.c.o
+[596/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-pointer.c.o
+[597/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-pointer-constraints.c.o
+[598/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-pointer-gesture-hold.c.o
+[599/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-pointer-gesture-pinch.c.o
+[600/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-pointer-gestures.c.o
+[601/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-pointer-gesture-swipe.c.o
+[602/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-popup.c.o
+[603/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-presentation-time.c.o
+[604/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-region.c.o
+[605/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-seat.c.o
+[606/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-shell-surface.c.o
+[607/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-subsurface.c.o
+[608/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-single-pixel-buffer.c.o
+[609/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-system-bell.c.o
+[610/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-surface.c.o
+[611/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-tablet.c.o
+[612/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-tablet-cursor-surface.c.o
+[613/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-tablet-manager.c.o
+[614/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-tablet-pad.c.o
+[615/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-tablet-pad-group.c.o
+[616/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-tablet-pad-ring.c.o
+[617/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-tablet-pad-strip.c.o
+[618/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-tablet-seat.c.o
+[619/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-tablet-tool.c.o
+[620/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-text-input.c.o
+[621/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-toplevel-drag.c.o
+[622/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-touch.c.o
+[623/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-transaction.c.o
+[624/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-viewporter.c.o
+[625/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-window-configuration.c.o
+[626/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-xdg-foreign.c.o
+[627/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-xdg-session-manager.c.o
+[628/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-xdg-session-state.c.o
+[629/839] Compiling C object src/libmutter-16.so.0.0.0.p/wayland_meta-wayland-xdg-session.c.o
+ninja: build stopped: interrupted by user.
+INFO: autodetecting backend as ninja
+INFO: calculating backend command to run: /usr/bin/ninja -C /home/recolic/sh/aur-gnome-48-kit/mutter48/src/build -j 2
+Traceback (most recent call last):
+  File "/usr/bin/meson", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/usr/lib/python3.13/site-packages/mesonbuild/mesonmain.py", line 313, in main
+    return run(sys.argv[1:], launcher)
+  File "/usr/lib/python3.13/site-packages/mesonbuild/mesonmain.py", line 304, in run
+    return CommandLineParser().run(args)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.13/site-packages/mesonbuild/mesonmain.py", line 193, in run
+    return options.run_func(options)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/usr/lib/python3.13/site-packages/mesonbuild/mcompile.py", line 379, in run
+    p, *_ = mesonlib.Popen_safe(cmd, stdout=sys.stdout.buffer, stderr=sys.stderr.buffer, env=env)
+            ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/site-packages/mesonbuild/utils/universal.py", line 1741, in Popen_safe
+    o, e = p.communicate(write)
+           ~~~~~~~~~~~~~^^^^^^^
+  File "/usr/lib/python3.13/subprocess.py", line 1214, in communicate
+    self.wait()
+    ~~~~~~~~~^^
+  File "/usr/lib/python3.13/subprocess.py", line 1280, in wait
+    return self._wait(timeout=timeout)
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/subprocess.py", line 2066, in _wait
+    (pid, sts) = self._try_wait(0)
+                 ~~~~~~~~~~~~~~^^^
+  File "/usr/lib/python3.13/subprocess.py", line 2024, in _try_wait
+    (pid, sts) = os.waitpid(self.pid, wait_flags)
+                 ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+
+[1m[31m==> ERROR:(B[m[1m Aborted by user! Exiting...(B[m

@@ -1,0 +1,87 @@
+# created by GitHub Copilot
+pkgbase = gnome-shell48
+	pkgdesc = GNOME 48 desktop shell
+	pkgver = 48.5
+	pkgrel = 3
+	epoch = 1
+	url = https://gitlab.gnome.org/GNOME/gnome-shell
+	arch = x86_64
+	license = GPL-3.0-or-later
+	makedepends = asciidoc
+	makedepends = bash-completion
+	makedepends = evolution-data-server
+	makedepends = git
+	makedepends = glib2-devel
+	makedepends = gnome-keybindings
+	makedepends = gobject-introspection
+	makedepends = meson
+	makedepends = sassc
+	depends = accountsservice
+	depends = at-spi2-core
+	depends = bash
+	depends = cairo
+	depends = dconf
+	depends = gcc-libs
+	depends = gcr-4
+	depends = gdk-pixbuf2
+	depends = gjs
+	depends = glib2
+	depends = glibc
+	depends = gnome-autoar
+	depends = gnome-desktop-4
+	depends = gnome-session>=48
+	depends = gnome-session<49
+	depends = gnome-settings-daemon
+	depends = graphene
+	depends = gsettings-desktop-schemas
+	depends = gtk4
+	depends = hicolor-icon-theme
+	depends = json-glib
+	depends = libadwaita
+	depends = libcanberra-pulse
+	depends = libgdm
+	depends = libgirepository
+	depends = libglvnd
+	depends = libgweather-4
+	depends = libibus
+	depends = libical
+	depends = libnm
+	depends = libnma-gtk4
+	depends = libpipewire
+	depends = libpulse
+	depends = libsecret
+	depends = libsoup3
+	depends = libx11
+	depends = libxfixes
+	depends = mutter=48.5
+	depends = libmutter-16.so
+	depends = pango
+	depends = polkit
+	depends = systemd-libs
+	depends = unzip
+	depends = upower
+	depends = webkitgtk-6.0
+	optdepends = evolution-data-server: Evolution calendar integration
+	optdepends = gnome-bluetooth-3.0: Bluetooth support
+	optdepends = gnome-control-center: System settings
+	optdepends = gnome-disk-utility: Mount with keyfiles
+	optdepends = gst-plugin-pipewire: Screen recording
+	optdepends = gst-plugins-good: Screen recording
+	optdepends = power-profiles-daemon: Power profile switching
+	optdepends = python-gobject: Performance tester
+	optdepends = python-simplejson: Performance tester
+	optdepends = switcheroo-control: Multi-GPU support
+	provides = gnome-shell=1:48.5
+	conflicts = gnome-shell
+	source = git+https://gitlab.gnome.org/GNOME/gnome-shell.git#tag=48.5
+	source = git+https://gitlab.gnome.org/GNOME/libgnome-volume-control.git#commit=5f9768a2eac29c1ed56f1fbb449a77a3523683b6
+	source = git+https://github.com/ptomato/jasmine-gjs.git#commit=856465dddbd92e82e574891e1ebc79e17d7b708a
+	source = libical4.patch
+	source = gjs185.patch
+	b2sums = 70a2662c46c14888b34cd1379e49ebe2e40efd763a343f09682f90acdcb72942baa26410b4e7453dfebb3eef33db58fecf9343345dbb505992cfa14a69a9007d
+	b2sums = e31ae379039dfc345e8032f7b9803a59ded075fc52457ba1553276d3031e7025d9304a7f2167a01be2d54c5e121bae00a2824a9c5ccbf926865d0b24520bb053
+	b2sums = ecbbb9ce5895cc1caed2ddef39c70b4768d78ea0a929ea932d4149f923f92650973cdaefc2aacc9063f2ccf4ec965b57a9698a286f9a6561e39ce2e579ae4522
+	b2sums = 32fe74658f8e9fa8e3cc561a767138bbbe44458f7b64189094d4a1163d70e9ab45ecf2fa016ac152d56c2215491dfebe1f974ec3e083074dc1223d048237c21a
+	b2sums = b0733571947ea4a04e96bea66efc7876b26e55951f3401326bbd5d25c494213d1140506b16ea12ebef13240d304a3650f2a7706025bec34a3563b9f06a35a839
+
+pkgname = gnome-shell48

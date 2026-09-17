@@ -1,0 +1,39 @@
+# created by GitHub Copilot
+
+pkgname=mutter48
+pkgver=48.5
+pkgrel=4
+pkgdesc='GNOME 48 window manager and compositor'
+arch=(x86_64)
+url='https://gitlab.gnome.org/GNOME/mutter'
+license=(GPL-2.0-or-later)
+depends=(at-spi2-core cairo colord dconf egl-wayland fontconfig fribidi gcc-libs gdk-pixbuf2 glib2 glibc gnome-desktop-4 gnome-settings-daemon graphene gsettings-desktop-schemas gtk4 harfbuzz iio-sensor-proxy lcms2 libcanberra libcolord
+  libdisplay-info libdisplay-info.so libdrm libei libgirepository libglvnd libgudev libice libinput libpipewire libsm libsysprof-capture libwacom libx11 libxau libxcb libxcomposite libxcursor libxdamage libxext libxfixes libxi libxinerama libxkbcommon
+  libxkbcommon-x11 libxkbfile libxrandr libxtst mesa pango pipewire pixman python python-argcomplete python-gobject startup-notification systemd-libs wayland xorg-xwayland)
+makedepends=(bash-completion git glib2-devel gobject-introspection meson python-docutils sysprof wayland-protocols)
+optdepends=('bash-completion: Bash completions for gdctl')
+provides=("mutter=$pkgver" libmutter-16.so)
+conflicts=(mutter)
+source=("git+$url.git#tag=$pkgver" 'git+https://gitlab.gnome.org/GNOME/gvdb.git#commit=b54bc5da25127ef416858a3ad92e57159ff565b3')
+b2sums=('a24df78021a0f2499eae868bd168e2cf08e595a4df8e73ddbdb7bd2c2f24372b5652eccce1bffbfe09dc511abbf45c2ac9dd02f8493d0c2fe7accdda0f4a0819'
+  'f989bc2ceb52aad3c6a23c439df3bbc672bc11d561a247d19971d30cc85ed5d42295de40f8e55b13404ed32aa44f12307c9f5b470f2e288d1c9c8329255c43bf')
+
+prepare() {
+  local -a pango_cflags
+  read -ra pango_cflags <<< "$(pkg-config --cflags pango)"
+  if printf '#include <pango/pango.h>\nvoid probe(void) { g_autoptr(PangoRenderer) renderer = NULL; }\n' | cc -x c -fsyntax-only "${pango_cflags[@]}" - 2>/dev/null; then
+    sed -i '/^G_DEFINE_AUTOPTR_CLEANUP_FUNC (PangoRenderer, g_object_unref)$/d' mutter/clutter/clutter/pango/clutter-pango-private.h
+  fi
+}
+
+build() {
+  CFLAGS="${CFLAGS/-O2/-O3} -fno-semantic-interposition"
+  LDFLAGS+=' -Wl,-Bsymbolic-functions'
+  export MESON_PACKAGE_CACHE_DIR="$srcdir"
+  arch-meson mutter build -D docs=false -D egl_device=true -D installed_tests=false -D tests=disabled -D wayland_eglstream=true --wrap-mode=nofallback
+  meson compile -C build -j "${GNOME48_JOBS:-2}"
+}
+
+package() {
+  meson install -C build --destdir "$pkgdir"
+}
