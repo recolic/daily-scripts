@@ -2,7 +2,7 @@
 pkgbase = gdm50
 	pkgdesc = GNOME 50 display manager for the GNOME 48 compatibility stack
 	pkgver = 50.3
-	pkgrel = 2
+	pkgrel = 4
 	url = https://gitlab.gnome.org/GNOME/gdm
 	arch = x86_64
 	license = GPL-2.0-or-later

@@ -2,7 +2,7 @@
 
 pkgname=gdm50
 pkgver=50.3
-pkgrel=2
+pkgrel=4
 pkgdesc='GNOME 50 display manager for the GNOME 48 compatibility stack'
 arch=(x86_64)
 url='https://gitlab.gnome.org/GNOME/gdm'

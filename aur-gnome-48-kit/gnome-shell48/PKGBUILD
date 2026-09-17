@@ -2,7 +2,7 @@
 
 pkgname=gnome-shell48
 pkgver=48.5
-pkgrel=5
+pkgrel=6
 epoch=1
 pkgdesc='GNOME 48 desktop shell'
 arch=(x86_64)
@@ -28,6 +28,7 @@ prepare() {
   git -C gnome-shell apply "$srcdir/libical4.patch"
   if pkg-config --atleast-version=1.85.1 gjs-1.0; then git -C gnome-shell apply "$srcdir/gjs185.patch"; fi
   sed -i "s|GLib.Variant.new('(a{sv})', \[{}\])|GLib.Variant.new('()', [])|" gnome-shell/js/misc/loginManager.js
+  sed -i 's|session_mode = (char \*) g_getenv ("GNOME_SHELL_SESSION_MODE");|session_mode = g_strcmp0 (g_getenv ("GDMSESSION"), "gnome-greeter") == 0 ? (char *) "gdm" : (char *) g_getenv ("GNOME_SHELL_SESSION_MODE");|' gnome-shell/src/main.c
 }
 
 build() {
