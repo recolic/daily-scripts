@@ -75,6 +75,7 @@ fi
 # If command begins with literal "sudo", eat it and run as root inside container.
 if [[ "${1:-}" == "sudo" ]]; then
   shift
+  extra_args_exec+=(-u 0:0)
 else
   extra_args_exec+=(-u "$(id -u):$(id -g)")
 fi
