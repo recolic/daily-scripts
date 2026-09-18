@@ -7,6 +7,7 @@ end
 if test -d /opt/rocm/bin
     set -gx PATH $PATH /opt/rocm/bin
 end
+set -gx CVMOUNT_CLOUDVAULT $HOME/.local/cloudvault-linux-redist/redist/cloudvault
 set -gx EDITOR vim
 
 # RECOLICPC
