@@ -19,4 +19,6 @@ lc_startup () {
         # lc_bgrun /dev/null bash utils/auto-nfs-mgr.sh
         lc_bgrun /dev/null every 10s bash -c "ping -c 1 hms.recolic || umount -f -l /home/recolic/nfs"
     fi
+
+    systemctl start sshd
 }

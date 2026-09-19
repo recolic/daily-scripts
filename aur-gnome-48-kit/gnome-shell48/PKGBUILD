@@ -2,7 +2,7 @@
 
 pkgname=gnome-shell48
 pkgver=48.5
-pkgrel=6
+pkgrel=8
 epoch=1
 pkgdesc='GNOME 48 desktop shell'
 arch=(x86_64)
@@ -29,6 +29,9 @@ prepare() {
   if pkg-config --atleast-version=1.85.1 gjs-1.0; then git -C gnome-shell apply "$srcdir/gjs185.patch"; fi
   sed -i "s|GLib.Variant.new('(a{sv})', \[{}\])|GLib.Variant.new('()', [])|" gnome-shell/js/misc/loginManager.js
   sed -i 's|session_mode = (char \*) g_getenv ("GNOME_SHELL_SESSION_MODE");|session_mode = g_strcmp0 (g_getenv ("GDMSESSION"), "gnome-greeter") == 0 ? (char *) "gdm" : (char *) g_getenv ("GNOME_SHELL_SESSION_MODE");|' gnome-shell/src/main.c
+  sed -i '/this\._userVerifier\.run_dispose();/d; /this\._userVerifierChoiceList\.run_dispose();/d' gnome-shell/js/gdm/util.js
+  sed -i 's|^let _loginManager = null;$|export async function registerDisplayWithGDM() { log("Registering display with GDM"); try { await Gio.DBus.system.call("org.gnome.DisplayManager", "/org/gnome/DisplayManager/Manager", "org.gnome.DisplayManager.Manager", "RegisterDisplay", GLib.Variant.new("()", []), null, Gio.DBusCallFlags.NONE, -1, null); } catch (e) { if (!e.matches(Gio.DBusError, Gio.DBusError.UNKNOWN_METHOD)) log(`Error registering display with GDM: ${e.message}`); else log("Not calling RegisterDisplay(): method not exported, GDM too old?"); } }\n\nlet _loginManager = null;|' gnome-shell/js/misc/loginManager.js
+  sed -i 's|LoginManager.registerSessionWithGDM();|LoginManager.registerSessionWithGDM();\n        LoginManager.registerDisplayWithGDM();|' gnome-shell/js/ui/main.js
 }
 
 build() {

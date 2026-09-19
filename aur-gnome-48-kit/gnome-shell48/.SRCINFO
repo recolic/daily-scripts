@@ -2,7 +2,7 @@
 pkgbase = gnome-shell48
 	pkgdesc = GNOME 48 desktop shell
 	pkgver = 48.5
-	pkgrel = 6
+	pkgrel = 8
 	epoch = 1
 	url = https://gitlab.gnome.org/GNOME/gnome-shell
 	arch = x86_64

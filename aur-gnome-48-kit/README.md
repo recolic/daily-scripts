@@ -4,7 +4,7 @@
 ```sh
 cd /home/recolic/sh/aur-gnome-48-kit
 sudo docker run --name gnome48-validation --memory=12g --memory-swap=12g --cpus=6 --pids-limit=512 \
-  -v "$PWD:/kit:rw" archlinux:base-devel bash /kit/build-current.sh
+  --rm -v "$PWD:/kit:rw" archlinux:base-devel bash /kit/build-current.sh
 ```
 
 It builds, installs, and smoke-tests these four packages inside the disposable container: `mutter48`, `gnome-session48`, `gnome-shell48`, and `gdm50`. Outputs and logs go into `.current/`.
@@ -31,7 +31,7 @@ Four local AUR-style packages keep Shell 48.5 on otherwise current Arch Linux. B
 | Package | Current build | Reason |
 | --- | --- | --- |
 | mutter48 | 48.5-4 | Shell 48 requires libmutter-16, not current Mutter's ABI. |
-| gnome-shell48 | 1:48.5-5 | Your known-working Shell release. |
+| gnome-shell48 | 1:48.5-8 | Your known-working Shell release. |
 | gnome-session48 | 48.0-2 | Preserves the GNOME 48 session runtime. |
 | gdm50 | 50.3-2 | Current systemd-aware GDM, bridged to the GNOME 48 Shell. |
 
@@ -126,9 +126,13 @@ Each package directory contains a `.SRCINFO` suitable for AUR submission alongsi
 
 Recipes derive from official Arch tags: [Mutter 48.5-1](https://gitlab.archlinux.org/archlinux/packaging/packages/mutter/-/tree/48.5-1), [Shell 1:48.5-1](https://gitlab.archlinux.org/archlinux/packaging/packages/gnome-shell/-/tree/1-48.5-1), [Session 48.0-1](https://gitlab.archlinux.org/archlinux/packaging/packages/gnome-session/-/tree/48.0-1), and [GDM 48.0-2](https://gitlab.archlinux.org/archlinux/packaging/packages/gdm/-/tree/48.0-2). Documentation subpackages are omitted. Upstream source hashes are retained except the explicitly corrected GVDB pin.
 
+This kit is a compatibility port, not a GNOME fork. Keep GNOME 48 behavior unless a current Arch dependency or the GDM handoff makes it fail. Every source change must be either a minimal upstream backport or an ABI/API adaptation demonstrated by a failing build or real-session log; record its upstream source or failure in this section. Do not add features, redesign behavior, or proactively import later GNOME changes. Remove an adaptation when the old stack is retired or its upstream dependency no longer needs it.
+
 - Mutter: GVDB pin matches the revision requested by 48.5's own wrap file; current `arch-meson` checks this. A compiler feature probe removes a duplicate PangoRenderer cleanup declaration only when Pango provides it. The libdisplay-info SONAME is recorded in binary dependencies.
 - Shell: libical 4 callback fix backported from upstream commit `39a8a120dea223f70465c959766e2dd19d3d6204` (MR 4215).
 - Shell: GJS 1.85+/GIRepository migration backported from `c8e28918aa96c53333ea7019eb24642b7878b548` (MR 3801), without changing the Mutter ABI. Applied only with new GJS. Binary metadata records the matching GJS version bound; source metadata remains generic. GDM 50's `RegisterSession()` ABI is used when registering the greeter.
+- Shell: with current GJS/libgdm, GDM's verifier proxies remain owned by `Gdm.Client`. Shell disconnects from them and drops its references, but does not dispose them; disposing the cached proxies prevented the password prompt after user selection.
+- Shell: registers the completed display with GDM after startup, matching Shell 50. GDM 50 uses this to mark the user display managed and activate it after authentication. Older GDM releases safely ignore the optional call.
 - Session: removes the obsolete Wacom service requirement. Session 50 cannot replace it unchanged: its startup units require `org.gnome.Shell@user.service`, and `CanShutdown` changed signature.
 - GDM: current GDM 50 is repackaged from the official Arch archive with its BLAKE2 checksum pinned. A small `gnome-session@gnome-login` drop-in requires GNOME Shell's existing systemd target. GDM 48's private D-Bus/session-manager contract is incompatible with current systemd 261.
 
