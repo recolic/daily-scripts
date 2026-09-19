@@ -5,22 +5,10 @@
 cd /home/recolic/sh/aur-gnome-48-kit
 sudo docker run --name gnome48-validation --memory=12g --memory-swap=12g --cpus=6 --pids-limit=512 \
   --rm -v "$PWD:/kit:rw" archlinux:base-devel bash /kit/build-current.sh
+
+sudo pacman -U ./mutter48/*.tar.zst ./gnome-session48/*.tar.zst gnome-shell48/*.tar.zst gdm50/*.tar.zst
+## sudo cp /etc/pam.d/gdm-password.pacsave /etc/pam.d/gdm-password
 ```
-
-It builds, installs, and smoke-tests these four packages inside the disposable container: `mutter48`, `gnome-session48`, `gnome-shell48`, and `gdm50`. Outputs and logs go into `.current/`.
-
-Then generate the local pacman repository and validate its transaction:
-
-```sh
-bash kit.sh metadata
-bash kit.sh check
-bash kit.sh repo
-sudo docker run --rm --read-only --memory=512m --cpus=1 --pids-limit=64 \
-  --tmpfs /tmp:rw,nosuid,nodev,size=128m -v "$PWD:/kit:ro" \
-  archlinux:base-devel bash /kit/validate-current.sh
-```
-
-For a host-local build instead, use `bash `kit.sh` preflight`, `sources`, then `build`; this requires a consistent Arch package snapshot with all `makepkg` dependencies installed. The kit never installs packages or runs `sudo` during that local path. See `README.md` for the full upgrade procedure and warnings.
 
 ------------
 
