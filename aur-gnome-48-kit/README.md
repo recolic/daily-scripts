@@ -1,17 +1,4 @@
 <!-- created by GitHub Copilot -->
-## HOW TO BUILD
-
-```sh
-cd /home/recolic/sh/aur-gnome-48-kit
-sudo docker run --name gnome48-validation --memory=12g --memory-swap=12g --cpus=6 --pids-limit=512 \
-  --rm -v "$PWD:/kit:rw" archlinux:base-devel bash /kit/build-current.sh
-
-sudo pacman -U ./mutter48/*.tar.zst ./gnome-session48/*.tar.zst gnome-shell48/*.tar.zst gdm50/*.tar.zst
-## sudo cp /etc/pam.d/gdm-password.pacsave /etc/pam.d/gdm-password
-```
-
-------------
-
 # GNOME 48 Kit
 
 Four local AUR-style packages keep Shell 48.5 on otherwise current Arch Linux. Built and smoke-tested against current repositories on 2026-09-16. Not published to AUR. Host GNOME packages have not been replaced.
