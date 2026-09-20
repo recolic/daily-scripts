@@ -2,7 +2,7 @@
 
 pkgname=gnome-session48
 pkgver=48.0
-pkgrel=4
+pkgrel=6
 pkgdesc='GNOME 48 session handler for the legacy Shell startup protocol'
 arch=(x86_64)
 url='https://gitlab.gnome.org/GNOME/gnome-session'
@@ -15,7 +15,8 @@ source=("git+$url.git#tag=$pkgver")
 b2sums=('e7364791aae9fe2be01dc907218b5208eb7cb7aa27e18f34b41502459aab1333327ba0c82511d0021ee20758eb3dace4145be2a6776ee2cc90c8b04d4bcb738d')
 
 prepare() {
-  sed -i '/^required_components = {/,/^}/c\required_components = {\n  desktop_plain: [],\n}' gnome-session/data/meson.build
+  sed -i "/'org.gnome.SettingsDaemon.Wacom',/d" gnome-session/data/meson.build
+  sed -i "s/\[shell_component.get(session, '')\] + required_components.get(session, \[\])/\[shell_component.get(session, '')\]/" gnome-session/data/meson.build
 }
 
 build() {

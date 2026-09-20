@@ -20,7 +20,7 @@ Four local AUR-style packages keep Shell 48.5 on otherwise current Arch Linux. B
 | --- | --- | --- |
 | mutter48 | 48.5-4 | Shell 48 requires libmutter-16, not current Mutter's ABI. |
 | gnome-shell48 | 1:48.5-8 | Your known-working Shell release. |
-| gnome-session48 | 48.0-2 | Preserves the GNOME 48 session runtime. |
+| gnome-session48 | 48.0-6 | Preserves the GNOME 48 session runtime. |
 | gdm50 | 50.3-2 | Current systemd-aware GDM, bridged to the GNOME 48 Shell. |
 
 GDM is optional only if you deliberately switch to another display manager. With this host's existing GDM setup, use all four. GJS, libgdm, settings-daemon, control-center, schemas, and portals remain current repository packages.
@@ -121,7 +121,7 @@ This kit is a compatibility port, not a GNOME fork. Keep GNOME 48 behavior unles
 - Shell: GJS 1.85+/GIRepository migration backported from `c8e28918aa96c53333ea7019eb24642b7878b548` (MR 3801), without changing the Mutter ABI. Applied only with new GJS. Binary metadata records the matching GJS version bound; source metadata remains generic. GDM 50's `RegisterSession()` ABI is used when registering the greeter.
 - Shell: with current GJS/libgdm, GDM's verifier proxies remain owned by `Gdm.Client`. Shell disconnects from them and drops its references, but does not dispose them; disposing the cached proxies prevented the password prompt after user selection.
 - Shell: registers the completed display with GDM after startup, matching Shell 50. GDM 50 uses this to mark the user display managed and activate it after authentication. Older GDM releases safely ignore the optional call.
-- Session: removes the obsolete Wacom service requirement. Session 50 cannot replace it unchanged: its startup units require `org.gnome.Shell@user.service`, and `CanShutdown` changed signature.
+- Session: removes the obsolete Wacom service requirement. The GNOME 48 legacy session entry requires only Shell, because GNOME 50 settings-daemon plugins are systemd targets rather than autostart desktop entries; the retained component list generates the required target wants. Session 50 cannot replace it unchanged: its startup units require `org.gnome.Shell@user.service`, and `CanShutdown` changed signature.
 - GDM: current GDM 50 is repackaged from the official Arch archive with its BLAKE2 checksum pinned. A small `gnome-session@gnome-login` drop-in requires GNOME Shell's existing systemd target. GDM 48's private D-Bus/session-manager contract is incompatible with current systemd 261.
 
 The initial versions intentionally preserve the user's known-working Shell/Mutter release, not a claim that these are the newest GNOME 48 maintenance releases. Review future upstream fixes individually rather than importing GNOME 49 compositor behavior wholesale.

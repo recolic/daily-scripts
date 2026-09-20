@@ -2,7 +2,7 @@
 pkgbase = gnome-session48
 	pkgdesc = GNOME 48 session handler for the legacy Shell startup protocol
 	pkgver = 48.0
-	pkgrel = 4
+	pkgrel = 6
 	url = https://gitlab.gnome.org/GNOME/gnome-session
 	arch = x86_64
 	license = GPL-2.0-or-later
