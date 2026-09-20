@@ -67,6 +67,7 @@ function target_git_drive_recolic_net_data
     # drive.recolic.net, git.recolic.net.
     run_until_success rsync -avz --partial --delete \
         --exclude /srv/mirrors/mirrors/ \
+        --exclude /srv/gitlab/logs/ \
         root@func.drive.recolic:/srv /storage/cache/target_git_drive_recolic_net_data
 
     and pack_backup_dir /storage/cache/target_git_drive_recolic_net_data
