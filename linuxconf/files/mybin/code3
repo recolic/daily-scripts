@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-base="$HOME/tmp/.vscode3"
-mkdir -p "$base"
-
-exec code --user-data-dir "$base/user-data" --extensions-dir "$base/extensions" --new-window "$@"
-
