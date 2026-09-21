@@ -42,12 +42,14 @@ Keywords=note;notes;notebook;rnote;
 }
 
 lc_login () {
+    # gui application here. (incl gpg)
     if [[ $(hostname) = RECOLICPC ]] || [[ $(hostname) = RECOLICMPC ]]; then
         echo _:1 | bash utils/unlock_keyrings
         # nohup fcitx5 &
     fi
     lc_bgrun /dev/null fish utils/tg-backend-autokill.fish
     lc_bgrun /dev/null python files/mybin/lib/GetIdleTime-daemon.py
+    lc_bgrun /tmp/vlog proxy.fish us15lw 1080
 
     # need smartcard interaction
     # [[ $(hostname) = RECOLICMPC ]] && lc_bgrun /dev/null env IMPL=sshfs bash utils/auto-nfs-mgr.sh
