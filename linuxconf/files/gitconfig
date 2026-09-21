@@ -29,3 +29,5 @@
 	path = ~/.cache/git-work-config.inc
 [protocol "file"]
 	allow = always
+[init]
+	defaultBranch = master
