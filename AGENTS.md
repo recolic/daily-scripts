@@ -1,27 +1,27 @@
-> AI Agent: you may suggest, but do not modify this file.
-
 # Notes for AI agents (read this first)
 
-> "HUMAN-APPROVAL" means, giving a "choice" and tell user to select; for AI agent without this capability, explicit user approval over text (future or past).
+> "HUMAN-APPROVAL" means, giving a "choice" and tell user to select; for AI agent without this capability, ask explicit approval over text.
 
-Git: User prefer branch name `master`.
-Secrets: User has a secret manager. `rsec` lists all secret names; `rsec SECRET_NAME` fetches a secret's value. Use `rsec` in your script/program. If needed, You may run `rsec` without explicitly asking; Cursor will prompt for permission as needed.
+Git: default branch is master.
+Secrets: User has a secret manager. `rsec` lists all secret names (allowed without approval); `rsec SECRET_NAME` fetches a secret's value (only allowed in script/program).
 Shell: User has fish, not bash.
-Kusto task: To describe a Kusto table, do not run control cmd, use `table | take 1` instead. Always include cluster+db in your kql.
 Testing: 
-  - ANY non-readonly command requires HUMAN-APPROVAL, especially these with root access.
-  - rsandbox [cmd ...] ; rsandbox sudo [cmd ...] are allowed without any approval. Read /usr/mybin/rsandbox for port forwarding, nuke option or other details.
+  - ANY non-readonly command requires HUMAN-APPROVAL, especially those requiring sudo.
+  - rsandbox [cmd ...] ; rsandbox sudo [cmd ...] are allowed without any approval. Read /usr/mybin/rsandbox for port forwarding or additional info.
 Code Generation:
   - Before major design decision, ask HUMAN-APPROVAL. Minor design decision or disposible test code don't need approval. Your code should match existing coding style, or minimal if no context.
   - DO NOT break code into multiple-line, unless longer than 256 char.
   - When creating new file, start with comment `created by <model name>` (copilot IS NOT model name)
 
-
-For microsoft azure work-related task: if you need something not found in knowledge base, you are allowed to read user personal note at ~/code/msdoc.
+For Azure work-related task:
+  - user personal note at ~/code/msdoc
+  - Kusto: Prefer az-run-kql.sh because it returns csv
+  - Kusto: To describe a Kusto table, use `table | take 1`. Always include cluster+db in your kql.
+  - Kusto is expensive and slow. Best practice is to use several well-thought query to pull data, then local tools (such as python or binutils) for data process.
 
 ## CURSOR instruction (copilot please ignore)
 
-SSH and GIT: set `export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh"` before any ssh auth.
+SSH and GIT: set `export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh"` before ssh.
 If the key is locked, gpg-agent will ask for a PIN; the agent terminal has **no TTY**, so pinentry cannot show. User must push from their own terminal when the key is locked.
 
 ## VScode (github copilot) only instruction
