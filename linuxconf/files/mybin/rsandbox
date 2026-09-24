@@ -59,6 +59,7 @@ if ! $DOCKER inspect "$NAME" >/dev/null 2>&1; then
     "${extra_args_run[@]}" \
     -p 30440-30449:30440-30449/tcp \
     -p 30440-30449:30440-30449/udp \
+    --dns=1.1.1.1 \
     --tmpfs /tmp:rw,nosuid,nodev,size=256m \
     "$IMAGE" \
     sleep infinity >/dev/null
