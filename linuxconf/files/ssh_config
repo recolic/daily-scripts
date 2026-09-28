@@ -70,7 +70,7 @@ host mpc.recolic
 host playg.hms.recolic
     hostname hms.recolic
     port 30474
-    user root
+    user r
     proxyjump remote.hms.recolic
 
 host rpi.recolic
