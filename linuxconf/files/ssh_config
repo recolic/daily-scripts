@@ -41,6 +41,10 @@ host remote.river-mac.recolic
     user river
     port 30702
 
+host qtest
+    user root
+    hostname 66.42.69.223
+
 ### Recolic Home LAN
 
 host hms.recolic

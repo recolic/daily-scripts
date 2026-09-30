@@ -3,7 +3,7 @@
 set -euo pipefail
 
 cd -- "$(dirname -- "$0")"
-password="$(genpasswd recolic.net)"
+password="$(genpasswd root@recolic.net)"
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 files=()
