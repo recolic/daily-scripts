@@ -118,7 +118,7 @@ Input message: {_message_text(message_content)}
 {SPAM_EXAMPLE_TEXT}'''
     for attempt in range(1, 4):
         try:
-            response = recogpt.complete(recogpt.prompt_user(prompt), recogpt.impl_load("gpt56t")).strip().lower()
+            response = recogpt.complete(recogpt.prompt_user(prompt), recogpt.impl_load("sol")).strip().lower()
             if response == 'spam':
                 return True
             if response == 'not_spam':

@@ -13,18 +13,9 @@ all_impl = {
         response_api = True,
         extra_args = dict(reasoning_effort="medium")
     ),
+    # sol used by telegram-userbot
     'sol': lambda: dict(
         model = "gpt-6.1-sol",
-        client = OpenAI(
-            api_key=rsec("GITHUB_EMU_TOKEN"),
-            base_url=rsec("GITHUB_LLM_API")
-        ),
-        response_api = True,
-        extra_args = dict(reasoning_effort="medium")
-    ),
-    # gpt56t used by telegram-userbot
-    'gpt56t': lambda: dict(
-        model = "gpt-5.6-terra",
         client = OpenAI(
             api_key=rsec("GITHUB_EMU_TOKEN"),
             base_url=rsec("GITHUB_LLM_API")
