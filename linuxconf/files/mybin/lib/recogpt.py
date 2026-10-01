@@ -4,8 +4,17 @@ from openai import OpenAI, AzureOpenAI
 def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, capture_output=True, text=True).stdout.strip()
 
 all_impl = {
-    'gpt6': lambda: dict(
+    'astra': lambda: dict(
         model = "gpt-6-astra",
+        client = OpenAI(
+            api_key=rsec("GITHUB_EMU_TOKEN"),
+            base_url=rsec("GITHUB_LLM_API")
+        ),
+        response_api = True,
+        extra_args = dict(reasoning_effort="medium")
+    ),
+    'sol': lambda: dict(
+        model = "gpt-6.1-sol",
         client = OpenAI(
             api_key=rsec("GITHUB_EMU_TOKEN"),
             base_url=rsec("GITHUB_LLM_API")
@@ -23,42 +32,14 @@ all_impl = {
         response_api = True,
         extra_args = dict(reasoning_effort="medium")
     ),
-    'gpt56l': lambda: dict(
-        model = "gpt-5.6-luna",
+    'luna': lambda: dict(
+        model = "gpt-6-luna",
         client = OpenAI(
             api_key=rsec("GITHUB_EMU_TOKEN"),
             base_url=rsec("GITHUB_LLM_API")
         ),
         response_api = True,
         extra_args = dict(reasoning_effort="medium")
-    ),
-    # Warning: Azure heavy censorship
-    'gpt54m': lambda: dict(
-        model = "gpt-5.4-mini",
-        client = AzureOpenAI(
-            azure_endpoint=rsec("Az_OpenAI_API"),
-            api_key=rsec("Az_OpenAI_KEY"),
-            api_version="2025-01-01-preview"
-        ),
-        extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None, max_completion_tokens=16000)
-    ),
-    'gpt54n': lambda: dict(
-        model = "gpt-5.4-nano",
-        client = AzureOpenAI(
-            azure_endpoint=rsec("Az_OpenAI_API"),
-            api_key=rsec("Az_OpenAI_KEY"),
-            api_version="2025-01-01-preview"
-        ),
-        extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None, max_completion_tokens=16000)
-    ),
-    'gpt54': lambda: dict(
-        model = "gpt-5.4",
-        client = AzureOpenAI(
-            azure_endpoint=rsec("Az_OpenAI_API"),
-            api_key=rsec("Az_OpenAI_KEY"),
-            api_version="2025-01-01-preview"
-        ),
-        extra_args = dict(temperature=1, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None, max_completion_tokens=16000)
     ),
     'flash': lambda: dict(
         model = "gemini-flash-latest",
@@ -94,7 +75,7 @@ all_impl = {
     ),
 }
 # default_impl used by telegram-userbot-frame, update secret in hms.sh
-default_impl = 'gpt6'
+default_impl = 'astra'
 
 def impl_list():
     return list(all_impl.keys())
