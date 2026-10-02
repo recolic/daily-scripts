@@ -2,15 +2,26 @@
 
 > To get HUMAN-APPROVAL: use `ask_user` tool; for AI agent without this tool, ask explicit approval over text.
 
-Secrets: User has a secret manager. `rsec` lists all secret names (allowed without approval); `rsec SECRET_NAME` fetches a secret's value (only allowed in script/program).
+Secrets: Use `rsec` for all secret management.
 Shell: User has fish, not bash.
-Testing: 
-  - ANY non-readonly command requires HUMAN-APPROVAL, especially those requiring sudo.
-  - rsandbox [cmd ...] ; rsandbox sudo [cmd ...] are allowed without approval. Read /usr/mybin/rsandbox for port forwarding or additional info.
 Code Generation:
-  - Before major design decision, ask HUMAN-APPROVAL. Minor design decision or disposible test code don't need approval. Your code should match existing coding style, or minimal if no context.
   - DO NOT break code into multiple-line, unless longer than 256 char.
   - When creating new file, start with comment `created by <model name>` (copilot IS NOT model name)
+
+Approval (match first rule):
+  Design:
+    - (is major decision) and (affected file count > 3) and (is not test): need HUMAN-APPROVAL
+    - others: ALLOWED
+  Run command:
+    - rsandbox [cmd ...] ; rsandbox sudo [cmd ...] ; rsec : ALLOWED
+    - rsec SECRET_NAME: NOT ALLOWED
+    - rsec SECRET_NAME in script without printing secret out: ALLOWED
+    - (is not readonly) or (sudo): need HUMAN-APPROVAL
+  Modify code:
+    - inside current dir: ALLOWED
+  Everything else:
+    - Use common sense. Only ask HUMAN-APPROVAL when necessary.
+  
 
 For Azure work-related task:
   - user personal note at ~/code/msdoc
