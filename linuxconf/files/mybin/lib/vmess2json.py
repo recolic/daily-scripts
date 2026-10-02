@@ -724,9 +724,10 @@ def select_multiple(lines):
             print("[{}] - {}".format(i+1, item["ps"]))
         print()
 
-    if not sys.stdin.isatty() and os.path.exists('/dev/tty'):
-        sys.stdin.close()
-        sys.stdin = open('/dev/tty', 'r')
+    # recolic bugfix: crash in non-tty env
+    #if not sys.stdin.isatty() and os.path.exists('/dev/tty'):
+    #    sys.stdin.close()
+    #    sys.stdin = open('/dev/tty', 'r')
 
     if len(vmesses) == 1:
         idx = 0
