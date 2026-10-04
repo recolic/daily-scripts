@@ -8,7 +8,7 @@ Code Generation:
   - DO NOT break code into multiple-line, unless longer than 256 char.
   - When creating new file, start with comment `created by <model name>` (copilot IS NOT model name)
 
-Approval (match first rule):
+Approval (first match):
   Design:
     - (is major decision) and (affected file count > 3) and (is not test): need HUMAN-APPROVAL
     - others: ALLOWED
