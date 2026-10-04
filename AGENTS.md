@@ -7,6 +7,8 @@ Shell: User has fish, not bash.
 Code Generation:
   - DO NOT break code into multiple-line, unless longer than 256 char.
   - When creating new file, start with comment `created by <model name>` (copilot IS NOT model name)
+Test:
+  - Python project use uv, js project use bun.
 
 Approval (first match):
   Design:
