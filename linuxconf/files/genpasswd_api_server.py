@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import unquote
 import subprocess
