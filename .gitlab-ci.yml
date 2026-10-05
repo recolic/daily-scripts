@@ -1,7 +1,7 @@
 # created by GitHub Copilot (model name unavailable)
-workflow:
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"'
+#workflow:
+#  rules:
+#    - if: '$CI_PIPELINE_SOURCE == "web"'
 
 stages: [build, publish]
 
