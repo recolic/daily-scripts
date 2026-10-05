@@ -11,7 +11,7 @@ build:
   script:
     - |
       set -e
-      apt-get update ; apt-get install -y zip golang-go
+      apt-get update ; apt-get install -y ca-certificates zip golang-go
       mkdir -p dist
 
       # genpasswd autofill
