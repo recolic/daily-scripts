@@ -4,6 +4,8 @@ Daily scripts written by recolic, only in bash/fish/python. (Server side script:
 
 All scripts here are **simple and minimum**, **little dependency**, **no configuration / installation required**. Just **download and enjoy**.
 
+Binary build: <https://git.recolic.net/root/daily-scripts/-/releases>
+
 ## TOC for useful scripts
 
 > `*` for very frequently used every-day script!
