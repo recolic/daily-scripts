@@ -1,0 +1,42 @@
+# created by GitHub Copilot (model name unavailable)
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+
+stages: [build, publish]
+
+build:
+  image: ubuntu:26.04
+  script:
+    - |
+      set -e
+      apt-get update ; apt-get install -y zip golang-go
+      mkdir -p dist
+
+      # genpasswd autofill
+      zip -j -q dist/genpasswd-firefox-unsigned.xpi genpasswd-firefox-autofill/manifest.json genpasswd-firefox-autofill/background.js
+
+      # smart-unzip
+      sh tools/smart-unzip/build.sh
+      cp tools/smart-unzip/smart-unzip-*.out tools/smart-unzip/smart-unzip-*.exe dist/
+  artifacts:
+    paths: [dist/]
+
+publish:
+  stage: publish
+  image: registry.gitlab.com/gitlab-org/cli:latest
+  variables:
+    GIT_STRATEGY: empty
+    RELEASE_NOTES: |-
+      to install unsigned xpi, install firefox developer edition with xpinstall.signatures.required = false in about:config
+  script:
+    - |
+      set -e
+      apk add --no-cache jq
+      glab auth login --hostname "$CI_SERVER_HOST" --job-token "$CI_JOB_TOKEN" --api-protocol "$CI_SERVER_PROTOCOL"
+      links=$(find . -type f -print0 | jq -Rs 'split("\u0000") | map(select(length > 0) | ltrimstr("./") | {name: ., url: (env.CI_PROJECT_URL + "/-/jobs/" + env.CI_JOB_ID + "/artifacts/raw/" + (split("/") | map(@uri) | join("/")))})')
+      glab release create "pipeline-$CI_PIPELINE_IID" --repo "$CI_PROJECT_URL" --ref "$CI_COMMIT_SHA" --notes "$RELEASE_NOTES" --assets-links "$links"
+  artifacts:
+    expire_in: never
+    paths:
+      - '**/*'

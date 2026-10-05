@@ -6,11 +6,11 @@
 ## after git clone with correct branch, from repository root...
 sudo apt update
 sudo apt install -y git zip nodejs npm
-cd rsec-firefox-autofill
+cd genpasswd-firefox-autofill
 
 # build: no compilation or dependencies needed
-zip -j -q rsec-firefox-unsigned.xpi manifest.json background.js
-echo "Build completed. XPI available at rsec-firefox-unsigned.xpi (use firefox-developer-edition + xpinstall.signatures.required=false in about:config)"
+zip -j -q genpasswd-firefox-unsigned.xpi manifest.json background.js
+echo "Build completed. XPI available at genpasswd-firefox-unsigned.xpi (use firefox-developer-edition + xpinstall.signatures.required=false in about:config)"
 
 # optional: prod-signed, unlisted (requires Mozilla API credentials and review)
 export WEB_EXT_API_KEY=$(rsec MOZ_EXT_JWT_ISSUE)
@@ -20,9 +20,9 @@ unset WEB_EXT_API_KEY WEB_EXT_API_SECRET
 echo "Signed XPI, if signing succeeded, is available in web-ext-artifacts/"
 ```
 
-# rsec Firefox Autofill
+# genpasswd Firefox Autofill
 
-Right-click a password input and choose `rsec(example.com)`. The extension fetches `http://localhost:3094/genpasswd/example.com` and fills only that input. The API must return the password as plain text; whitespace is preserved. No submission, storage, username filling, or Firefox password-manager integration.
+Right-click a password input and choose `genpasswd(example.com)`. The extension fetches `http://localhost:3094/genpasswd/example.com` and fills only that input. The API must return the password as plain text; whitespace is preserved. No submission, storage, username filling, or Firefox password-manager integration.
 
 For temporary installation, open `about:debugging#/runtime/this-firefox`, click **Load Temporary Add-on**, and select `manifest.json`. This installation lasts until Firefox restarts. For permanent installation, install the unsigned XPI in Developer Edition with signature enforcement disabled, or install the signed XPI in ordinary Firefox. Signature enforcement cannot normally be disabled in release Firefox.
 
