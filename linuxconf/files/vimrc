@@ -12,6 +12,7 @@ set number
 syntax on
 filetype plugin indent on
 set belloff=all
+set viminfo=
 
 " tab settings
 set tabstop=4

@@ -19,10 +19,9 @@ Approval (first match):
     - rsec SECRET_NAME: NOT ALLOWED
     - rsec SECRET_NAME in script without printing secret out: ALLOWED
     - (is not readonly) or (sudo): need HUMAN-APPROVAL
-  Modify code:
-    - inside current dir: ALLOWED
-  Everything else:
-    - Use common sense. Only ask HUMAN-APPROVAL when necessary.
+  Modify inside current dir: ALLOWED
+  With implicit permission in user ask: ALLOWED
+  Else: need HUMAN-APPROVAL
   
 
 For Azure work-related task:

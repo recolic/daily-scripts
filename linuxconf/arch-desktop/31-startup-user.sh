@@ -49,6 +49,7 @@ lc_login () {
     fi
     lc_bgrun /dev/null fish utils/tg-backend-autokill.fish
     lc_bgrun /dev/null python files/mybin/lib/GetIdleTime-daemon.py
+    lc_bgrun /dev/null python files/genpasswd_api_server.py
     lc_bgrun /tmp/vlog proxy.fish us15lw 1080
 
     # need smartcard interaction

@@ -15,5 +15,6 @@ test.exe
 *.gi
 *.out
 *.exe
+*.xpi
 
 linuxconf/files/fish-config/completions/copilot.fish

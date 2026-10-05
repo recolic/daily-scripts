@@ -9,6 +9,9 @@ Named Host:    $0 hms.recolic
                $0 pc.recolic
                $0 drive.recolic
 Unnamed Host:  $0 10.100.100.1
+1P service:    $0 drive@recolic.net
+               $0 git@recolic.net
+               $0 blog@recolic.net
 Other use:     $0 toy1@dummy
 "
 
