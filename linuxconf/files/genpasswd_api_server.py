@@ -2,6 +2,8 @@
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import unquote
 import subprocess
+import tkinter as tk
+from tkinter import messagebox
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -17,6 +19,11 @@ class Handler(BaseHTTPRequestHandler):
             return
 
         args = [unquote(arg) for arg in path[len(prefix):].split("/")]
+
+        root = tk.Tk(); root.withdraw()
+        if not messagebox.askyesno("Confirm", f"{path} Confirm?"):
+            root.destroy(); self.send_error(403); return
+        root.destroy()
 
         try:
             result = subprocess.run(
