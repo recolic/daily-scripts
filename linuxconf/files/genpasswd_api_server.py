@@ -16,9 +16,11 @@ class Handler(BaseHTTPRequestHandler):
             self.send_error(404)
             return
 
+        args = [unquote(arg) for arg in path[len(prefix):].split("/")]
+
         try:
             result = subprocess.run(
-                ["genpasswd", unquote(path[len(prefix):])],
+                ["genpasswd", *args],
                 stdin=subprocess.DEVNULL,
                 capture_output=True,
             )

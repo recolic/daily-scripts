@@ -18,20 +18,25 @@ browser.menus.onShown.addListener(async info => {
   browser.menus.refresh();
 });
 
-browser.runtime.onMessage.addListener((message, sender) => {
+browser.runtime.onMessage.addListener(async (message, sender) => {
   if (message.type !== "genpasswd" || !sender.tab) return;
-  return fetch(`http://localhost:3094/genpasswd/${encodeURIComponent(message.domain)}`, {cache: "no-store", credentials: "omit", redirect: "error"}).then(async response => {
-    if (!response.ok) throw new Error(`genpasswd HTTP ${response.status}`);
-    const password = await response.text();
-    if (!password) throw new Error("genpasswd returned an empty password");
-    return password;
-  });
+  const request = {cache: "no-store", credentials: "omit", redirect: "error"};
+  const optionsResponse = await fetch("https://recolic.net/p/domain_options.js", request);
+  if (!optionsResponse.ok) throw new Error(`domain options HTTP ${optionsResponse.status}`);
+  const options = new Function(`${await optionsResponse.text()}\nreturn domain_option_map;`)();
+  const args = (options.get(message.domain) || "").trim().split(/\s+/).filter(Boolean);
+  const path = [message.domain, ...args].map(encodeURIComponent).join("/");
+  const response = await fetch(`http://localhost:3094/genpasswd/${path}`, request);
+  if (!response.ok) throw new Error(`genpasswd HTTP ${response.status}`);
+  const password = await response.text();
+  if (!password) throw new Error("genpasswd returned an empty password");
+  return password;
 });
 
 async function fillPassword(targetId, domain) {
   try {
     const input = browser.menus.getTargetElement(targetId);
-    const writable = () => input instanceof HTMLInputElement && input.type === "password" && input.isConnected && !input.disabled && !input.readOnly;
+    const writable = () => input instanceof HTMLInputElement && input.isConnected && !input.disabled && !input.readOnly;
     if (!writable()) return;
     const url = location.href;
     const password = await browser.runtime.sendMessage({type: "genpasswd", domain});

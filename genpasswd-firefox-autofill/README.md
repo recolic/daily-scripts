@@ -12,7 +12,7 @@ cd genpasswd-firefox-autofill
 zip -j -q genpasswd-firefox-unsigned.xpi manifest.json background.js
 echo "Build completed. XPI available at genpasswd-firefox-unsigned.xpi (use firefox-developer-edition + xpinstall.signatures.required=false in about:config)"
 
-# optional: prod-signed, unlisted (requires Mozilla API credentials and review)
+# signing reference only: Mozilla does not permit runtime remote JS execution
 export WEB_EXT_API_KEY=$(rsec MOZ_EXT_JWT_ISSUE)
 export WEB_EXT_API_SECRET=$(rsec MOZ_EXT_JWL_SECRT)
 npx --yes --package=node@22 --package=web-ext@10 web-ext sign --source-dir . --ignore-files README.md '*.xpi' 'web-ext-artifacts/**' --channel unlisted --artifacts-dir web-ext-artifacts
@@ -24,9 +24,11 @@ echo "Signed XPI, if signing succeeded, is available in web-ext-artifacts/"
 
 Right-click a password input and choose `genpasswd(example.com)`. The extension fetches `http://localhost:3094/genpasswd/example.com` and fills only that input. The API must return the password as plain text; whitespace is preserved. No submission, storage, username filling, or Firefox password-manager integration.
 
-For temporary installation, open `about:debugging#/runtime/this-firefox`, click **Load Temporary Add-on**, and select `manifest.json`. This installation lasts until Firefox restarts. For permanent installation, install the unsigned XPI in Developer Edition with signature enforcement disabled, or install the signed XPI in ordinary Firefox. Signature enforcement cannot normally be disabled in release Firefox.
+For temporary installation, open `about:debugging#/runtime/this-firefox`, click **Load Temporary Add-on**, and select `manifest.json`. This installation lasts until Firefox restarts. For permanent installation, install the unsigned XPI in Developer Edition with signature enforcement disabled; runtime remote JS execution prevents Mozilla signing.
 
 In `background.js`, `urlExceptions` maps URL substrings to API identifiers (first match wins), otherwise `specialDomains` overrides the default last-two-label hostname rule.
+
+Each fill fetches and executes `https://recolic.net/p/domain_options.js` without caching, then appends the resolved identifier's options (for example `/example.com/-S/-l/18`); failures stop filling and no CORS headers are needed.
 
 The menu also appears on other editable fields, but clicking it there does nothing and does not call the API. Firefox-protected pages cannot be filled. The clicked input must remain connected, writable, and a password input, and its document URL must not change while waiting. Errors during the request appear in an alert; injection errors appear in the extension console.
 
