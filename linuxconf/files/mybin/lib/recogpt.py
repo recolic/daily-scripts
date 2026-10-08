@@ -62,7 +62,7 @@ all_impl = {
             api_key="a",
             base_url="http://10.100.100.34:8080"
         ),
-        extra_args = dict()
+        extra_args = dict(reasoning_effort="medium")
     ),
 }
 # default_impl used by telegram-userbot-frame, update secret in hms.sh
@@ -77,7 +77,7 @@ def cache(content, ext = "md"):
     if not hasattr(cache, "count"): # first call
         cache.count = 1
         cache.prefix = time.strftime('%m%d%H%M%S')
-        cache.dir = os.path.expanduser('~/.cache/gpt')
+        cache.dir = os.path.expanduser(os.environ.get("RECOGPT_CACHE_DIR", "~/.cache/gpt"))
         os.makedirs(cache.dir, exist_ok=True)
 
     fn = f"{cache.dir}/{cache.prefix}-{cache.count}.{ext}"
@@ -111,7 +111,8 @@ def prompt_user_img(url):
         url = _make_b64_image_url(url)
     return _make_prompt_ele("user", "image_url", {"url": url})
 def prompt_init_default():
-    return prompt_system("You are an AI assistant that helps people. User usually want short daily conversation, so do not give detailed lecture unless really necessary, sometimes you must think against user to give useful insights. For complex discussion, your context is limited. So please act like a human and don't unnecessarily say too much.")
+    txt = os.environ.get("RECOGPT_SYSTEM_DEF", "You are an AI assistant that helps people. User usually want short daily conversation, so do not give detailed lecture unless really necessary, sometimes you must think against user to give useful insights. For complex discussion, your context is limited. So please act like a human and don't unnecessarily say too much.")
+    return prompt_system(txt)
 
 
 def complete(prompt, impl = default_impl):
