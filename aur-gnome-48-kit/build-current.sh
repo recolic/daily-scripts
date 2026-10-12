@@ -5,6 +5,7 @@ packages=(mutter48 gnome-session48 gnome-shell48 gdm50)
 build_uid=$(stat -c %u /kit)
 [[ $build_uid != 0 ]] || { printf 'The kit must belong to an unprivileged host user.\n' >&2; exit 1; }
 id builder &>/dev/null || useradd -m -u "$build_uid" builder
+rm -rf /kit/.current/*
 mkdir -p /kit/.current
 chown builder:builder /kit/.current
 printf '%s\n' 'Server = https://geo.mirror.pkgbuild.com/$repo/os/$arch' > /etc/pacman.d/mirrorlist
@@ -15,17 +16,20 @@ printf '%s\n' '# created by GitHub Copilot' 'source /etc/makepkg.conf' 'SRCDEST=
 
 for package_name in "${packages[@]}"; do
   build_dir="/kit/.current/$package_name"
+  rm -rf "$build_dir"
   mkdir -p "$build_dir"
-  recipe_changed=true
-  if cmp -s "/kit/$package_name/PKGBUILD" "$build_dir/PKGBUILD"; then recipe_changed=false; fi
   cp "/kit/$package_name/PKGBUILD" "$build_dir/"
-  for extra_file in /kit/"$package_name"/*; do [[ -f $extra_file && $(basename "$extra_file") != "PKGBUILD" ]] && cp "$extra_file" "$build_dir/"; done
+  for extra_file in /kit/"$package_name"/*; do
+    case "$extra_file" in
+      */PKGBUILD|*/*.pkg.tar.*|*/*.log) continue ;;
+      *) [[ -f $extra_file ]] && cp "$extra_file" "$build_dir/" ;;
+    esac
+  done
   chown -R builder:builder "$build_dir"
   mapfile -t artifacts < <(runuser -u builder -- env GNOME48_SOURCE_DIR="/kit/$package_name" makepkg --dir "$build_dir" --config /tmp/gnome48-makepkg.conf --packagelist)
   [[ ${#artifacts[@]} == 1 ]] || { printf 'Expected one package from %s.\n' "$package_name" >&2; exit 1; }
-  if $recipe_changed || [[ ! -f ${artifacts[0]} ]]; then
-    runuser -u builder -- env GNOME48_SOURCE_DIR="/kit/$package_name" GNOME48_JOBS="${GNOME48_JOBS:-6}" makepkg --dir "$build_dir" --config /tmp/gnome48-makepkg.conf --holdver --log --noconfirm --force
-  fi
+  rm -f "${artifacts[0]}"
+  runuser -u builder -- env GNOME48_SOURCE_DIR="/kit/$package_name" GNOME48_JOBS="${GNOME48_JOBS:-6}" makepkg --dir "$build_dir" --config /tmp/gnome48-makepkg.conf --holdver --log --noconfirm --force
   pacman -U --needed --noconfirm "${artifacts[0]}"
 done
 
