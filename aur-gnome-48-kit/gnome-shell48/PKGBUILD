@@ -2,7 +2,7 @@
 
 pkgname=gnome-shell48
 pkgver=48.5
-pkgrel=8
+pkgrel=9
 epoch=1
 pkgdesc='GNOME 48 desktop shell'
 arch=(x86_64)

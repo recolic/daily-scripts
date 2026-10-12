@@ -19,8 +19,7 @@ for package_name in "${packages[@]}"; do
   recipe_changed=true
   if cmp -s "/kit/$package_name/PKGBUILD" "$build_dir/PKGBUILD"; then recipe_changed=false; fi
   cp "/kit/$package_name/PKGBUILD" "$build_dir/"
-  for patch_file in /kit/"$package_name"/*.patch; do [[ ! -f $patch_file ]] || cp "$patch_file" "$build_dir/"; done
-  for install_file in /kit/"$package_name"/*.install; do [[ ! -f $install_file ]] || cp "$install_file" "$build_dir/"; done
+  for extra_file in /kit/"$package_name"/*; do [[ -f $extra_file && $(basename "$extra_file") != "PKGBUILD" ]] && cp "$extra_file" "$build_dir/"; done
   chown -R builder:builder "$build_dir"
   mapfile -t artifacts < <(runuser -u builder -- env GNOME48_SOURCE_DIR="/kit/$package_name" makepkg --dir "$build_dir" --config /tmp/gnome48-makepkg.conf --packagelist)
   [[ ${#artifacts[@]} == 1 ]] || { printf 'Expected one package from %s.\n' "$package_name" >&2; exit 1; }
@@ -30,7 +29,7 @@ for package_name in "${packages[@]}"; do
   pacman -U --needed --noconfirm "${artifacts[0]}"
 done
 
-for binary in /usr/bin/gnome-shell /usr/bin/mutter /usr/bin/gdm /usr/lib/gnome-session-binary; do ldd "$binary"; done | tee /tmp/gnome48-linkage.log
+for binary in /usr/bin/gnome-shell /usr/bin/mutter /usr/bin/gdm /usr/lib/gnome-session-binary /usr/lib/gnome-shell-calendar-server; do ldd "$binary"; done | tee /tmp/gnome48-linkage.log
 if grep -q 'not found' /tmp/gnome48-linkage.log; then printf 'Unresolved library dependency.\n' >&2; exit 1; fi
 gnome-shell --version
 gnome-session --version

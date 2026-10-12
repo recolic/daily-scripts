@@ -6,9 +6,9 @@ Four local AUR-style packages keep Shell 48.5 on otherwise current Arch Linux. B
 | Package | Current build | Reason |
 | --- | --- | --- |
 | mutter48 | 48.5-4 | Shell 48 requires libmutter-16, not current Mutter's ABI. |
-| gnome-shell48 | 1:48.5-8 | Your known-working Shell release. |
-| gnome-session48 | 48.0-6 | Preserves the GNOME 48 session runtime. |
-| gdm50 | 50.3-2 | Current systemd-aware GDM, bridged to the GNOME 48 Shell. |
+| gnome-shell48 | 1:48.5-9 | Your known-working Shell release. |
+| gnome-session48 | 48.0-8 | Preserves the GNOME 48 session runtime. |
+| gdm50 | 50.3-4 | Current systemd-aware GDM, bridged to the GNOME 48 Shell. |
 
 GDM is optional only if you deliberately switch to another display manager. With this host's existing GDM setup, use all four. GJS, libgdm, settings-daemon, control-center, schemas, and portals remain current repository packages.
 

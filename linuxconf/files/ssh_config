@@ -67,7 +67,7 @@ host remote.pc.recolic
     user recolic
 
 host mpc.recolic
-    hostname RECOLICMPC
+    #hostname RECOLICMPC
     port 22
     user recolic
 
