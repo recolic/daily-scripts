@@ -1,30 +1,44 @@
 #!/usr/bin/env bash
+# gemini 3.8
 set -euo pipefail
 
 if [[ $# -ne 1 ]]; then
-    echo "Usage: $0 input.mkv" >&2
+    echo "Usage: $0 input.{mkv,srt}" >&2
     exit 2
 fi
 
 input=$1
 [[ -f "$input" ]] || { echo "Input does not exist: $input" >&2; exit 1; }
-for cmd in mkvmerge mkvextract python3 gpt.py; do
+is_srt=false
+[[ "$input" == *.srt ]] && is_srt=true
+
+required_cmds=(python3 gpt.py)
+[[ "$is_srt" == false ]] && required_cmds+=(mkvmerge mkvextract)
+for cmd in "${required_cmds[@]}"; do
     command -v "$cmd" >/dev/null || { echo "Missing command: $cmd" >&2; exit 1; }
 done
 
+source_lang=${SOURCE_LANG:-en} # en or jp
 fname=${input%.*}
-source_srt="$fname.tmp_srt"
-converted_srt="$source_srt.converted"
-output_mkv="$fname.en-cn.mkv"
-helper="$source_srt.helper.py"
+if [[ "$is_srt" == true ]]; then
+    source_srt="$input"
+    converted_srt="$fname.$source_lang-cn.srt"
+else
+    source_srt="$fname.tmp_srt"
+    converted_srt="$source_srt.converted"
+fi
+output_mkv="$fname.$source_lang-cn.mkv"
+helper="$fname.tmp_srt.helper.py"
 chunk_cues=${CHUNK_CUES:-100}
 max_retries=${MAX_RETRIES:-16}
 
-read -r subtitle_id max_track_id < <(mkvmerge --identification-format json --identify "$input" | python3 -c 'import json,sys; d=json.load(sys.stdin); t=d["tracks"]; s=[x["id"] for x in t if x["type"]=="subtitles"]; print(s[0] if s else -1, max(x["id"] for x in t))')
-((subtitle_id >= 0)) || { echo "No subtitle track found in: $input" >&2; exit 1; }
-expected_new_track_id=$((max_track_id + 1))
-echo "Extracting subtitle track $subtitle_id -> $source_srt"
-mkvextract tracks "$input" "$subtitle_id:$source_srt"
+if [[ "$is_srt" == false ]]; then
+    read -r subtitle_id max_track_id < <(mkvmerge --identification-format json --identify "$input" | python3 -c 'import json,sys; d=json.load(sys.stdin); t=d["tracks"]; s=[x["id"] for x in t if x["type"]=="subtitles"]; print(s[0] if s else -1, max(x["id"] for x in t))')
+    ((subtitle_id >= 0)) || { echo "No subtitle track found in: $input" >&2; exit 1; }
+    expected_new_track_id=$((max_track_id + 1))
+    echo "Extracting subtitle track $subtitle_id -> $source_srt"
+    mkvextract tracks "$input" "$subtitle_id:$source_srt"
+fi
 
 cat > "$helper" <<'PY'
 #!/usr/bin/env python3
@@ -63,7 +77,7 @@ def validate(source_path, candidate_path, output_path=None):
             raise ValueError(f"cue {number} has empty subtitle text")
     old_text = "\n".join("\n".join(c.splitlines()[2:]) for c in source)
     new_text = "\n".join("\n".join(c.splitlines()[2:]) for c in candidate)
-    if re.search(r"[A-Za-z]{3}", old_text) and not re.search(r"[\u3400-\u9fff]", new_text):
+    if re.search(r"[A-Za-z]{3}|[\u3040-\u30ff]", old_text) and not re.search(r"[\u3400-\u9fff]", new_text):
         raise ValueError("translated chunk contains no Chinese characters")
     if output_path:
         pathlib.Path(output_path).write_text(candidate_text + "\n", encoding="utf-8")
@@ -78,9 +92,10 @@ def main():
             pathlib.Path(f"{prefix}.{number}.source").write_text("\n\n".join(chunk) + "\n", encoding="utf-8")
         print(len(chunks))
     elif mode == "prompt":
-        source, output = sys.argv[2], sys.argv[3]
+        source, output, lang = sys.argv[2], sys.argv[3], sys.argv[4] if len(sys.argv) > 4 else "en"
+        lang_name = "Japanese" if lang in ("jp", "ja") else "English"
         srt = pathlib.Path(source).read_text(encoding="utf-8")
-        prompt = """Translate the following English SRT subtitle chunk into natural Simplified Chinese. Use the surrounding cues as context. Return only valid SRT, with exactly the same cue numbers, timestamps, cue count, blank-line separation, line-break structure, and formatting tags. Translate only subtitle text. Do not add Markdown fences, comments, explanations, or extra cues.\n\n"""
+        prompt = f"""Translate the following {lang_name} SRT subtitle chunk into natural Simplified Chinese. Use the surrounding cues as context. Return only valid SRT, with exactly the same cue numbers, timestamps, cue count, blank-line separation, line-break structure, and formatting tags. Translate only subtitle text. Do not add Markdown fences, comments, explanations, or extra cues.\n\n"""
         pathlib.Path(output).write_text(prompt + srt, encoding="utf-8")
     elif mode == "validate":
         validate(*sys.argv[2:])
@@ -109,7 +124,7 @@ for ((chunk = 1; chunk <= chunk_count; chunk++)); do
     prompt_file="$chunk_prefix.$chunk.prompt"
     translated_file="$chunk_prefix.$chunk.translated"
     translated_parts+=("$translated_file")
-    python3 "$helper" prompt "$source_chunk" "$prompt_file"
+    python3 "$helper" prompt "$source_chunk" "$prompt_file" "$source_lang"
     if [[ -s "$translated_file" ]] && python3 "$helper" validate "$source_chunk" "$translated_file"; then
         echo "[$chunk/$chunk_count] Reusing validated translation"
         continue
@@ -118,7 +133,7 @@ for ((chunk = 1; chunk <= chunk_count; chunk++)); do
     for ((attempt = 1; attempt <= max_retries; attempt++)); do
         raw_file="$chunk_prefix.$chunk.attempt$attempt.raw"
         echo "[$chunk/$chunk_count] Translating, attempt $attempt/$max_retries"
-        if gpt.py grokr "$prompt_file" > "$raw_file" && python3 "$helper" validate "$source_chunk" "$raw_file" "$translated_file"; then
+        if gpt.py sol "$prompt_file" > "$raw_file" && python3 "$helper" validate "$source_chunk" "$raw_file" "$translated_file"; then
             valid=true
             break
         fi
@@ -129,6 +144,10 @@ done
 
 python3 "$helper" assemble "$converted_srt" "${translated_parts[@]}"
 echo "Validated translated subtitle -> $converted_srt"
+if [[ "$is_srt" == true ]]; then
+    echo "Done: $converted_srt"
+    exit 0
+fi
 echo "Merging as subtitle track $expected_new_track_id -> $output_mkv"
 mkvmerge -o "$output_mkv" "$input" --language 0:zh-Hans --track-name 0:"Simplified Chinese (GPT)" --default-track-flag 0:no "$converted_srt"
 actual_new_track_id=$(mkvmerge --identification-format json --identify "$output_mkv" | python3 -c 'import json,sys; t=json.load(sys.stdin)["tracks"]; print(max(x["id"] for x in t))')
