@@ -6,7 +6,7 @@ lc_startup () {
         # Microsoft Edge fix
         if [ -f /usr/share/applications/microsoft-edge.desktop ]; then
           if ! grep disable-features=msUndersideButton /usr/share/applications/microsoft-edge.desktop; then
-            sed -i 's/.usr.bin.microsoft-edge-stable/& --disable-features=msUndersideButton/' /usr/share/applications/microsoft-edge.desktop
+            sed -i 's/.usr.bin.microsoft-edge-stable/& --disable-features=msUndersideButton --gtk-version=3/' /usr/share/applications/microsoft-edge.desktop
           fi  
         fi  
 
