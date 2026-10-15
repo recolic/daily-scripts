@@ -42,8 +42,10 @@ host remote.river-mac.recolic
     port 30702
 
 host qtest
+    proxyjump remote.hms.recolic
     user root
-    hostname 66.42.69.223
+    hostname localhost
+    port 30476
 
 ### Recolic Home LAN
 
