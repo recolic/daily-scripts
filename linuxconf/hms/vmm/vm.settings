@@ -5,6 +5,7 @@
 playg;ubuntu-24.04-server.img;50G;r;1
 gitrunner;ubuntu-24.04-server.img;100G;r;1
 drive-reco26;ubuntu-24.04-server.img;200G;r;1
+qrtag-test;ubuntu-24.04-server.img;50G;r;1
 
 ## or init VM from pre-deployed backing image (please put it into data/base/)
 # name;existing_img_fname
@@ -20,9 +21,10 @@ lanbox-win  ;-m 4G -smp 4 -vnc :17 -net user,hostfwd=tcp::30473-:3389 -bios /usr
 #wintest     ;-m 4G -smp 4 -vnc :19 -net user,hostfwd=tcp::30474-:3389 -bios /usr/share/edk2/x64/OVMF.4m.fd -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time
 playg       ;-m 4G -smp 4 -vnc :19 -net user,hostfwd=tcp::30474-:22 -bios /usr/share/edk2/x64/OVMF.4m.fd
 gitrunner   ;-m 4G -smp 3 -vnc :20 -net user,hostfwd=tcp::30475-:22 -bios /usr/share/edk2/x64/OVMF.4m.fd
+qrtag-test  ;-m 1G -smp 2 -vnc :22 -net user,hostfwd=tcp::30476-:22 -bios /usr/share/edk2/x64/OVMF.4m.fd
 drive-reco26;-m 8G -smp 5 -vnc :21 -net user,hostfwd=tcp::30480-:22,hostfwd=tcp::30481-:4022 -bios /usr/share/edk2-ovmf/x64/OVMF.4m.fd
 
-# VM total 20G
+# VM total 21G
 # minecraft server 4G
 # HMS total: 23G + 32G swap
 
