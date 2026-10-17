@@ -1,0 +1,23 @@
+{
+	"inputs": [],
+	"servers": {
+		"chrome-devtools": {
+			"type": "stdio",
+			"command": "bunx",
+			"args": [
+				"chrome-devtools-mcp@latest",
+				"--executable-path=/usr/bin/chromium",
+				"--no-usage-statistics",
+				"--no-performance-crux"
+			]
+		},
+		"flight-mcp": {
+			"type": "stdio",
+			"command": "bash",
+			"args": [
+				"-c",
+				"DUFFEL_API_KEY_LIVE=$(rsec DUFFEL_API) && export DUFFEL_API_KEY_LIVE && exec uvx --from git+https://github.com/ravinahp/flights-mcp --with 'mcp[cli]>=1,<2' --with 'httpcore>=1.0.9' flights-mcp"
+			]
+		}
+	}
+}
