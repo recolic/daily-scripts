@@ -1,6 +1,7 @@
 #!/usr/bin/fish
 
 set GPG_KEY C344D5EAE3933636
+set BLOBSAS _PLACEHOLDER_BLOBSAS_URL_
 
 function echo_log # args... -> int
     echo -n "[" (date --utc) "]" >> /dev/fd/2
@@ -44,10 +45,15 @@ function pack_backup_dir # string -> int
         gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys $GPG_KEY ; or return 1
     end
 
+    set -l target_url (string replace "?" "/"$(basename $fname)"?" $BLOBSAS)
+
     echo_log "Compressing backup folder..."
     tar -c $dirname | gpg --yes --trust-model always -e -o $fname -r $GPG_KEY
     and echo_log "$fname done. Calculating checksum..."
     and sha256sum $fname >> "/storage/backups/SHA256SUM"
+    and az storage blob upload --blob-url "$target_url" --file $fname --tier Archive
+    and rm -f $fname
+    and echo_log "$fname done."
     return $status
 end
 
