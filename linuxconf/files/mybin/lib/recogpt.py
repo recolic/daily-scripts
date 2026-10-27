@@ -23,6 +23,15 @@ all_impl = {
         response_api = True,
         extra_args = dict(reasoning_effort="medium")
     ),
+    'terra': lambda: dict(
+        model = "gpt-6.1-terra",
+        client = OpenAI(
+            api_key=rsec("GITHUB_EMU_TOKEN"),
+            base_url=rsec("GITHUB_LLM_API")
+        ),
+        response_api = True,
+        extra_args = dict(reasoning_effort="medium")
+    ),
     'luna': lambda: dict(
         model = "gpt-6-luna",
         client = OpenAI(
@@ -66,7 +75,7 @@ all_impl = {
     ),
 }
 # default_impl used by telegram-userbot-frame, update secret in hms.sh
-default_impl = 'astra'
+default_impl = 'sol'
 
 def impl_list():
     return list(all_impl.keys())
