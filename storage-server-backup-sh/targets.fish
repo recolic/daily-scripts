@@ -95,7 +95,7 @@ function target_qrtag
     # qrtag.recolic
     run_until_success rsync -avz --partial --delete \
         --exclude /srv/qrtag/node_modules/ \
-        root@$QRTAGIP:/srv /storage/cache/target_qrtag
+        root@[$QRTAGIP]:/srv /storage/cache/target_qrtag
 
     and pack_backup_dir /storage/cache/target_qrtag
 end
