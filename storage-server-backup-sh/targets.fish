@@ -1,7 +1,8 @@
 #!/usr/bin/fish
 
 set GPG_KEY C344D5EAE3933636
-set BLOBSAS _PLACEHOLDER_BLOBSAS_URL_
+set BLOBSAS _PLACEHOLDER_BLOBSAS_
+set QRTAGIP _PLACEHOLDER_QRTAGIP_
 
 function echo_log # args... -> int
     echo -n "[" (date --utc) "]" >> /dev/fd/2
@@ -64,7 +65,7 @@ function target_nas_data
     run_until_success ssh remote.nfs.recolic tar -cvJf /mnt/fsdisk/nfs/backups/I2/nfs-books-latest.tar.xz /mnt/fsdisk/nfs/pub/books
     # replica only, skip history version packing. sync directly into /backups/
     run_until_success rsync -avz --partial --delete --no-links \
-        root@remote.nfs.recolic:/mnt/fsdisk/nfs/backups /storage/backups/target_nas_data
+        remote.nfs.recolic:/mnt/fsdisk/nfs/backups /storage/backups/target_nas_data
     return $status
 end
 
@@ -94,7 +95,7 @@ function target_qrtag
     # qrtag.recolic
     run_until_success rsync -avz --partial --delete \
         --exclude /srv/qrtag/node_modules/ \
-        root@qrtag.recolic:/srv /storage/cache/target_qrtag
+        root@$QRTAGIP:/srv /storage/cache/target_qrtag
 
     and pack_backup_dir /storage/cache/target_qrtag
 end
