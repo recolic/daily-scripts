@@ -49,7 +49,11 @@ apt update ; apt upgrade ; apt install fish
 gpg --recv-keys --keyserver hkps://keyserver.ubuntu.com C344D5EAE3933636
 ```
 
-# setup extern backup
+## setup extern backup
 
 https://git.recolic.net/root/storage.recolic.net-extern
+
+## permanent archive
+
+for every target, first archive / year goes permanent archive after 1y.
 
