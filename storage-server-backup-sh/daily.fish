@@ -26,14 +26,16 @@ else
     # Monthly schedule for jobs
     set today (date -u +%d)
     switch $today
-        case 21
+        case 22
             reach_target target_nas_data
         #case 24
             #reach_target target_nas_home
-        case 08 18 27
+        case 03 13 23
             reach_target target_mail_www_recolic_net_data
-        case 09 19 28
+        case 05 15 25
             reach_target target_git_drive_recolic_net_data
+        case 01 04 07 09 11 14 17 19 21 24 27 29
+            reach_target target_qrtag
         case '*'
             echo "Nothing to do today ($today)."
     end

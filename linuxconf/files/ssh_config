@@ -42,7 +42,6 @@ host remote.river-mac.recolic
     port 30702
 
 host qrtag.recolic
-    hostname qtest.recolic
     user root
 
 host qtest

@@ -51,9 +51,10 @@ function pack_backup_dir # string -> int
     tar -c $dirname | gpg --yes --trust-model always -e -o $fname -r $GPG_KEY
     and echo_log "$fname done. Calculating checksum..."
     and sha256sum $fname >> "/storage/backups/SHA256SUM"
-    and az storage blob upload --blob-url "$target_url" --file $fname --tier Archive
-    and rm -f $fname
-    and echo_log "$fname done."
+    #### not enabled yet
+    ## and az storage blob upload --blob-url "$target_url" --file $fname --tier Archive
+    ## and rm -f $fname
+    ## and echo_log "$fname done."
     return $status
 end
 
@@ -87,6 +88,15 @@ function target_mail_www_recolic_net_data
         root@func.main.recolic:/srv /storage/cache/target_mail_www_recolic_net_data
 
     and pack_backup_dir /storage/cache/target_mail_www_recolic_net_data
+end
+
+function target_qrtag
+    # qrtag.recolic
+    run_until_success rsync -avz --partial --delete \
+        --exclude /srv/qrtag/node_modules/ \
+        root@qrtag.recolic:/srv /storage/cache/target_qrtag
+
+    and pack_backup_dir /storage/cache/target_qrtag
 end
 
 function target_extern_lwl
