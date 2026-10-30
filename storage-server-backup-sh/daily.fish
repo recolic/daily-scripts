@@ -51,12 +51,12 @@ end
 
 ./old-backup-clean.exe /storage/backups
 
-# Send warning if running out of harddisk (less than 100GiB left)
-# Modify & test this when moving to new system.
-set space_check_df_keyword /dev/mapper/ubuntu--vg-lv--root
-test (df -T | grep $space_check_df_keyword | tr -s ' ' | cut -d ' ' -f 3,5 | sed 's/^.* //g') -lt 104857600
-    and email_notify "Backup system has low disk space. "(df -Th | grep $space_check_df_keyword)
-
-# Not used by any extern user right now... But still worth keep it running.
-fish check_extern.fish
+# # Send warning if running out of harddisk (less than 100GiB left)
+# # Modify & test this when moving to new system.
+# set space_check_df_keyword /dev/mapper/ubuntu--vg-lv--root
+# test (df -T | grep $space_check_df_keyword | tr -s ' ' | cut -d ' ' -f 3,5 | sed 's/^.* //g') -lt 104857600
+#     and email_notify "Backup system has low disk space. "(df -Th | grep $space_check_df_keyword)
+# 
+# # Not used by any extern user right now... But still worth keep it running.
+# fish check_extern.fish
 
