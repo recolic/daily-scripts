@@ -1,3 +1,4 @@
+#!/usr/bin/env fish
 
 function cached_function
     # Used in fish_prompt. For huge git repo, executing `git` on every fish_prompt is slow. 
@@ -25,3 +26,4 @@ function cached_function
     cat $cached_file
 end
 
+cached_function $argv
