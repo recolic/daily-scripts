@@ -11,7 +11,7 @@ import Adw from "gi://Adw";
 
 import { ExtensionPreferences, gettext as _ } from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js";
 
-import { parse_bytearray } from './common.js';
+import { list_sensors_async } from './common.js';
 
 const N_ = function (e) {
     return e;
@@ -272,43 +272,6 @@ function getDrmGpuDevices() {
     return ['0'];
 }
 
-function detectSensors(sensorType) {
-    const sensors = {};
-    try {
-        const hwmonDir = Gio.File.new_for_path('/sys/class/hwmon/');
-        const hwmonEnum = hwmonDir.enumerate_children(
-            'standard::name,standard::type', Gio.FileQueryInfoFlags.NONE, null);
-        let hwmonInfo;
-        while ((hwmonInfo = hwmonEnum.next_file(null))) {
-            if (hwmonInfo.get_file_type() !== Gio.FileType.DIRECTORY ||
-                !hwmonInfo.get_name().match(/^hwmon\d+$/))
-                continue;
-            const chip = hwmonEnum.get_child(hwmonInfo);
-            let chipLabel = chip.get_basename();
-            try {
-                let [ok, c] = chip.get_child('name').load_contents(null);
-                if (ok) chipLabel = parse_bytearray(c).trim();
-            } catch { /* no name file */ }
-
-            const chipEnum = chip.enumerate_children(
-                'standard::name,standard::type', Gio.FileQueryInfoFlags.NONE, null);
-            const regex = new RegExp(`^${sensorType}(\\d+)_input$`);
-            let fInfo;
-            while ((fInfo = chipEnum.next_file(null))) {
-                const m = fInfo.get_name().match(regex);
-                if (!m) continue;
-                let inputLabel = m[1];
-                try {
-                    let [ok, c] = chip.get_child(`${sensorType}${m[1]}_label`).load_contents(null);
-                    if (ok) inputLabel = parse_bytearray(c).trim();
-                } catch { /* no label file */ }
-                sensors[`${chipLabel} - ${inputLabel}`] = true;
-            }
-        }
-    } catch { /* hwmon unavailable */ }
-    return Object.keys(sensors);
-}
-
 // Calls back with the device list; synchronously for every type except gpu,
 // where nvidia-smi is consulted asynchronously.
 function detectDevices(type, callback) {
@@ -331,12 +294,19 @@ function detectDevices(type, callback) {
     case 'gpu':
         getGpuDevices(callback);
         break;
-    case 'thermal':
-        callback(detectSensors('temp'));
+    case 'thermal': {
+        list_sensors_async('temp', sensors => {
+            callback(sensors ? Object.keys(sensors) : []);
+        });
         break;
+    }
     case 'fan':
-        callback(detectSensors('fan'));
+    {
+        list_sensors_async('fan', sensors => {
+            callback(sensors ? Object.keys(sensors) : []);
+        });
         break;
+    }
     case 'prometheus':
         callback(['default']);
         break;
@@ -370,6 +340,10 @@ function buildDefaultConfig(type, device) {
     }
     if (type === 'freq')
         config['display-mode'] = 'max';
+    if (type === 'cpu') {
+        config['graph-average'] = false;
+        config['restore-average'] = false;
+    }
     if (type === 'prometheus') {
         config.server = 'http://localhost:9100';
         config.metric = 'node_load1';
@@ -659,6 +633,30 @@ const SMMonitorRow = GObject.registerClass({
             this.add_row(metricRow);
             break;
         }
+        case 'cpu': {
+            let graphAverage = new Adw.SwitchRow({
+                title: _('Graph Average'),
+                subtitle: _('Show average CPU usage next to graph'),
+                active: c['graph-average'] || false,
+            });
+            graphAverage.connect('notify::active', w => {
+                c['graph-average'] = w.active;
+                this._emitChanged();
+            });
+            this.add_row(graphAverage);
+
+            let restoreGraphAverage = new Adw.SwitchRow({
+                title: _('Restore Graph Average'),
+                subtitle: _('Restore the graph average after the extension is recreated'),
+                active: c['restore-average'] || false,
+            });
+            restoreGraphAverage.connect('notify::active', w => {
+                c['restore-average'] = w.active;
+                this._emitChanged();
+            });
+            this.add_row(restoreGraphAverage);
+            break;
+        }
         }
     }
 });
@@ -885,7 +883,7 @@ const PROJECT_URL = 'https://github.com/mgalgs/gnome-shell-system-monitor-next-a
 const SMWhatsNewPage = GObject.registerClass({
     GTypeName: 'SMWhatsNewPage',
 }, class SMWhatsNewPage extends Adw.PreferencesPage {
-    constructor(params = {}) {
+    constructor(metadata = {}, params = {}) {
         super({
             title: _('About'),
             icon_name: 'dialog-information-symbolic',
@@ -897,6 +895,14 @@ const SMWhatsNewPage = GObject.registerClass({
             description: _('Modular, config-driven system monitoring for your GNOME desktop. Add, remove, and reorder monitors freely — each with independent settings.'),
         });
         this.add(aboutGroup);
+
+        let versionRow = new Adw.ActionRow({ title: _('Version') });
+        versionRow.add_suffix(new Gtk.Label({
+            label: this._versionLabel(metadata),
+            css_classes: ['dim-label'],
+            valign: Gtk.Align.CENTER,
+        }));
+        aboutGroup.add(versionRow);
 
         let featuresGroup = new Adw.PreferencesGroup({
             title: _("What's New"),
@@ -951,6 +957,17 @@ const SMWhatsNewPage = GObject.registerClass({
         );
     }
 
+    // extensions.gnome.org rewrites metadata.json's integer `version` to its
+    // own upload counter, so it does not match the project's release number.
+    // `version-name` survives that rewrite, so prefer it when present.
+    _versionLabel(metadata) {
+        if (metadata['version-name'])
+            return metadata['version-name'];
+        if (Number.isInteger(metadata.version) && metadata.version > 0)
+            return String(metadata.version);
+        return _('development build');
+    }
+
     _addFeatureRow(group, iconName, title, subtitle) {
         let row = new Adw.ActionRow({
             title: title,
@@ -992,7 +1009,7 @@ export default class SystemMonitorExtensionPreferences extends ExtensionPreferen
         let monitorsPage = new SMMonitorsPage(settings);
         window.add(monitorsPage);
 
-        let whatsNewPage = new SMWhatsNewPage();
+        let whatsNewPage = new SMWhatsNewPage(this.metadata);
         window.add(whatsNewPage);
 
         window.set_title(_('System Monitor Next Preferences'));

@@ -10,9 +10,10 @@
     "47",
     "48",
     "49",
-    "50"
+    "50",
+    "51"
   ],
   "url": "https://github.com/mgalgs/gnome-shell-system-monitor-next-applet",
   "uuid": "system-monitor-next@paradoxxx.zero.gmail.com",
-  "version": 89
+  "version": 91
 }
