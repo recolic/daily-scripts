@@ -9,7 +9,7 @@ if test -d /opt/rocm/bin
 end
 set -gx CVMOUNT_CLOUDVAULT $HOME/.local/cloudvault-linux-redist/redist/cloudvault
 set -gx EDITOR vim
-#set -gx enable_cached_func 1
+set -gx enable_cached_func 0
 
 # RECOLICPC
 set -gx PYTORCH_ROCM_ARCH gfx1032

@@ -42,7 +42,7 @@ lc_init () {
 
     sudo systemctl enable systemd-resolved # for azure-vpn
 
-    lc_todo "yay -S --noconfirm aur/microsoft-azure-vpn-client-bin aur/microsoft-edge-stable-bin aur/globalprotect-openconnect-git azure-cli clion clion-jre"
+    lc_todo "yay -S --noconfirm aur/microsoft-azure-vpn-client-bin aur/microsoft-edge-stable-bin aur/globalprotect-openconnect-git aur/mdatp-bin azure-cli clion clion-jre"
     lc_todo "setup microsoft intune"
 }
 

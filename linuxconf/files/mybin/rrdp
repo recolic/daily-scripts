@@ -20,7 +20,7 @@ msdev       |recolic      |(genpasswd devbox -S   )|mspc.m.recolic:30474
 msdev2      |(rsec MSIDw )|(rsec MSPASS           )|mspc.m.recolic:30474
 msdevlan    |recolic      |(genpasswd devbox -S   )|mspc.wlo.m.recolic:30474
 labjump     |(rsec MSIDw )|(rsec MSPASS           )|jb3.team1.m.recolic
-labjum2     |(rsec MSIDw )|(rsec MSPASS           )|jb1.team6.m.recolic
+labjump3    |(rsec MSIDw )|(rsec MSPASS           )|jb1.team6.m.recolic
 labjump2b   |(rsec MSIDw )|(rsec MSPASS           )|jb1.backup6.m.recolic
 lanbox      |recolic      |(genpasswd lanbox      )|base.ddns1.recolic.net:30473
 tb4w        |recolic      |(rsec WEAK10)           |mspc.m.recolic:30494
