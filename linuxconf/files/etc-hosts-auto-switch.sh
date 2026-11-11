@@ -25,6 +25,8 @@ etc_hosts_set() {
   [ "$current_ip" = "$ip" ] && return 0
 
   sed -i -E "s|^[0-9.]+[[:space:]]+${host//./\\.}[[:space:]]+$TAG\$|$ip $host $TAG|" /etc/hosts
+  ## kill ss when switch happens
+  local sspid=$(ps aux | grep [m]spc.m.recolic:30411 | grep '[0-9]*' -o | head -n1) && kill "$sspid"
 }
 
   if check_wlo_available; then
