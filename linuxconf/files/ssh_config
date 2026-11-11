@@ -144,6 +144,12 @@ host rpi.ms.recolic
 
 ### Work machine. IP must be protected.
 
+Host github.emu
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/rsa_github_emu
+    IdentitiesOnly yes
+
 host rack20
     hostname soc.rack20.m.recolic
     # Host: host.rack20.m.recolic
