@@ -36,14 +36,20 @@ lc_fsmap /home/recolic/code/msdoc/proj/mymsbin /usr/mymsbin
 lc_fsmap "$HOME/sh/AGENTS.md" "$HOME/.copilot/copilot-instructions.md"
 
 lc_init () {
-    lc_assert_user_is_not root
+    if [ "$(whoami)" = root ]; then
+        pacman -S --noconfirm mdatp-bin intune-portal-bin microsoft-azure-vpn-client-bin globalprotect-openconnect code azure-cli
+        systemctl enable systemd-resolved # for azure-vpn
+        systemctl enable mdatp
 
-    env install=1 /usr/mymsbin/browser-wrapper.sh
+        lc_todo "yay -S --noconfirm aur/microsoft-edge-stable-bin aur/powershell-lts-bin"
+        lc_todo "sudo pacman -U https://recolic.net/hms?/softwares/clion2023/clion-1%3A2023.3.6-1-x86_64.pkg.tar.zst"
+        lc_todo "sudo pacman -U https://recolic.net/hms?/softwares/clion2023/clion-jre-1%3A2023.3.6-1-x86_64.pkg.tar.zst"
+    else
+        env install=1 /usr/mymsbin/browser-wrapper.sh
 
-    sudo systemctl enable systemd-resolved # for azure-vpn
-
-    lc_todo "yay -S --noconfirm aur/microsoft-azure-vpn-client-bin aur/microsoft-edge-stable-bin aur/globalprotect-openconnect-git aur/mdatp-bin azure-cli clion clion-jre"
-    lc_todo "setup microsoft intune"
+        lc_todo "setup microsoft intune"
+        lc_todo "[azvpn] add user to 'network' group"
+    fi
 }
 
 lc_login () {

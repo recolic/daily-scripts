@@ -2,15 +2,15 @@ lc_assert_user_is root
 
 lc_init () {
     # basic pkg and config
-    pacman -Syu --noconfirm fish dhcpcd vim sudo openssh git inetutils wget htop tmux unzip  base-devel ntp
+    pacman -Syu --noconfirm fish dhcpcd vim sudo openssh git inetutils wget htop tmux unzip  base-devel ntp lvm2
     pacman -S --noconfirm --asdeps openssl
 
     grep kernel.sysrq=1 /etc/sysctl.d/99-sysctl.conf > /dev/null || echo 'kernel.sysrq=1' >> /etc/sysctl.d/99-sysctl.conf
     grep mybin /etc/environment || echo 'PATH="'"$(pwd)/files/mybin"':/usr/local/sbin:/usr/local/bin:/usr/bin"' >> /etc/environment
 
-    grep recolic-aur /etc/pacman.conf || echo '[recolic-aur]
-SigLevel = Optional TrustAll
-Server = https://drive.recolic.cc/mirrors/recolic-aur' >> /etc/pacman.conf
+    grep aur-autobuild-mirror /etc/pacman.conf || echo '[recoarch]
+SigLevel = Never
+Server = https://github.com/recolic/aur-autobuild-mirror/releases/download/archlinux-packages' >> /etc/pacman.conf
     sed -i 's/^[# ]*ParallelDownloads *=[ 0-9A-Za-z]*$/ParallelDownloads = 5/' /etc/pacman.conf
     sed -i 's/^[# ]*IgnorePkg *=[ 0-9A-Za-z-]*$/IgnorePkg = tpm2-tss microsoft-edge-stable-bin clion clion-jre/' /etc/pacman.conf
     sed -i 's/^[# ]*SystemMaxUse=[ 0-9A-Za-z]*$/SystemMaxUse=150M/g' /etc/systemd/journald.conf

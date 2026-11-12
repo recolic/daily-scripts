@@ -13,7 +13,7 @@ lc_init () {
         sudo -u recolic linuxconf register pc-mpc.sh
     fi
 
-    pacman -Sy --needed --noconfirm gnome networkmanager power-profiles-daemon nextcloud-client firefox-developer-edition
+    pacman -Sy --needed --noconfirm gnome networkmanager power-profiles-daemon nextcloud-client firefox-developer-edition code
     systemctl enable gdm NetworkManager power-profiles-daemon
     pacman -Sy --needed --noconfirm base-devel telegram-desktop docker shadowsocks-rust dos2unix v2ray proxychains xclip adobe-source-han-sans-cn-fonts      pcsclite ccid     ttf-fira-code  nfs-utils gnome-tweaks fcitx5-im man-db man-pages  kolourpaint breeze xorg-xrandr
     pacman -Sy --needed --noconfirm uv python-pip
@@ -21,8 +21,8 @@ lc_init () {
 
     #For GPG smartcard# sudo apt install pcscd scdaemon gnupg2 pcsc-tools -y
 
-    pacman -Sy --needed --noconfirm recolic-aur/gnome-terminal-transparency recolic-aur/oreo-cursors-git
-    lc_todo "yay -S linux-wifi-hotspot"
+    # from recoarch mirror
+    pacman -Sy --needed --noconfirm gnome-terminal-transparency oreo-cursors-git linux-wifi-hotspot
 
     echo "
 GTK_IM_MODULE=fcitx5
