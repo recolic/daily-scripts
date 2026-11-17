@@ -1,11 +1,15 @@
 lc_assert_user_is root
 
 lc_init () {
-    # add primary user. If you want to do this, at least give read access to linuxconf dir.
+    # add primary user: create user, home, add sudo, passwd, group; then linuxconf that user.
     useradd --create-home --shell /usr/bin/fish recolic
     chown -R recolic:recolic /home/recolic
     echo 'recolic ALL=(ALL) NOPASSWD: ALL' | EDITOR='tee -a' visudo
     # usermod --password $(echo testpass | openssl passwd -1 -stdin) recolic
+    for group in network vboxusers wireshark tss fido docker; do
+        getent group "$group" || groupadd "$group"
+        usermod -aG "$group" recolic
+    done
 
     if ! sudo -u recolic realpath pc-mpc.sh; then
         echo "ERROR recolic do not have read access to current dir"
