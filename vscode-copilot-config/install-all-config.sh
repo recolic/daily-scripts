@@ -17,3 +17,9 @@ for dir in "$HOME"/.config/Code*; do
   done
 done
 
+echo "installing copilot-instructions..."
+if [[ -f "$HOME/sh/AGENTS.md" ]]; then
+  mkdir -p -- "$HOME/.copilot"
+  ln -sfnT -- "$HOME/sh/AGENTS.md" "$HOME/.copilot/copilot-instructions.md"
+fi
+
