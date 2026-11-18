@@ -5,7 +5,7 @@ def rsec(k): import subprocess; return subprocess.run(['rsec', k], check=True, c
 
 all_impl = {
     'astra': lambda: dict(
-        model = "gpt-6-astra",
+        model = "gpt-6.2-astra",
         client = OpenAI(
             api_key=rsec("GITHUB_EMU_TOKEN"),
             base_url=rsec("GITHUB_LLM_API")
@@ -15,7 +15,7 @@ all_impl = {
     ),
     # sol used by telegram-userbot
     'sol': lambda: dict(
-        model = "gpt-6.1-sol",
+        model = "gpt-6.2-sol",
         client = OpenAI(
             api_key=rsec("GITHUB_EMU_TOKEN"),
             base_url=rsec("GITHUB_LLM_API")
@@ -41,21 +41,21 @@ all_impl = {
         response_api = True,
         extra_args = dict(reasoning_effort="medium")
     ),
-    'flash': lambda: dict(
-        model = "gemini-flash-latest",
+    'H': lambda: dict(
+        model = "gemini-4-hydrogen",
         client = OpenAI(
-            api_key=rsec("Gemini_KEY"),
-            base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+            api_key=rsec("GITHUB_EMU_TOKEN"),
+            base_url=rsec("GITHUB_LLM_API")
         ),
-        extra_args = dict(max_tokens=16000, reasoning_effort="low")
+        extra_args = dict(reasoning_effort="medium")
     ),
-    'pro': lambda: dict(
-        model = "gemini-pro-latest",
+    'C': lambda: dict(
+        model = "gemini-4-carbon",
         client = OpenAI(
-            api_key=rsec("Gemini_KEY"),
-            base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+            api_key=rsec("GITHUB_EMU_TOKEN"),
+            base_url=rsec("GITHUB_LLM_API")
         ),
-        extra_args = dict(max_tokens=16000, reasoning_effort="high")
+        extra_args = dict(reasoning_effort="high")
     ),
     'grok': lambda: dict(
         model = "grok-latest",
