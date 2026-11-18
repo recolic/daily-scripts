@@ -16,6 +16,7 @@ Server = https://github.com/recolic/aur-autobuild-mirror/releases/download/archl
     sed -i 's/^[# ]*SystemMaxUse=[ 0-9A-Za-z]*$/SystemMaxUse=150M/g' /etc/systemd/journald.conf
     sed -i 's/^[# ]*SystemMaxFileSize=[ 0-9A-Za-z]*$/SystemMaxFileSize=30M/g' /etc/systemd/journald.conf
     sed -i 's/^[# ]*Storage=[ 0-9A-Za-z]*$/Storage=none/g' /etc/systemd/coredump.conf
+    [ -f /usr/lib/systemd/systemd-coredump] && mv /usr/lib/systemd/systemd-coredump /usr/lib/systemd/systemd-coredump.backup
 }
 
 lc_startup () {

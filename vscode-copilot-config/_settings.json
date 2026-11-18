@@ -1,0 +1,10 @@
+{
+    "security.workspace.trust.enabled": false,
+    "security.workspace.trust.emptyWindow": false,
+    "chat.agent.maxRequests": 250,
+    "chat.permissions.default": "autoApprove",
+    "extensions.ignoreRecommendations": true,
+    "workbench.colorTheme": "Dark 2026",
+    "window.autoDetectColorScheme": true,
+    "chat.defaultModel": "gpt-6.2-sol"
+}
