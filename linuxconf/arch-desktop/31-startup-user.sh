@@ -42,16 +42,19 @@ Keywords=note;notes;notebook;rnote;
 }
 
 lc_login () {
-    # gui application here. (incl gpg)
+    # gui application here. (incl gpg/rsec)
     if [[ $(hostname) = RECOLICPC ]] || [[ $(hostname) = RECOLICMPC ]]; then
         echo _:1 | bash utils/unlock_keyrings
         # nohup fcitx5 &
     fi
+    mkdir /tmp/.lc_login_run_once.flag || return 0
     lc_bgrun /dev/null fish utils/tg-backend-autokill.fish
     lc_bgrun /dev/null python files/mybin/lib/GetIdleTime-daemon.py
     lc_bgrun /dev/null python files/genpasswd_api_server.py
-    lc_bgrun /tmp/vlog proxy.fish us15lw 1080
 
-    # need smartcard interaction
+    lc_bgrun /tmp/vlog0 auto_restart proxy.fish us15lw  1080
+    lc_bgrun /tmp/vlog8 auto_restart proxy.fish jp3lw   10808
+    lc_bgrun /tmp/vlog2 auto_restart proxy.fish corplan 10802
+
     # [[ $(hostname) = RECOLICMPC ]] && lc_bgrun /dev/null env IMPL=sshfs bash utils/auto-nfs-mgr.sh
 }
