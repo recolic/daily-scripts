@@ -207,7 +207,7 @@ public class MainActivity extends Activity implements SensorEventListener, Locat
         }
         if (usingRotationVector && event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
             SensorManager.getRotationMatrixFromVector(rotMatrix, event.values);
-            if (event.values.length >= 5 && event.values[4] >= 0) reportedHeadingErrRad = event.values[4];
+            reportedHeadingErrRad = event.values.length >= 5 ? event.values[4] : -1f;
             sensorAccuracy = event.accuracy;
             updateSmoothEnu(rotMatrix[1], rotMatrix[4], rotMatrix[7]);
         } else if (!usingRotationVector) {
@@ -257,19 +257,21 @@ public class MainActivity extends Activity implements SensorEventListener, Locat
 
         double gpsAccM = location.hasAccuracy() ? location.getAccuracy() : 100.0;
         double fixAgeSec = Math.max(0.0, (nowMs - location.getTime()) / 1000.0);
-        double azErrDeg = estimateAzimuthErrorDeg();
-        double sensorErrDeg = estimateSensorErrorDeg(res.altDeg, azErrDeg);
+        double sensorErrDeg = estimateSensorErrorDeg(res.altDeg);
         double gpsAngleErrDeg = Math.toDegrees(gpsAccM / 6371000.0);
         double totalErrDeg = Math.sqrt(sensorErrDeg * sensorErrDeg + gpsAngleErrDeg * gpsAngleErrDeg + 0.5 * 0.5);
 
         String bigGalactic = String.format(Locale.US, "l  %7.2f°\nb  %+7.2f°\n", res.galLDeg, res.galBDeg);
         String magStr = magNormUt > 0 ? String.format(Locale.US, "%.1f µT", magNormUt) : "n/a";
+        String rawErrStr = reportedHeadingErrRad >= 0
+            ? String.format(Locale.US, "%.3f rad (%.1f°)", reportedHeadingErrRad, Math.toDegrees(reportedHeadingErrRad))
+            : "n/a";
         String body = String.format(Locale.US,
             "\nAIM (phone top edge -> sky)\n" +
             "True Az / Alt : %6.2f° / %+6.2f°\n" +
             "Est. Error    : ±%.1f° (%s)\n" +
-            "\nEXTRA DEBUG INFO\n" +
-            "Est. Az Error   : ±%.1f°\n" +
+            "\nCALCULATED OFFSETS & DEBUG\n" +
+            "Raw Heading Err : %s (acc=%d)\n" +
             "Mag Decl / |B|: %+6.2f° (WMM) / %s\n" +
             "Precession Δ    : %+6.3f° RA, %+6.3f° Dec\n" +
             "Equatorial J2000: RA %6.2f°  Dec %+6.2f°\n" +
@@ -277,7 +279,8 @@ public class MainActivity extends Activity implements SensorEventListener, Locat
             "GPS (%s)       : %.4f°, %.4f° (±%.0fm, %ds ago)\n" +
             "Sensor Mode     : %s\n",
             res.azTrueDeg, res.altDeg, totalErrDeg, accuracyLabel(sensorAccuracy),
-            azErrDeg, res.declDeg, magStr, res.precessionRaDeg, res.precessionDecDeg,
+            rawErrStr, sensorAccuracy,
+            res.declDeg, magStr, res.precessionRaDeg, res.precessionDecDeg,
             res.raJ2000Deg, res.decJ2000Deg, res.lstDeg, utcFmt.format(new Date(nowMs)),
             location.getProvider(), location.getLatitude(), location.getLongitude(), gpsAccM, (long) fixAgeSec,
             usingRotationVector ? "ROTATION_VECTOR (gyro+mag)" : "ACCEL+MAG fallback");
@@ -290,18 +293,14 @@ public class MainActivity extends Activity implements SensorEventListener, Locat
         view.setText(sb);
     }
 
-    private double estimateAzimuthErrorDeg() {
+    private double estimateSensorErrorDeg(double altDeg) {
         double azErr = sensorAccuracy == SensorManager.SENSOR_STATUS_ACCURACY_HIGH ? 2.5
             : sensorAccuracy == SensorManager.SENSOR_STATUS_ACCURACY_MEDIUM ? 6.0
             : sensorAccuracy == SensorManager.SENSOR_STATUS_ACCURACY_LOW ? 15.0 : 25.0;
         if (reportedHeadingErrRad > 0 && reportedHeadingErrRad < 1.5) {
             azErr = Math.max(azErr, Math.toDegrees(reportedHeadingErrRad));
         }
-        return azErr;
-    }
-
-    private double estimateSensorErrorDeg(double altDeg, double azErrDeg) {
-        double azProj = azErrDeg * Math.cos(Math.toRadians(altDeg));
+        double azProj = azErr * Math.cos(Math.toRadians(altDeg));
         double tiltErr = 1.5;
         return Math.sqrt(azProj * azProj + tiltErr * tiltErr);
     }
