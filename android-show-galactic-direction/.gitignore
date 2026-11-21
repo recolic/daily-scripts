@@ -1,0 +1,8 @@
+# created by Gemini 4 Hydrogen
+.gradle/
+.idea/
+.toolchain/
+local.properties
+**/build/
+*.iml
+*.apk

@@ -6,5 +6,11 @@
     "extensions.ignoreRecommendations": true,
     "workbench.colorTheme": "Quiet Light",
     "window.autoDetectColorScheme": true,
-    "chat.defaultModel": "gpt-6.2-sol"
+    "chat.defaultModel": "gpt-6.2-sol",
+    "github.copilot.enable": {
+        "*": false,
+        "plaintext": false,
+        "markdown": false,
+        "scminput": false
+    }
 }
