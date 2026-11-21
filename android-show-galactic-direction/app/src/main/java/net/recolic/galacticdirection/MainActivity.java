@@ -262,7 +262,7 @@ public class MainActivity extends Activity implements SensorEventListener, Locat
         double gpsAngleErrDeg = Math.toDegrees(gpsAccM / 6371000.0);
         double totalErrDeg = Math.sqrt(sensorErrDeg * sensorErrDeg + gpsAngleErrDeg * gpsAngleErrDeg + 0.5 * 0.5);
 
-        String bigGalactic = String.format(Locale.US, "l  %7.2f°\nb  %+7.2f°\n", res.galLDeg, res.galBDeg);
+        String bigEquatorial = String.format(Locale.US, "RA  %7.2f°\nDec %+7.2f°\n", res.raJ2000Deg, res.decJ2000Deg);
         String magStr = magNormUt > 0 ? String.format(Locale.US, "%.1f µT", magNormUt) : "n/a";
         String body = String.format(Locale.US,
             "\nAIM (phone top edge -> sky)\n" +
@@ -272,22 +272,23 @@ public class MainActivity extends Activity implements SensorEventListener, Locat
             "Est. Az Error   : ±%.1f°\n" +
             "Mag Decl / |B|: %+6.2f° (WMM) / %s\n" +
             "Precession Δ    : %+6.3f° RA, %+6.3f° Dec\n" +
-            "Equatorial J2000: RA %6.2f°  Dec %+6.2f°\n" +
+            "Galactic (J2000): l %6.2f°  b %+6.2f°\n" +
             "LST / UTC       : %6.2f° / %s\n" +
             "GPS (%s)       : %.4f°, %.4f° (±%.0fm, %ds ago)\n" +
             "Sensor Mode     : %s\n",
             res.azTrueDeg, res.altDeg, totalErrDeg, accuracyLabel(sensorAccuracy),
             azErrDeg,
             res.declDeg, magStr, res.precessionRaDeg, res.precessionDecDeg,
-            res.raJ2000Deg, res.decJ2000Deg, res.lstDeg, utcFmt.format(new Date(nowMs)),
+            res.galLDeg, res.galBDeg, res.lstDeg, utcFmt.format(new Date(nowMs)),
             location.getProvider(), location.getLatitude(), location.getLongitude(), gpsAccM, (long) fixAgeSec,
             usingRotationVector ? "ROTATION_VECTOR (gyro+mag)" : "ACCEL+MAG fallback");
 
-        SpannableStringBuilder sb = new SpannableStringBuilder("GALACTIC (J2000)\n" + bigGalactic + body);
-        int galStart = "GALACTIC (J2000)\n".length();
-        int galEnd = galStart + bigGalactic.length();
-        sb.setSpan(new RelativeSizeSpan(1.9f), galStart, galEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        sb.setSpan(new ForegroundColorSpan(0xFF7CE8FF), galStart, galEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        String header = "EQUATORIAL (J2000)\n";
+        SpannableStringBuilder sb = new SpannableStringBuilder(header + bigEquatorial + body);
+        int eqStart = header.length();
+        int eqEnd = eqStart + bigEquatorial.length();
+        sb.setSpan(new RelativeSizeSpan(1.9f), eqStart, eqEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sb.setSpan(new ForegroundColorSpan(0xFF7CE8FF), eqStart, eqEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         view.setText(sb);
     }
 
