@@ -115,6 +115,7 @@ lc_startup () {
 
     # hdd: quiet mode in sleep hour
     lc_bgrun /var/log/hdd-sleep.log every 10m bash hms/cron_hdd_sleep.sh
+    lc_bgrun /tmp/httpsrv.log bash -c "cd /mnt/fsdisk/tmp/river-movie-copy/ ; caddy file-server --listen 0.0.0.0:81 --browse"
     
     # extra iptables rules
     iptables  -I INPUT -p tcp -m tcp --dport 22 -j ACCEPT
