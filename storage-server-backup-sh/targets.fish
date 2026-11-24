@@ -36,7 +36,7 @@ function pack_backup_dir # string -> int
     set -l dirname $argv[1]
 
     set -l datestr (date -u +%Y%m%d-%H%M%S)
-    set -l fname "/storage/backups/"(basename $dirname)"_packed.tar.gpg.v"$datestr
+    set -l fname "/storage/backups/"(basename $dirname)"_packed.tar.bz2.gpg.v"$datestr
     mkdir -p /storage/backups
 
     if test -e $fname
@@ -49,7 +49,7 @@ function pack_backup_dir # string -> int
     set -l target_url (string replace "?" "/"$(basename $fname)"?" $BLOBSAS)
 
     echo_log "Compressing backup folder..."
-    tar -c $dirname | gpg --yes --trust-model always -e -o $fname -r $GPG_KEY
+    tar -cj $dirname | gpg --rfc4880 --compress-algo none --yes --trust-model always -e -o $fname -r $GPG_KEY
     and echo_log "$fname done. Calculating checksum..."
     and sha256sum $fname >> "/storage/backups/SHA256SUM"
     #### not enabled yet
