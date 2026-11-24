@@ -66,7 +66,14 @@ function target_nas_data
     # replica only, skip history version packing. sync directly into /backups/
     run_until_success rsync -avz --partial --delete --no-links \
         remote.nfs.recolic:/mnt/fsdisk/nfs/backups /storage/backups/target_nas_data
-    return $status
+end
+function target_nas_data2
+    run_until_success rsync -avz --partial --delete --no-links \
+        remote.nfs.recolic:/mnt/fsdisk/mc /storage/backups/target_nas_data2/mc
+    run_until_success rsync -avz --partial --delete --no-links \
+        remote.nfs.recolic:/mnt/fsdisk/nfs/pub/books /storage/backups/target_nas_data2/books
+ 
+    and pack_backup_dir /storage/cache/target_nas_data2
 end
 
 # This script only backup data(/srv) for my websites.

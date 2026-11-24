@@ -28,8 +28,8 @@ else
     switch $today
         case 22
             reach_target target_nas_data
-        #case 24
-            #reach_target target_nas_home
+        case 26
+            reach_target target_nas_data2
         case 03 13 23
             reach_target target_mail_www_recolic_net_data
         case 05 15 25
