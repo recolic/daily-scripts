@@ -10,6 +10,7 @@ if [ ! -f "$TMP_BIN" ]; then
     wget -O "$TMP_BIN" "$HTTP_PREFIX/$EXECNAME" 1>&2
     if [ $? -ne 0 ]; then
         echo "Unable to download $HTTP_PREFIX/$EXECNAME" 1>&2
+        rm -f "$TMP_BIN"
         exit 1
     fi
     chmod +x "$TMP_BIN"
