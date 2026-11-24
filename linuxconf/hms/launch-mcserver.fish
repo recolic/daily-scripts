@@ -5,9 +5,9 @@ archlinux-java set java-8-openjdk/jre
 ## For mc1.18
 # archlinux-java set java-17-openjdk
 
-cd /mnt/fsdisk/mcserver-1.12-tf-jwl-akkocloud-20191207-x
-# cd /mnt/fsdisk/technode-tfc-server-1.12
-# cd /mnt/fsdisk/mcserver-tfc118
+cd /mnt/fsdisk/mc/mcserver-1.12-tf-jwl-akkocloud-20191207-x
+# cd /mnt/fsdisk/mc/technode-tfc-server-1.12
+# cd /mnt/fsdisk/mc/mcserver-tfc118
 and tmux new-session -s mcserver-tmux -d "sh linux-start.sh ; fish"
 
 # only use this for 1.12-tf-jwl world 
@@ -19,6 +19,6 @@ if pwd | grep mcserver-1.12-tf-jwl
 end
 
 ### not using mc-backup-d, because zfs daily backup is enough
-# nohup /mnt/fsdisk/mcserver-1.12-tf-jwl-akkocloud-20191207-x/mcserver-backup-daemon.fish & disown
-# nohup /mnt/fsdisk/technode-tfc-server-1.12/mcserver-backup-daemon.fish & disown
+# nohup /mnt/fsdisk/mc/mcserver-1.12-tf-jwl-akkocloud-20191207-x/mcserver-backup-daemon.fish & disown
+# nohup /mnt/fsdisk/mc/technode-tfc-server-1.12/mcserver-backup-daemon.fish & disown
 
