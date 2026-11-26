@@ -76,7 +76,11 @@ Get the new public DKIM record from the container:
 docker exec rmail2 amavisd showkeys
 ```
 
-Replace the matching DKIM TXT record in DNS with the output. Wait for the new record to propagate before sending mail from the new container. Repeat this step whenever a rebuilt image has a different DKIM key.
+test with
+
+```
+docker exec rmail2 amavisd testkeys
+```
 
 ## (optional) 6. Verify and cut over
 
