@@ -1,6 +1,6 @@
 # created by Gemini 4 Hydrogen
 
-# docker build -t sea.vultrcr.com/recoimg/mail.recolic.net --build-arg "POSTMASTER_PASSWD=$(genpasswd TODO)" --build-arg "MYSQL_ROOT_PASSWD=$(genpasswd mysql@recolic.net)" -f Dockerfile .
+# docker build -t sea.vultrcr.com/recoimg/mail.recolic.net --build-arg "POSTMASTER_PASSWD=$(genpasswd postmaster@recolic.net)" --build-arg "MYSQL_ROOT_PASSWD=$(genpasswd mysql@recolic.net)" -f Dockerfile .
 # Usage: docker run -tid --privileged --cgroupns=host -p 3092:443 -p 110:110 -p 995:995 -p 143:143 -p 993:993 -p 25:25 -p 465:465 -p 587:587 -v /srv/iredmail/vmail:/var/vmail -v /srv/iredmail/mysql:/var/lib/mysql -v /srv/iredmail/clamav:/var/lib/clamav -v /srv/conf/acme-sh/mail.recolic.net/mail.recolic.net.key:/etc/ssl/private/iRedMail.key:ro -v /srv/conf/acme-sh/mail.recolic.net/fullchain.cer:/etc/ssl/certs/iRedMail.crt:ro -v /sys/fs/cgroup:/sys/fs/cgroup:rw --name rmail2 --restart=always --hostname func.mail.recolic.net sea.vultrcr.com/recoimg/mail.recolic.net /sbin/init
 FROM jrei/systemd-ubuntu:24.04
 
