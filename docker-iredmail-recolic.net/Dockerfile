@@ -1,4 +1,5 @@
 # created by Gemini 4 Hydrogen
+## password is only necessary for first run; burned into /srv afterward.
 # docker build -t recolic/mail.recolic.net --build-arg "POSTMASTER_PASSWD=$(rsec mail.recolic.net)" --build-arg "MYSQL_ROOT_PASSWD=$(rsec recolic.net)" -f Dockerfile .
 # Usage: docker run -tid -m 1536m -p 3092:443 -p 110:110 -p 995:995 -p 143:143 -p 993:993 -p 25:25 -p 465:465 -p 587:587 -v /srv/iredmail/vmail:/var/vmail -v /srv/iredmail/mysql:/var/lib/mysql -v /srv/iredmail/clamav:/var/lib/clamav -v /srv/conf/acme-sh/mail.recolic.net/mail.recolic.net.key:/etc/ssl/private/iRedMail.key:ro -v /srv/conf/acme-sh/mail.recolic.net/fullchain.cer:/etc/ssl/certs/iRedMail.crt:ro --name rmail --restart=always --hostname func.mail.recolic.net recolic/mail.recolic.net /entry.sh
 FROM ubuntu:24.04
