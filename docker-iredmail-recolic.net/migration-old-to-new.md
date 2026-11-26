@@ -6,7 +6,6 @@
 
 ```fish
 docker exec rmail mysqldump --defaults-file=/root/.my.cnf --complete-insert --no-create-info --skip-triggers vmail > /tmp/vmail-data.sql
-docker cp rmail:/var/lib/dkim /tmp/old-dkim
 ```
 
 ## 2. Stop old; initialize new storage
@@ -66,12 +65,20 @@ Only if every pair of counts matches:
 
 ```fish
 docker exec rmail2 mysql --defaults-file=/root/.my.cnf -e "DROP DATABASE vmail_migrate"
-docker cp /tmp/old-dkim/. rmail2:/var/lib/dkim/
-docker exec rmail2 chown -R amavis:amavis /var/lib/dkim
 docker exec rmail2 systemctl start iredapd amavis postfix dovecot iredadmin mlmmjadmin php8.3-fpm nginx
 ```
 
-## (optional) 5. Verify and cut over
+## 5. Update DKIM DNS
+
+Get the new public DKIM record from the container:
+
+```fish
+docker exec rmail2 amavisd showkeys
+```
+
+Replace the matching DKIM TXT record in DNS with the output. Wait for the new record to propagate before sending mail from the new container. Repeat this step whenever a rebuilt image has a different DKIM key.
+
+## (optional) 6. Verify and cut over
 
 ```fish
 docker exec rmail2 systemctl --failed --no-pager
