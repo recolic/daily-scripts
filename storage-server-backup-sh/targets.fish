@@ -62,16 +62,15 @@ end
 ########################### Targets begin #############################
 
 function target_nas_data
-    run_until_success ssh remote.nfs.recolic tar -cvJf /mnt/fsdisk/nfs/backups/I2/nfs-books-latest.tar.xz /mnt/fsdisk/nfs/pub/books
     # replica only, skip history version packing. sync directly into /backups/
     run_until_success rsync -avz --partial --delete --no-links \
         remote.nfs.recolic:/mnt/fsdisk/nfs/backups /storage/backups/target_nas_data
 end
 function target_nas_data2
     run_until_success rsync -avz --partial --delete --no-links \
-        remote.nfs.recolic:/mnt/fsdisk/mc /storage/backups/target_nas_data2/mc
+        remote.nfs.recolic:/mnt/fsdisk/mc /storage/cache/target_nas_data2/mc
     run_until_success rsync -avz --partial --delete --no-links \
-        remote.nfs.recolic:/mnt/fsdisk/nfs/pub/books /storage/backups/target_nas_data2/books
+        remote.nfs.recolic:/mnt/fsdisk/nfs/pub/books /storage/cache/target_nas_data2/books
  
     and pack_backup_dir /storage/cache/target_nas_data2
 end
